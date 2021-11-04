@@ -11,6 +11,7 @@ import HomeScreen from './NestedNavigation'
 export default function HomeStack(Stack) {
     return (
         <Stack.Group >
+            <Stack.Screen name='Main' component={HomeScreen} options={{headerShown: false}}/>
             <Stack.Screen name='Definicoes' component={Settings} 
                 options={{ 
                     title: 'Definições',
@@ -21,7 +22,6 @@ export default function HomeStack(Stack) {
                     
                 }} 
             />
-            <Stack.Screen name='Main' component={HomeScreen} options={{headerShown: false}}/>
         </Stack.Group>
     );
 }

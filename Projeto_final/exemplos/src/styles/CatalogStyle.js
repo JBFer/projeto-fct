@@ -2,7 +2,7 @@ export default{
     eachProduct: {
         marginTop: 15,
         width: 200,
-        height: '98%',
+        height: 220,
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',

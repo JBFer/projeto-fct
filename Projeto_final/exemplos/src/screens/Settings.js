@@ -20,80 +20,34 @@ import Icon2 from 'react-native-vector-icons/Ionicons'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
-export default function App() {
+
+export default class App extends React.Component {
     
-    const STORAGE_KEY = '@save_lightMode'
-    
-    const [lightMode, setlightMode] = useState()
-    const [isEnabled, setIsEnabled] = useState(false)
-    
-    
-    const lerData = async() => {
-        try {
-            const themeMode = await AsyncStorage.getItem(STORAGE_KEY)
-            
-            if (themeMode == null && lightMode == null) {
-                setlightMode(true)
-                console.warn(themeMode + ' entrou no primeiro')
-            } else {
-                setlightMode(themeMode)
-                console.warn(themeMode + ' entrou no segundo')
-            }
-                
-            
-        } catch (e) {
-            alert('Failed to fetch the data from storage')
-        }
+    state = {
+        lightMode: true,
+        isEnabled: false
     }
-    
-    const saveData = async() => {
-        try {
-            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(lightMode))
-            console.warn(await AsyncStorage.getItem(STORAGE_KEY) + ' deu update')
-            console.warn(JSON.parse((lightMode)) + ' foi o que deu update')
-            alert('Data successfully saved')
-        } catch (e) {
-            alert(e)
-        }
-    }
-    
-    const clearStorage = async () => {
-        try {
-            await AsyncStorage.clear()
-            alert('Storage successfully cleared!')
-        } catch (e) {
-            alert('Failed to clear the async storage.')
-        }
-    }
-    
-    const switchToggler = () => {
-        isEnabled === false ? setIsEnabled(true) : setIsEnabled(false);
-        lightMode === false ? setlightMode(true) : setlightMode(false);
-        saveData()
+
+    switchToggler = () => {
+        this.state.isEnabled === false ? this.setState({ isEnabled : true}) : this.setState({ isEnabled : false});
+        this.state.lightMode === false ? this.setState({ lightMode : true}) : this.setState({ lightMode : false});
     };
+
     
-    useEffect(() => {
-        lerData()
-    }, [])
+    render(){
+        return (
+            <View style={ { flex: 1, backgroundColor: this.state.lightMode ? Theme.branco : Theme.backDark, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } }>
+                <StatusBar style={'light'} />
+                <Switch
+                    style={[ { marginTop: 30 } , { backgroundColor: this.state.lightMode ? Theme.branco : Theme.backDark }]}
+                    trackColor={{ false: "#767577", true: "#00C0F9" }}
+                    thumbColor={this.state.isEnabled ? "#04d9ff" : "#f4f3f4"}
+                    onValueChange={this.switchToggler}
+                    value={this.state.isEnabled}
+                />
+                <Text style={[ SettingsStyle.title, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>Settings</Text>
+            </View>
+        )
     
-    
-    return (
-        <View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } }>
-        <StatusBar style={'light'} />
-            <Switch
-                style={[ { marginTop: 30 } , { backgroundColor: lightMode ? Theme.branco : Theme.backDark }]}
-                trackColor={{ false: "#767577", true: "#00C0F9" }}
-                thumbColor={isEnabled ? "#04d9ff" : "#f4f3f4"}
-                onValueChange={switchToggler}
-                value={isEnabled}
-            />
-            <Text style={[ SettingsStyle.title, { color: lightMode ? Theme.preto : Theme.branco } ]}>Settings</Text>
-        
-        <Text style={[ SettingsStyle.title, { color: lightMode ? Theme.preto : Theme.branco } ]}>{lightMode}</Text>
-        <TouchableOpacity onPress={clearStorage}>
-            <Text>Limpar</Text>
-        </TouchableOpacity>
-        </View>
-    );
-    
+}
 }
