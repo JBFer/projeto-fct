@@ -1,12 +1,13 @@
 export default{
     topPart: {
-        marginTop: 30,
+        marginTop: 20,
         ////backgroundColor: 'red',
         justifyContent: 'space-between',
         width: '100%',
         height: 80,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingLeft: 5
     },
     titlePart: {
         //backgroundColor: 'red',
@@ -15,8 +16,14 @@ export default{
         textAlign: 'center'
     },
     welcome: {
-        fontSize: 36,
+        fontFamily: 'sans-serif-light',
+        fontSize: 30,
         textAlign: 'center'
+    }, alinhar: {
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row'
     },
     middlePart: {
         //backgroundColor: 'blue',
@@ -28,7 +35,8 @@ export default{
         marginBottom: 50
     },
     subtitle: {
-        fontSize: 30,
+        fontFamily: 'sans-serif-light',
+        fontSize: 25,
         textAlign: 'center'
     },
     downPart: {
@@ -61,6 +69,7 @@ export default{
         alignItems: 'center',
         justifyContent: 'center',
     }, Txt:{
+        fontFamily: 'sans-serif-light',
         fontSize: 17
     }
 }

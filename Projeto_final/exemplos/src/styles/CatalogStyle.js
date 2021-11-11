@@ -1,4 +1,24 @@
 export default{
+    headerPart: {
+        marginTop: 20,
+        ////backgroundColor: 'red',
+        justifyContent: 'space-between',
+        width: '100%',
+        height: 80,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingLeft: 5
+    }, input: {
+        borderBottomWidth: 1,
+        width: '50%',
+        fontSize: 20
+    }, topPart: {
+        height: 100,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row', 
+    },
     eachProduct: {
         marginTop: 15,
         width: 200,
@@ -11,17 +31,8 @@ export default{
         flexDirection: 'row',
         height: 220,
         marginBottom: 25
-    }, input: {
-        borderBottomWidth: 1,
-        width: '50%',
-        fontSize: 20
-    }, topPart: {
-        height: 100,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row'
     }, Txt:{
+        fontFamily: 'sans-serif-light',
         fontSize: 17
     }, specs: {
         flexDirection: 'row', 

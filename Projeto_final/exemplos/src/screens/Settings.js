@@ -46,6 +46,8 @@ export default class App extends React.Component {
                     value={this.state.isEnabled}
                 />
                 <Text style={[ SettingsStyle.title, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>Settings</Text>
+                <Text style={[ SettingsStyle.title, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>Mudar de conta</Text>
+                <Text style={[ SettingsStyle.title, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>Logout</Text>
             </View>
         )
     

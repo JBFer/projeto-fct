@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Catalog from '../screens/Catalog';
 import Home from '../screens/Home';
+import Profile from '../screens/Profile';
 
 const Tab = createBottomTabNavigator()
 
@@ -16,7 +17,8 @@ export default function HomeScreen() {
             screenOptions={{ 
                 headerShown: false,
                 tabBarActiveTintColor: '#fff',
-                tabBarStyle: { backgroundColor: '#000' }
+                tabBarStyle: { backgroundColor: '#000', height: 60, borderTopWidth: 0, keyboardHidesTabBar: true},
+                tabBarHideOnKeyboard: true,
             }}
         >
             
@@ -24,10 +26,13 @@ export default function HomeScreen() {
                 name="Home" 
                 component={Home} 
                 options={{
-                  tabBarLabel: 'Página Inicial',
-                  tabBarIcon: ({ focused }) => (
-                    <Icon2 name="home" color={focused ? 'white' : 'gray'} size={25} />
-                  ),
+                    tabBarLabel: 'Página Inicial',
+                    tabBarLabelStyle: { marginBottom: 8, fontSize: 12 },
+                    tabBarIcon: ({ focused }) => (
+                        <View style={{ width: '50%', borderTopWidth: focused ? 1 : 0, borderColor: 'white', alignItems: 'center' }}>
+                            <Icon2 name="home" color={focused ? 'white' : 'gray'} size={25}/>
+                        </View>
+                    ),
                 }}
             />
             
@@ -36,10 +41,27 @@ export default function HomeScreen() {
                 name="Catalogo" 
                 component={Catalog}
                 options={{
-                  tabBarLabel: 'Catalogo',
-                  tabBarIcon: ({ focused }) => (
-                    <Icon2 name="search" color={focused ? 'white' : 'gray'} size={25} />
-                  ),
+                    tabBarLabel: 'Catalogo',
+                    tabBarLabelStyle: { marginBottom: 8, fontSize: 12 },
+                    tabBarIcon: ({ focused }) => (
+                        <View style={{ width: '50%', borderTopWidth: focused ? 1 : 0, borderColor: 'white', alignItems: 'center' }}>
+                            <Icon2 name="search" color={focused ? 'white' : 'gray'} size={25}/>
+                        </View>
+                    ),
+                }}
+            />
+            
+            <Tab.Screen 
+                name="Profile" 
+                component={Profile}
+                options={{
+                    tabBarLabel: 'Perfil',
+                    tabBarLabelStyle: { marginBottom: 8, fontSize: 12 },
+                    tabBarIcon: ({ focused }) => (
+                        <View style={{ width: '50%', borderTopWidth: focused ? 1 : 0, borderColor: 'white', alignItems: 'center' }}>
+                            <Icon2 name="person" color={focused ? 'white' : 'gray'} size={25}/>
+                        </View>
+                    ),
                 }}
             />
             

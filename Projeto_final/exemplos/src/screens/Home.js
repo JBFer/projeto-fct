@@ -15,6 +15,7 @@ import Theme from '../styles/Comum'
 import HomeStyle from '../styles/HomeStyle' 
 
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import Icon3 from 'react-native-vector-icons/FontAwesome'
 import Icon2 from 'react-native-vector-icons/Ionicons'
 
 export default function App({ navigation }) {
@@ -24,6 +25,7 @@ export default function App({ navigation }) {
     const switchToggler = () => {
         isEnabled === false ? setIsEnabled(true) : setIsEnabled(false);
         lightMode === true ? setlightMode(false) : setlightMode(true);
+        const luz = lightMode;
     };
     
     return (
@@ -32,7 +34,7 @@ export default function App({ navigation }) {
                 <StatusBar style={lightMode ? 'dark' : 'light'} />
                 <View style={ HomeStyle.topPart }>
                     <TouchableOpacity onPress={() => navigation.navigate('Definicoes')}>
-                        <Icon2 name='settings' color={ lightMode ? Theme.preto : Theme.branco } size={40} />
+                        <Icon3 name='cog' color={ lightMode ? Theme.preto : Theme.branco } size={38} />
                     </TouchableOpacity>
                     <Switch
                         trackColor={{ false: "#767577", true: "#00C0F9" }}
@@ -42,11 +44,14 @@ export default function App({ navigation }) {
                     />
                 </View>
                 <View style={ HomeStyle.titlePart }>
-                    <Text style={[ HomeStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>Bem vindo,           BigLevel</Text>
+                    <Text style={[ HomeStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>Bem vindo,                 BigLevel</Text>
                 </View>
 
                 <View style={ HomeStyle.middlePart }>
-                    <Text style={[ HomeStyle.subtitle, { color: lightMode ? Theme.preto : Theme.branco } ] }>Produtos em alta</Text>
+                    <View style={ HomeStyle.alinhar }>
+                        <Text style={[ HomeStyle.subtitle, { color: lightMode ? Theme.preto : Theme.branco } ] }>Produtos em alta </Text>
+                        <Icon name='fire-alt' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco}} />
+                    </View>
                     
                     <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} decelerationRate={0.88} overScrollMode={'never'} contentContainerStyle={{ flexGrow: 1, alignItems: 'flex-end'}}>
                             <TouchableOpacity activeOpacity={0.6} style={[ HomeStyle.eachProduct, { borderColor: lightMode ? Theme.preto : Theme.branco } ]}>
@@ -70,7 +75,10 @@ export default function App({ navigation }) {
                         </ScrollView>
                 </View>
                 <View style={ HomeStyle.downPart }>
-                    <Text style={[ HomeStyle.subtitle, { color: lightMode ? Theme.preto : Theme.branco } ] }>As minhas vendas</Text>
+                    <View style={ HomeStyle.alinhar }>
+                        <Text style={[ HomeStyle.subtitle, { color: lightMode ? Theme.preto : Theme.branco } ] }>As minhas vendas </Text>
+                        <Icon3 name='bar-chart' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco, marginTop: 5}} />
+                    </View>
                     <View style={[ HomeStyle.fakeGraph, { borderColor: lightMode ? Theme.preto : Theme.branco } ]}>
                         <View style={[ HomeStyle.eachPart, { backgroundColor: lightMode ? Theme.preto : Theme.branco } ]}></View>
                         <View style={[ HomeStyle.eachPart, { backgroundColor: lightMode ? Theme.preto : Theme.branco, height: 80 } ]}></View>
