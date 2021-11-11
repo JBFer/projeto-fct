@@ -22,12 +22,19 @@ import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
 
 export default class App extends React.Component {
-    
-    state = {
-        lightMode: true,
-        isEnabled: false
+    constructor(props){
+        super(props)
+        this.state = {
+            lightMode: true,
+            isEnabled: false
+        }
     }
 
+    
+    changeTheme = () => {
+        console.warn(this.state.lightMode)
+    }
+    
     switchToggler = () => {
         this.state.isEnabled === false ? this.setState({ isEnabled : true}) : this.setState({ isEnabled : false});
         this.state.lightMode === false ? this.setState({ lightMode : true}) : this.setState({ lightMode : false});
@@ -48,6 +55,9 @@ export default class App extends React.Component {
                 <Text style={[ SettingsStyle.title, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>Settings</Text>
                 <Text style={[ SettingsStyle.title, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>Mudar de conta</Text>
                 <Text style={[ SettingsStyle.title, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>Logout</Text>
+                <TouchableOpacity onPress={() => this.changeTheme()}>
+                    <Text style={[ SettingsStyle.title, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>Guardar</Text>
+                </TouchableOpacity>
             </View>
         )
     

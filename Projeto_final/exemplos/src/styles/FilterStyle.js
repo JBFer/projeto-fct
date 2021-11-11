@@ -15,24 +15,46 @@ export default {
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'row', 
-        marginBottom: 40
+        flexDirection: 'row'
     }, secondaryTxt: {
-        fontSize: 17,
+        fontSize: 15,
         marginLeft: 15
     }, pricePart: {
+		marginTop: 30,
         flexDirection: 'row',
         alignItems: 'center'
     }, rangePrice: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: 310,
-        marginLeft: 65
+        width: 290,
+        marginLeft: 60
     }, middlePart: {
-        width: '100%',
-        height: 400, 
+        width: '90%',
+        height: 480, 
+        marginHorizontal: 20,
+        marginVertical: 10,
         //backgroundColor: 'red'
-    },btnBoth: {
+    }, topCatg: {
+        width: '100%',
+        height: 100,
+        flexDirection: 'row',
+        //backgroundColor: 'green',
+    }, Catg: {
+        width: '33.3%',
+        height: '100%',
+        alignItems: 'center',
+        paddingTop: 10,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        justifyContent: 'center',
+        //backgroundColor: 'lightblue'
+    }, downCatg: {
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderBottomLeftRadius: 10,
+        flexGrow: 1,
+        //backgroundColor: 'yellow'
+    }, btnBoth: {
         width: '100%',
         height: 80,
         flexDirection: 'row',

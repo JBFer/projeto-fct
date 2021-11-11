@@ -33,7 +33,7 @@ export default function App({ navigation }) {
             <View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
                 <StatusBar style={lightMode ? 'dark' : 'light'} />
                 <View style={ HomeStyle.topPart }>
-                    <TouchableOpacity onPress={() => navigation.navigate('Definicoes')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Definicoes')} onThemeChange={() => {}}>
                         <Icon3 name='cog' color={ lightMode ? Theme.preto : Theme.branco } size={38} />
                     </TouchableOpacity>
                     <Switch

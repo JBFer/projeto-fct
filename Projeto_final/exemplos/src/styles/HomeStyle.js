@@ -41,7 +41,7 @@ export default{
     },
     downPart: {
         //backgroundColor: 'green',
-        marginTop: 30,
+        marginTop: 40,
         justifyContent: 'space-between',
         width: '100%',
         height: 350,

@@ -287,3 +287,37 @@ export default function App() {
     
 }
 
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+FILTER
+
+
+
+PRICE PART
+
+
+<View style={ FilterStyle.pricePart }>
+    <Text style={ [FilterStyle.secondaryTxt, { color: this.props.themeMode ? Theme.preto : Theme.branco } ]}>Preço</Text>
+    <Slider
+        style={{ width: 300}}
+            step={5}
+            minimumValue={this.state.minPrice}
+            maximumValue={this.state.maxPrice}
+            value={this.state.price}
+            onValueChange={val => this.setState({ price: val })}
+            maximumTrackTintColor='#04d9ff' 
+            minimumTrackTintColor='#00C0F9'
+    />
+</View>
+<View style={ FilterStyle.rangePrice }>
+    <Text style={{ color: this.props.themeMode ? Theme.preto : Theme.branco }}>{this.state.minPrice}€</Text>
+    <Text style={{ color: this.props.themeMode ? Theme.preto : Theme.branco }}>{this.state.price}€</Text>
+    <Text style={{ color: this.props.themeMode ? Theme.preto : Theme.branco }}>{this.state.maxPrice}€</Text>
+</View>
+
+
+
+
+
