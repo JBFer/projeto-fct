@@ -23,8 +23,14 @@ export default class App extends React.Component {
     state = {
         lightMode: true,
         isEnabled: false,
-        showModal: false
+        showModal: false,
+		pesquisa: {},
+		searchTxt: ''
     }
+
+	searchInput = () => {
+		console.warn(this.state.pesquisa)
+	}
 
     
     switchToggler = () => {
@@ -34,7 +40,16 @@ export default class App extends React.Component {
     render() {
         return (
         <View style={ { flex: 1, backgroundColor: this.state.lightMode ? Theme.branco : Theme.backDark } }>
-            <Filter themeMode={this.state.lightMode} isVisible={this.state.showModal} onCancel={() => { this.setState({ showModal: false }) }}/>
+            <Filter 
+				themeMode={this.state.lightMode} 
+				isVisible={this.state.showModal} 
+				onCancel={() => { 
+					this.setState({ showModal: false })
+				}}
+				onSave={(pesquisa) => { 
+						this.setState({ showModal: false, searchTxt: pesquisa.searchTxt, pesquisa: pesquisa  }, this.searchInput)
+					}}
+			/>
                 <ScrollView decelerationRate={0.9} overScrollMode={'never'} contentContainerStyle={{ flexGrow: 1, backgroundColor: this.state.lightMode ? Theme.branco : Theme.backDark }}>
                     <StatusBar style={this.state.lightMode ? 'dark' : 'light'} />
                     <View style={ CatalogStyle.headerPart }>
@@ -50,8 +65,12 @@ export default class App extends React.Component {
                     </View>
                     
                     <View style={ CatalogStyle.topPart }>
-                        <TextInput style={ [CatalogStyle.input, { color: this.state.lightMode ? Theme.preto : Theme.branco , borderBottomColor: this.state.lightMode ? Theme.preto : Theme.branco } ]} />
-                        <TouchableOpacity activeOpacity={0.4}>
+                        <TextInput 
+							style={ [CatalogStyle.input, { color: this.state.lightMode ? Theme.preto : Theme.branco , borderBottomColor: this.state.lightMode ? Theme.preto : Theme.branco } ]}
+							value={this.state.searchTxt}
+							onChangeText={txt => this.setState({ searchTxt: txt })}
+						/>
+                        <TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
                             <Icon2 name='search' size={25} style={{ color: this.state.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 4 }} />
                         </TouchableOpacity>
                     </View>

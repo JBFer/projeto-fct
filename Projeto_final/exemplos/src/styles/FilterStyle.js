@@ -39,6 +39,15 @@ export default {
         height: 100,
         flexDirection: 'row',
         //backgroundColor: 'green',
+    }, topCatg2: {
+        width: '100%',
+        height: 100,
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: '#badf55',
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+        //backgroundColor: 'green',
     }, Catg: {
         width: '33.3%',
         height: '100%',
@@ -55,8 +64,9 @@ export default {
         flexGrow: 1,
         //backgroundColor: 'yellow'
     }, btnBoth: {
-        width: '100%',
+        width: '90%',
         height: 80,
+		marginHorizontal: 20,
         flexDirection: 'row',
         justifyContent: 'flex-end'
     },btnSearch: {
