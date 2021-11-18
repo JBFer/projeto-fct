@@ -8,42 +8,42 @@ const CATEGORIAS = [
   ),
   new Categoria(
     '2',
-    'Categoria2a',
+    'Categoria2b',
     'atom',
   ),
   new Categoria(
     '3',
-    'Categoria3a',
+    'Categoria3c',
     'atom',
   ),
   new Categoria(
     '4',
-    'Categoria4a',
+    'Categoria4d',
     'atom',
   ),
   new Categoria(
     '5',
-    'Categoria5a',
+    'Categoria5e',
     'atom',
   ),
   new Categoria(
     '6',
-    'Categoria6a',
+    'Categoria6f',
     'atom',
   ),
   new Categoria(
     '7',
-    'Categoria7a',
+    'Categoria7g',
     'atom',
   ),
   new Categoria(
     '8',
-    'Categoria8a',
+    'Categoria8h',
     'atom',
   ),
   new Categoria(
     '9',
-    'Categoria9a',
+    'Categoria9i',
     'atom',
   )
 ];

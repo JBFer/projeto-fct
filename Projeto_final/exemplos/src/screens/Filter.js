@@ -17,9 +17,11 @@ import Icon2 from 'react-native-vector-icons/Ionicons'
 
 
 import EachCatg from '../components/EachCatg'
+import EachSubCatg from '../components/EachSubCatg'
 import CatgsEmpresas from '../data/catgs/CategoriasEmpresas'
 import CatgsProdutos from '../data/catgs/CategoriasProdutos'
 import CatgsEmAlta from '../data/catgs/CategoriasEmAlta'
+import SubCatgsProd from '../data/catgs/SubcategoriasProdutos'
 
 const initialState = {
 	primeiroIcon: 'suitcase',
@@ -37,7 +39,6 @@ export default class Filter extends React.Component {
             priceAlta: 200,
             minPriceAlta: 0,
             maxPriceAlta: 200,
-			topBackgroundColor: this.props.themeMode ? Theme.branco : Theme.backDark,
             backgroundColor: this.props.themeMode ? Theme.branco : Theme.backDark,
             backgroundColorCaixa: this.props.themeMode ? Theme.branco : Theme.backDark,
             backgroundColor2: this.props.themeMode ? Theme.branco : Theme.backDark,
@@ -49,31 +50,110 @@ export default class Filter extends React.Component {
 			segundo: false,
 			terceiro: false,
 			stack: [],
+			filtrados: [],
+			choose: 0,
 			...initialState
         }
     }
 	
 	adicionarStack = (idCatg) => {
 		if (this.state.segundo){
-			const stack = [ ...this.state.stack ]
-			stack.push({
-				id: idCatg.id,
-				icon: idCatg.icon,
-				category: idCatg.category
-			})
+			if (this.state.choose < 2 ){
+				const stack = [ ...this.state.stack ]
+				stack.push({
+					id: idCatg.id,
+					icon: idCatg.icon,
+					category: idCatg.category
+				})
 
-			this.setState({ 
-				primeiroIcon: idCatg.icon, 
-				primeiroCatg: idCatg.category,
-				borderTopLeft: 0,
-            	borderTopRight: 0,
-				show: true
-			})
+				this.setState({ 
+					primeiroIcon: idCatg.icon, 
+					primeiroCatg: idCatg.category,
+					borderTopLeft: 0,
+					borderTopRight: 0,
+					show: true
+				})
 
-			this.setState({ stack })
-			
+				this.setState({ stack }, this.retornaSubCatg)
+			} else {
+				let anotherData = [ ...this.state.stack ]
+				//console.warn(anotherData)
+				let anotherNova = anotherData.pop()
+				//console.warn(anotherNova)
+				//console.warn(anotherData)
+				anotherData.push({
+					id: idCatg.id,
+					icon: idCatg.icon,
+					dad: idCatg.dad,
+					category: idCatg.category
+				})
+				
+				this.setState({
+					choose: 1,
+					stack: anotherData
+				})
+			}
+		} else {
+			if (this.state.choose < 1){
+				const stack = [ ...this.state.stack ]
+				stack.push({
+					id: idCatg.id,
+					icon: idCatg.icon,
+					category: idCatg.category
+				})
+
+				this.setState({ stack })
+			} else {
+				let anotherDummyData = [ ...this.state.stack ]
+				let anotherDummyNova = anotherDummyData.pop()
+				anotherDummyData.push({
+					id: idCatg.id,
+					icon: idCatg.icon,
+					category: idCatg.category
+				})
+				
+				this.setState({
+					choose: 0,
+					stack: anotherDummyData
+				})
+			}
 		}
+		
+		let choose = this.state.choose;
+		choose += 1;
+		this.setState({
+			choose
+		})
+		//console.warn(choose)
+		//console.warn(this.state.stack)
 	}
+	
+	
+	
+	retornaSubCatg = () => {
+		let novoArray = [ ...this.state.filtrados ]
+		let accCatg = SubCatgsProd.filter(catg => catg.dad == this.state.primeiroCatg);
+		accCatg.forEach(catg => {
+			
+			novoArray.push({
+				id: catg.id,
+				dad: catg.dad,
+				icon: catg.icon,
+				category: catg.category
+			})
+					
+			
+			//console.warn(catg)
+			//console.warn(novoArray)
+			
+		})
+		
+		this.setState({
+			filtrados: novoArray
+		})
+	}
+	
+	
 	
     
     mudarCor = () => {
@@ -84,6 +164,9 @@ export default class Filter extends React.Component {
             backgroundColor3: this.props.themeMode ? Theme.branco : Theme.backDark,
             borderTopLeft: 0,
             borderTopRight: 15,
+			stack: [],
+			filtrados: [],
+			choose: 0,
 			primeiro: true,
 			segundo: false,
 			terceiro: false
@@ -98,6 +181,9 @@ export default class Filter extends React.Component {
             backgroundColor3: this.props.themeMode ? Theme.branco : Theme.backDark,
             borderTopLeft: 15,
             borderTopRight: 15,
+			stack: [],
+			filtrados: [],
+			choose: 0,
 			primeiro: false,
 			segundo: true,
 			terceiro: false
@@ -112,6 +198,9 @@ export default class Filter extends React.Component {
             backgroundColor3:'#f7e88a',
             borderTopLeft: 15,
             borderTopRight: 0,
+			stack: [],
+			filtrados: [],
+			choose: 0,
 			primeiro: false,
 			segundo: false,
 			terceiro: true
@@ -135,14 +224,26 @@ export default class Filter extends React.Component {
 			terceiro: false,
 			searchTxt: '',
 			stack: [],
+			filtrados: [],
 			show: false,
+			choose: 0,
 			...initialState
         })
         this.props.onCancel()
     }
 	
 	fuckGoBack = () => {
-		console.warn('ir para tras')
+		this.setState({
+			borderTopLeft: 15,
+			borderTopRight: 15,
+			primeiroIcon: 'suitcase',
+			primeiroCatg: 'Produtos',
+			show: false,
+			stack: [],
+			filtrados: [],
+			choose: 1
+		})
+		
 	}
 	
 	save = () => {
@@ -171,8 +272,8 @@ export default class Filter extends React.Component {
 						/>
                     <Icon2 name='search' size={25} style={{ color: this.props.themeMode ? Theme.preto : Theme.branco,  paddingLeft: 4 }} />
                 </View>
-                <View style={ FilterStyle.middlePart }>
 					{ !this.state.show &&
+					<View style={ FilterStyle.middlePart }>
 						<View style={[ FilterStyle.topCatg ]}>
 							<TouchableOpacity style={[ FilterStyle.Catg, { backgroundColor: this.state.backgroundColor } ]} onPress={() => { this.mudarCor() }} activeOpacity={0.9}>
 								<Icon3 name='industry' size={25} style={{ color: this.props.themeMode ? Theme.branco : Theme.preto, width: 66, height: 66, lineHeight: 66, textAlign: 'center', borderRadius: 50, backgroundColor: this.props.themeMode ? Theme.preto : Theme.branco }} />
@@ -187,19 +288,7 @@ export default class Filter extends React.Component {
 								<Text style={{ color: this.props.themeMode ? Theme.preto : Theme.branco }}>Em alta</Text>
 							</TouchableOpacity>
 						</View>
-					}
-					{ this.state.show &&
-						<View style={[ FilterStyle.topCatg2 ]}>
-							<TouchableOpacity onPress={() => this.fuckGoBack()} style={{ marginLeft: 20 }}>
-								<Icon3 name='angle-left' size={25} style={{ color: this.props.themeMode ? Theme.preto : Theme.branco, paddingLeft: 10, marginTop: 3 }} />
-							</TouchableOpacity>
-							<TouchableOpacity disabled={this.state.show} style={[ FilterStyle.Catg, { backgroundColor: this.state.backgroundColor2, alignItems: 'center' } ]} onPress={() => { this.mudarCor2() }} activeOpacity={0.2}>
-								<Icon3 name={this.state.primeiroIcon} size={25} style={{ color: this.props.themeMode ? Theme.branco : Theme.preto, width: 66, height: 66, lineHeight: 66, textAlign: 'center', borderRadius: 50, backgroundColor: this.props.themeMode ? Theme.preto : Theme.branco }} />
-								<Text style={{ color: this.props.themeMode ? Theme.preto : Theme.branco }}>{ this.state.primeiroCatg }</Text>
-							</TouchableOpacity>
-						</View>
-					}
-                    <View style={[ FilterStyle.downCatg, { backgroundColor:this.state.backgroundColorCaixa, borderTopLeftRadius:this.state.borderTopLeft, borderTopRightRadius:this.state.borderTopRight } ]}>
+						<View style={[ FilterStyle.downCatg, { backgroundColor:this.state.backgroundColorCaixa, borderTopLeftRadius:this.state.borderTopLeft, borderTopRightRadius:this.state.borderTopRight } ]}>
 						{ this.state.segundo &&
 							<View style={{ flex: 1 }}>
 								<View style={ FilterStyle.pricePart }>
@@ -264,16 +353,47 @@ export default class Filter extends React.Component {
 						}
 						{ this.state.primeiro &&
 							<FlatList 
-							style={{ flex: 1, flexDirection: 'row' }}
-							contentContainerStyle={{ alignItems: 'center', justifyContent: 'space-around', width: '100%'}}
-							data={CatgsEmpresas}
-							numColumns={3}
-							keyExtractor={item => `${item.id}`} 
-							renderItem={({item}) => <EachCatg id={item.id} category={item.category} icon={item.icon} onAdicionarStack={(idCatg) => this.adicionarStack(idCatg)}/>} 
+								style={{ flex: 1, flexDirection: 'row' }}
+								contentContainerStyle={{ alignItems: 'center', justifyContent: 'space-around', width: '100%'}}
+								data={CatgsEmpresas}
+								numColumns={3}
+								keyExtractor={item => `${item.id}`} 
+								renderItem={({item}) => <EachCatg id={item.id} category={item.category} icon={item.icon} onAdicionarStack={(idCatg) => this.adicionarStack(idCatg)}/>} 
 							/>
 						}
                     </View>
-                </View>
+						</View>
+					}
+					{ this.state.show &&
+					<View style={ FilterStyle.middlePart }>
+						<View style={[ FilterStyle.topCatg2 ]}>
+							<TouchableOpacity activeOpacity={0.4} onPress={() => this.fuckGoBack()} style={{ marginLeft: 20 }}>
+								<Icon3 name='angle-left' size={30} style={{ color: Theme.preto, paddingLeft: 10, paddingRight: 7, marginTop: 3 }} />
+							</TouchableOpacity>
+							<TouchableOpacity disabled={this.state.show} style={[ FilterStyle.Catg, { backgroundColor: this.state.backgroundColor2, alignItems: 'center' } ]} onPress={() => { this.mudarCor2() }} activeOpacity={0.2}>
+								<Icon3 name={this.state.primeiroIcon} size={25} style={{ color: this.props.themeMode ? Theme.branco : Theme.preto, width: 66, height: 66, lineHeight: 66, textAlign: 'center', borderRadius: 50, backgroundColor: this.props.themeMode ? Theme.preto : Theme.branco }} />
+								<Text style={{ color: Theme.preto }}>{ this.state.primeiroCatg }</Text>
+							</TouchableOpacity>
+						</View>
+						<View style={[ FilterStyle.downCatg, { backgroundColor:this.state.backgroundColorCaixa, borderTopLeftRadius:this.state.borderTopLeft, borderTopRightRadius:this.state.borderTopRight } ]}>
+							{ this.state.segundo &&
+								<View style={{ flex: 1 }}>
+									<FlatList 
+										style={{ flexDirection: 'row' }}
+										contentContainerStyle={{ alignItems: 'center', justifyContent: 'space-around', width: '100%'}}
+										data={this.state.filtrados}
+										numColumns={3}
+										keyExtractor={item => `${item.id}`} 
+										renderItem={({item}) => <EachSubCatg id={item.id} category={item.category} icon={item.icon} onAdicionarStack={
+												(idCatg) => this.adicionarStack(idCatg)
+											}/>} 
+									/>
+								</View>
+							}
+                    	</View>
+					</View>
+					}
+                    
                 
                 <View style={ FilterStyle.btnBoth }>
                     <TouchableOpacity onPress={() => { this.cancel() }} style={[ FilterStyle.btnCancel, { borderColor: this.props.themeMode ? Theme.preto : Theme.branco } ]}>

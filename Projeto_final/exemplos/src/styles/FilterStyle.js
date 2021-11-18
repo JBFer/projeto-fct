@@ -47,6 +47,7 @@ export default {
 		backgroundColor: '#badf55',
 		borderTopLeftRadius: 20,
 		borderTopRightRadius: 20,
+		elevation: 4
         //backgroundColor: 'green',
     }, Catg: {
         width: '33.3%',
