@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar'
 import { 
     StyleSheet,
@@ -8,49 +8,72 @@ import {
     Switch,
     ScrollView,
     TextInput,
+	FlatList,
+	SectionList,
+	SafeAreaView,
     TouchableOpacity
 } from 'react-native';
 
 import Theme from '../styles/Comum' 
-import SettingsStyle from '../styles/SettingsStyle' 
+import CatalogStyle from '../styles/CatalogStyle' 
+
+import Filter from './Filter' 
+import EachProd from '../components/EachProd'
+import Products from '../data/prods/Products'
 
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import Icon3 from 'react-native-vector-icons/FontAwesome'
 import Icon2 from 'react-native-vector-icons/Ionicons'
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
-
+import { lightMode } from '../constants/global'
 
 export default class App extends React.Component {
-    
     state = {
-        lightMode: true,
-        isEnabled: false
+        showModal: false,
+		pesquisa: {},
+		searchTxt: ''
     }
 
-    switchToggler = () => {
-        this.state.isEnabled === false ? this.setState({ isEnabled : true}) : this.setState({ isEnabled : false});
-        this.state.lightMode === false ? this.setState({ lightMode : true}) : this.setState({ lightMode : false});
-    };
+	searchInput = () => {
+		console.warn(this.state.pesquisa)
+	}
 
     
-    render(){
+    render() {
         return (
-            <View style={ { flex: 1, backgroundColor: this.state.lightMode ? Theme.branco : Theme.backDark, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } }>
-                <StatusBar style={'light'} />
-                <Switch
-                    style={[ { marginTop: 30 } , { backgroundColor: this.state.lightMode ? Theme.branco : Theme.backDark }]}
-                    trackColor={{ false: "#767577", true: "#00C0F9" }}
-                    thumbColor={this.state.isEnabled ? "#04d9ff" : "#f4f3f4"}
-                    onValueChange={this.switchToggler}
-                    value={this.state.isEnabled}
-                />
-                <Text style={[ SettingsStyle.title, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>Settings</Text>
-            </View>
-        )
-    
-}
-}
+				<View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
+					<Filter 
+						themeMode={lightMode} 
+						isVisible={this.state.showModal} 
+						onCancel={() => { 
+							this.setState({ showModal: false })
+						}}
+						onSave={(pesquisa) => { 
+								this.setState({ showModal: false, searchTxt: pesquisa.searchTxt, pesquisa: pesquisa  }, this.searchInput)
+							}}
+					/>
+
+					<StatusBar style={lightMode ? 'dark' : 'light'} />
+					<View style={ CatalogStyle.headerPart }>
+						<TouchableOpacity onPress={() => { this.setState({ showModal: true }) }}>
+							<Icon2 name='filter' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco}} />
+						</TouchableOpacity>
+						<TouchableOpacity onPress={() => { console.warn('Ir cart') }}>
+							<Icon3 name='shopping-cart' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco, paddingRight: 10}} />
+						</TouchableOpacity>
+					</View>
+
+					<SectionList
+					  contentContainerStyle={{ paddingHorizontal: 10 }}
+					  stickySectionHeadersEnabled={false}
+					  sections={Products}
+					  renderSectionHeader={({ products }) => (
+						<Text style={CatalogStyle.Txt}>AA</Text>
+					  )}
+					  renderItem={({ item, products }) => {
+						return <EachProd name='AA' image='https://cdn.shopify.com/s/files/1/1292/7365/products/111553_1_grande.jpg?v=1568391856' company={} price='2' />;
+					  }}
+					/>
 
 
 
@@ -58,266 +81,158 @@ export default class App extends React.Component {
 
 
 
-    const STORAGE_KEY = '@save_lightMode'
-    
-    const [lightMode, setlightMode] = useState()
-    const [isEnabled, setIsEnabled] = useState(false)
-    
-    
-    const lerData = async() => {
-        try {
-            const themeMode = await AsyncStorage.getItem(STORAGE_KEY)
-            
-            if (themeMode == null && setlightMode == null) {
-                setlightMode(true)
-                console.warn(themeMode + ' entrou no primeiro')
-            } else {
-                themeMode == false ? setlightMode(true) : setlightMode(false);
-                console.warn(themeMode + ' entrou no segundo')
-            }
-                
-            
-        } catch (e) {
-            alert('Failed to fetch the data from storage')
-        }
+				</View>
+            )
     }
-    
-    const saveData = async() => {
-        try {
-            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(lightMode))
-            alert('Data successfully saved')
-        } catch (e) {
-            alert(e)
-        }
-    }
-    
-    const clearStorage = async () => {
-        try {
-            await AsyncStorage.clear()
-            alert('Storage successfully cleared!')
-        } catch (e) {
-            alert('Failed to clear the async storage.')
-        }
-    }
-    
-    const switchToggler = () => {
-        isEnabled === false ? setIsEnabled(true) : setIsEnabled(false);
-        lightMode === false ? setlightMode(true) : setlightMode(false);
-        saveData()
-    };
-    
-    useEffect(() => {
-        lerData()
-    })
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar'
-import { 
-    StyleSheet,
-    Text,
-    View,
-    Button,
-    Switch,
-    ScrollView,
-    TextInput,
-    TouchableOpacity
-} from 'react-native';
-
-import Theme from '../styles/Comum' 
-import SettingsStyle from '../styles/SettingsStyle' 
-
-import Icon from 'react-native-vector-icons/FontAwesome5'
-import Icon2 from 'react-native-vector-icons/Ionicons'
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
-
-export default function App() {
-    
-    const [lightMode, setLightMode] = useState(true)
-    
-    const changeTheme = async() => {
-        lightMode ? setLightMode(false) : setLightMode(true)
-        await AsyncStorage.setItem('umaVariavel', JSON.stringify(lightMode))
-    }
-    
-    const showTheme = async() => {
-        console.warn(JSON.parse(await AsyncStorage.getItem('umaVariavel')))
-    }
-    
-    const cleanTheme = async() => {
-        await AsyncStorage.clear()
-    }
-    
-    
-    return (
-        <View> 
-            <TouchableOpacity onPress={ changeTheme }>
-                <Text>Ao clicar aqui muda o theme</Text>
-            </TouchableOpacity>
-            <Text>Aqui diz qual é o Theme: {lightMode ? 'preto' : 'branco'}</Text>
-            <Text>Aqui diz qual é o lightMode: {lightMode ? 'true' : 'false'}</Text>
-            <TouchableOpacity onPress={ cleanTheme }>
-                <Text>Ao clicar aqui limpa o theme</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={ showTheme }>
-                <Text>Ao clicar aqui mostra o theme em cache</Text>
-            </TouchableOpacity>
-        </View>
-    )
-    
 }
 
 
+const styles = StyleSheet.create({
+	container: {
+    	flex: 1,
+    	marginTop: StatusBar.currentHeight + 2 || 5,
+  	},
+})
 
 
 
 
 
-import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar'
-import { 
-    StyleSheet,
-    Text,
-    View,
-    Button,
-    Switch,
-    ScrollView,
-    TextInput,
-    TouchableOpacity
-} from 'react-native';
-
-import Theme from '../styles/Comum' 
-import SettingsStyle from '../styles/SettingsStyle' 
-
-import Icon from 'react-native-vector-icons/FontAwesome5'
-import Icon2 from 'react-native-vector-icons/Ionicons'
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
-
-export default function App() {
-    
-    const STORAGE_KEY = '@save_lightMode'
-    
-    const [lightMode, setlightMode] = useState()
-    const [isEnabled, setIsEnabled] = useState(false)
-    
-    
-    const lerData = async() => {
-        try {
-            const themeMode = await AsyncStorage.getItem(STORAGE_KEY)
-            
-            if (themeMode == null && lightMode == null) {
-                setlightMode(true)
-            } else {
-                setlightMode(themeMode)
-            }
-                
-            
-        } catch (e) {
-            alert('Failed to fetch the data from storage')
-        }
-    }
-    
-    const saveData = async() => {
-        try {
-            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(lightMode))
-            alert('Data successfully saved')
-        } catch (e) {
-            alert(e)
-        }
-    }
-    
-    const clearStorage = async () => {
-        try {
-            await AsyncStorage.clear()
-            alert('Storage successfully cleared!')
-        } catch (e) {
-            alert('Failed to clear the async storage.')
-        }
-    }
-    
-    const switchToggler = () => {
-        isEnabled === false ? setIsEnabled(true) : setIsEnabled(false);
-        lightMode === false ? setlightMode(true) : setlightMode(false);
-        saveData()
-    };
-    
-    useEffect(() => {
-        lerData()
-    }, [])
-    
-    
-    return (
-        <View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } }>
-        <StatusBar style={'light'} />
-            <Switch
-                style={[ { marginTop: 30 } , { backgroundColor: lightMode ? Theme.branco : Theme.backDark }]}
-                trackColor={{ false: "#767577", true: "#00C0F9" }}
-                thumbColor={isEnabled ? "#04d9ff" : "#f4f3f4"}
-                onValueChange={switchToggler}
-                value={isEnabled}
-            />
-            <Text style={[ SettingsStyle.title, { color: lightMode ? Theme.preto : Theme.branco } ]}>Settings</Text>
-        
-        <TouchableOpacity onPress={clearStorage}>
-            <Text>Limpar</Text>
-        </TouchableOpacity>
-        </View>
-    );
-    
-}
-
------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-FILTER
-
-
-
-PRICE PART
-
-
-<View style={ FilterStyle.pricePart }>
-    <Text style={ [FilterStyle.secondaryTxt, { color: this.props.themeMode ? Theme.preto : Theme.branco } ]}>Preço</Text>
-    <Slider
-        style={{ width: 300}}
-            step={5}
-            minimumValue={this.state.minPrice}
-            maximumValue={this.state.maxPrice}
-            value={this.state.price}
-            onValueChange={val => this.setState({ price: val })}
-            maximumTrackTintColor='#04d9ff' 
-            minimumTrackTintColor='#00C0F9'
-    />
-</View>
-<View style={ FilterStyle.rangePrice }>
-    <Text style={{ color: this.props.themeMode ? Theme.preto : Theme.branco }}>{this.state.minPrice}€</Text>
-    <Text style={{ color: this.props.themeMode ? Theme.preto : Theme.branco }}>{this.state.price}€</Text>
-    <Text style={{ color: this.props.themeMode ? Theme.preto : Theme.branco }}>{this.state.maxPrice}€</Text>
-</View>
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import Produto from '../../models/Produtos';
+
+const PRODUTOS = [
+	{
+		title: 'MAIS VISITADOS',
+		data: [
+			new Produto(
+				'1',
+				'https://cdn.shopify.com/s/files/1/1292/7365/products/111553_1_grande.jpg?v=1568391856',
+				'Pack 50 parafusos',
+				'YourChoice Screw',
+				'Categoria1a',
+				'Subcategoria4a',
+				4.99,
+				'12/10/2021',
+				'2130j',
+				'200'
+
+			  ),
+			new Produto(
+				'2',
+				'https://images.pexels.com/photos/160834/coffee-cup-and-saucer-black-coffee-loose-coffee-beans-160834.jpeg?cs=srgb&dl=bean-beans-black-coffee-160834.jpg&fm=jpg',
+				'Café',
+				'Nespresso',
+				'Categoria1a',
+				'Subcategoria4a',
+				5,
+				'12/10/2021',
+				'2230j',
+				'139'
+
+			  ),
+			new Produto(
+				'3',
+				'https://www.finsa.com/paweb/img/comun/img_finsa/madera_presentacion.jpg',
+				'Madeira',
+				'Navigator',
+				'Categoria1a',
+				'Subcategoria4a',
+				320,
+				'12/10/2021',
+				'2330j',
+				'1052'
+
+			  ),
+			new Produto(
+				'4',
+				'https://www.bhphotovideo.com/images/images2500x2500/Canon_5175B002_EF_24_70mm_f_2_8L_II_843008.jpg',
+				'Lente canon 24-70 1.5',
+				'Canon Portugal',
+				'Categoria1a',
+				'Subcategoria4a',
+				1899.99,
+				'12/10/2021',
+				'2330j',
+				'1052'
+
+			  )
+		]
+	},
+	{
+		title: 'BASEADO EM PESQUISAS RECENTES',
+		data: [
+			new Produto(
+				'5',
+				'https://www.botnroll.com/4644-large_default/-ecra-tatil-capacitivo-101-rgblvds-lcd-1024x600-.jpg',
+				'Tablet',
+				'Asus',
+				'Categoria1a',
+				'Subcategoria4a',
+				179.99,
+				'12/10/2021',
+				'2330j',
+				'1052'
+
+			  ),
+			new Produto(
+				'6',
+				'https://moodle.com/wp-content/uploads/2019/07/app.jpg',
+				'Software',
+				'Big Level',
+				'Categoria1a',
+				'Subcategoria4a',
+				220.99,
+				'12/10/2021',
+				'2330j',
+				'1052'
+
+			  )
+		]
+	}
+];
+
+export default PRODUTOS;

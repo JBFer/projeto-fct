@@ -8,11 +8,12 @@ import Routes from './src/Navigation/Routes'
 import Catalog from './src/screens/Catalog';
 import Theme from './src/components/chooseTheme'
 
+
 function App() {
     
     return(
         <NavigationContainer>
-            <Routes />
+            <Routes/>
         </NavigationContainer>
     )
 }

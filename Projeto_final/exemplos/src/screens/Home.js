@@ -18,15 +18,10 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import Icon3 from 'react-native-vector-icons/FontAwesome'
 import Icon2 from 'react-native-vector-icons/Ionicons'
 
+import { lightMode } from '../constants/global'
+
 export default function App({ navigation }) {
-    const [lightMode, setlightMode] = useState(true)
-    const [isEnabled, setIsEnabled] = useState(false)
     
-    const switchToggler = () => {
-        isEnabled === false ? setIsEnabled(true) : setIsEnabled(false);
-        lightMode === true ? setlightMode(false) : setlightMode(true);
-        const luz = lightMode;
-    };
     
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark }}>
@@ -36,12 +31,6 @@ export default function App({ navigation }) {
                     <TouchableOpacity onPress={() => navigation.navigate('Definicoes')} onThemeChange={() => {}}>
                         <Icon3 name='cog' color={ lightMode ? Theme.preto : Theme.branco } size={38} />
                     </TouchableOpacity>
-                    <Switch
-                        trackColor={{ false: "#767577", true: "#00C0F9" }}
-                        thumbColor={isEnabled ? "#04d9ff" : "#f4f3f4"}
-                        onValueChange={switchToggler}
-                        value={isEnabled}
-                    />
                 </View>
                 <View style={ HomeStyle.titlePart }>
                     <Text style={[ HomeStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>Bem vindo,                 BigLevel</Text>

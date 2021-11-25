@@ -1,19 +1,18 @@
 export default{
     headerPart: {
-        marginTop: 20,
-        ////backgroundColor: 'red',
+       	//backgroundColor: 'red',
         justifyContent: 'space-between',
         width: '100%',
-        height: 80,
+        height: 60,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 5
+        paddingLeft: 5,
     }, input: {
         borderBottomWidth: 1,
         width: '50%',
         fontSize: 20
     }, topPart: {
-        height: 100,
+        height: 80,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',
