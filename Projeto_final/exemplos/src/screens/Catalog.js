@@ -21,6 +21,7 @@ import CatalogStyle from '../styles/CatalogStyle'
 import Filter from './Filter' 
 import EachProd from '../components/EachProd'
 import Products from '../data/prods/Products'
+import NoProd from '../components/NoProd'
 
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import Icon3 from 'react-native-vector-icons/FontAwesome'
@@ -33,9 +34,85 @@ export default class App extends React.Component {
         showModal: false,
 		pesquisa: {},
 		searchTxt: '',
-
+		dataSource: [],
     }
 
+
+	renderTitle = ({ section }) => {
+		if ( section.key == 'visitados' ){
+			return null
+		}
+		else {
+			return <Text style={[ CatalogStyle.Txt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
+		}
+	}
+	
+	
+	renderSection = ({ item, section }) => {
+		
+		//console.warn(item.id)
+		
+		if ( item.id == 'visitados' ){
+			return (
+				<View style={{ marginBottom: 20 }}>
+					<View style={ CatalogStyle.topPart }>
+						<TextInput 
+							style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
+							value={this.state.searchTxt}
+							onChangeText={txt => this.setState({ searchTxt: txt })}
+						/>
+						<TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
+							<Icon2 name='search' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 4 }} />
+						</TouchableOpacity>
+					</View>
+					<Text style={[ CatalogStyle.Txt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
+					<FlatList
+						ListEmptyComponent={<NoProd />}
+						style={{ marginBottom: 10 }}
+						showsVerticalScrollIndicator={false}
+						showsHorizontalScrollIndicator={false}
+						data={item.list}
+						horizontal
+						renderItem={this.renderListItem}
+						keyExtractor={this.keyExtractor}
+					/>
+				</View>
+			
+			 
+		)
+		} else {
+			return (	
+			  <FlatList
+				ListEmptyComponent={<NoProd />}
+				showsVerticalScrollIndicator={false}
+				showsHorizontalScrollIndicator={false}
+				data={item.list}
+				numColumns={2}
+				renderItem={this.renderListItem}
+				keyExtractor={this.keyExtractor}
+			 />
+			
+			 
+		)
+		}
+	}
+		
+	
+	
+	renderListItem = ({ item }) => {
+		return (
+			<EachProd onClick={this.clickCheck} name={item.name} image={item.img} date={item.date} company={item.company} price={item.price}/>
+		)
+	}
+	
+	
+	
+	keyExtractor = (item) => {
+    	return item.id
+  	}
+
+	
+	
 
 	searchInput = () => {
 		console.warn(this.state.pesquisa)
@@ -48,10 +125,8 @@ export default class App extends React.Component {
 	irVisitados = () => {
 		console.warn('Ver mais')
 	}
-	
-	
-	animateHeader = () => {
-		//console.warn('aasd')
+	irCart = () => {
+		console.warn('Ir cart')
 	}
 
     
@@ -77,62 +152,25 @@ export default class App extends React.Component {
 					<TouchableOpacity onPress={() => { this.setState({ showModal: true }) }}>
 						<Icon2 name='filter' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco}} />
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => { console.warn('Ir cart') }}>
+					<TouchableOpacity onPress={() => { this.irCart() }}>
 						<Icon3 name='shopping-cart' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco, paddingRight: 10}} />
 					</TouchableOpacity>
 				</View>
 				
 				
 				
+				
+				
 				<SectionList
+					showsVerticalScrollIndicator={false}
+					showsHorizontalScrollIndicator={false}
 					contentContainerStyle={{ paddingHorizontal: 10 }}
 					stickySectionHeadersEnabled={false}
+					onScroll={() => this.setState({ width: 1 }) }
 					sections={Products}
-					onScroll={() => { this.animateHeader() }}
 					initialNumToRender={5}
-					renderSectionHeader={({ section  }) => (
-					<>
-						{section.horizontal ? (
-						 <>
-
-
-							<View style={ CatalogStyle.topPart }>
-								<TextInput 
-									style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
-									value={this.state.searchTxt}
-									onChangeText={txt => this.setState({ searchTxt: txt })}
-								/>
-								<TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
-									<Icon2 name='search' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 4 }} />
-								</TouchableOpacity>
-							</View>
-							<View style={ CatalogStyle.specs }>
-								<Text style={[ CatalogStyle.Txt ,{ color: lightMode ? Theme.preto : Theme.branco }]}>{section.title}</Text>
-								<TouchableOpacity onPress={this.irVisitados}>
-									<Text style={[ CatalogStyle.txt ,{ color: lightMode ? Theme.preto : Theme.branco }]}>Ver mais...</Text>
-								</TouchableOpacity>
-							</View>
-
-							<FlatList
-								horizontal
-								style={{ marginBottom: 30 }}
-								data={section.data}
-								renderItem={({ item }) => <EachProd onClick={this.clickCheck} name={item.name} image={item.img} date={item.date} company={item.company} price={item.price}/>}
-								showsHorizontalScrollIndicator={false}
-							 />
-						 </>
-						 ) :  <Text style={[ CatalogStyle.Txt ,{ color: lightMode ? Theme.preto : Theme.branco }]}>{section.title}</Text>}
-					</>
-					)}
-					renderItem={({ item, section  }) => {
-						if (section.horizontal) {
-							return null;
-						} else {
-							return (
-									<EachProd onClick={this.clickCheck} name={item.name} image={item.img} date={item.date} company={item.company} price={item.price}/>
-							); 	
-						}
-					}}
+					renderSectionHeader={this.renderTitle}
+					renderItem={this.renderSection}
 					
 					ListFooterComponent={
 						<View style={{ height: 20 }} />
@@ -153,5 +191,8 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
 	container: {
     	marginTop: StatusBar.currentHeight + 10 || 15,
+		borderBottomLeftRadius: 7,
+		borderBottomRightRadius: 7,
+		borderColor: '#D3D3D3'
   	},
 })

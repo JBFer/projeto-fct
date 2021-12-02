@@ -12,7 +12,9 @@ export default{
         width: '50%',
         fontSize: 20
     }, topPart: {
+		marginTop: 30,
         height: 80,
+		marginBottom: 20,
         width: '100%',
         justifyContent: 'center',
         alignItems: 'center',

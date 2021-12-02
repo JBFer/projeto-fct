@@ -236,3 +236,452 @@ const PRODUTOS = [
 ];
 
 export default PRODUTOS;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<EachProd onClick={this.clickCheck} name={item.item.name} image={item.item.img} date={item.item.date} company={item.item.company} price={item.item.price}/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useState, componentDidMount } from 'react';
+import { StatusBar } from 'expo-status-bar'
+import { 
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    Switch,
+    ScrollView,
+    TextInput,
+	FlatList,
+	SectionList,
+	SafeAreaView,
+	Animated,
+    TouchableOpacity
+} from 'react-native';
+
+import Theme from '../styles/Comum' 
+import CatalogStyle from '../styles/CatalogStyle' 
+
+import Filter from './Filter' 
+import EachProd from '../components/EachProd'
+import Products from '../data/prods/Products'
+
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import Icon3 from 'react-native-vector-icons/FontAwesome'
+import Icon2 from 'react-native-vector-icons/Ionicons'
+
+import { lightMode } from '../constants/global'
+
+export default class App extends React.Component {
+    state = {
+        showModal: false,
+		pesquisa: {},
+		searchTxt: '',
+		dataSource: []
+    }
+
+	prodPar = ({ item }) => {
+		let saberPar = parseInt(item.id)
+		let resul = saberPar % 2
+		if ( resul == 0 ){
+			return (
+				<View>
+					<EachProd onClick={this.clickCheck} name={item.name} image={item.img} date={item.date} company={item.company} price={item.price}/>
+				</View>
+		)
+		} else {
+			return <View style={{ width: 20, height: 50  }}></View>
+		}
+		
+	}
+
+	prodImpar = ({ item }) => {
+		let saberImpar = parseInt(item.id)+1
+		let resul2 = saberImpar % 2
+		if ( resul2 == 1 ){
+			return (
+				<View >
+					<EachProd onClick={this.clickCheck} name={item.name} image={item.img} date={item.date} company={item.company} price={item.price}/>
+				</View>
+			)
+		} else {
+			return <View style={{ width: 20, height: 50, backgroundColor: 'pink'  }}></View>
+		}
+		
+	}
+
+
+	searchInput = () => {
+		console.warn(this.state.pesquisa)
+	}
+	
+	clickCheck = (nome) => {
+		console.warn(nome)
+	}
+	
+	irVisitados = () => {
+		console.warn('Ver mais')
+	}
+	
+	
+	animateHeader = () => {
+		//console.warn('aasd')
+	}
+	
+	
+	componentDidMount() {
+	}
+
+    
+    render() {
+        return (
+			<View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
+				<Filter 
+					themeMode={lightMode} 
+					isVisible={this.state.showModal} 
+					onCancel={() => { 
+						this.setState({ showModal: false })
+					}}
+					onSave={(pesquisa) => { 
+							this.setState({ showModal: false, searchTxt: pesquisa.searchTxt, pesquisa: pesquisa  }, this.searchInput)
+						}}
+				/>
+
+
+
+				<StatusBar style={lightMode ? 'dark' : 'light'} />
+
+				<View style={[ CatalogStyle.headerPart, styles.container ]}>
+					<TouchableOpacity onPress={() => { this.setState({ showModal: true }) }}>
+						<Icon2 name='filter' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco}} />
+					</TouchableOpacity>
+					<TouchableOpacity onPress={() => { console.warn('Ir cart') }}>
+						<Icon3 name='shopping-cart' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco, paddingRight: 10}} />
+					</TouchableOpacity>
+				</View>
+				
+				
+				
+				<SectionList
+					contentContainerStyle={{ paddingHorizontal: 10 }}
+					stickySectionHeadersEnabled={false}
+					sections={Products}
+					onScroll={() => { this.animateHeader() }}
+					initialNumToRender={5}
+					renderSectionHeader={({ section  }) => (
+					<>
+						{section.horizontal ? (
+						 <>
+
+
+							<View style={ CatalogStyle.topPart }>
+								<TextInput 
+									style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
+									value={this.state.searchTxt}
+									onChangeText={txt => this.setState({ searchTxt: txt })}
+								/>
+								<TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
+									<Icon2 name='search' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 4 }} />
+								</TouchableOpacity>
+							</View>
+							<View style={ CatalogStyle.specs }>
+								<Text style={[ CatalogStyle.Txt ,{ color: lightMode ? Theme.preto : Theme.branco }]}>{section.title}</Text>
+								<TouchableOpacity onPress={this.irVisitados}>
+									<Text style={[ CatalogStyle.txt ,{ color: lightMode ? Theme.preto : Theme.branco }]}>Ver mais...</Text>
+								</TouchableOpacity>
+							</View>
+
+							<FlatList
+								horizontal
+								style={{ marginBottom: 30 }}
+								data={section.data}
+								renderItem={({ item }) => <EachProd onClick={this.clickCheck} name={item.name} image={item.img} date={item.date} company={item.company} price={item.price}/>}
+								showsHorizontalScrollIndicator={false}
+							 />
+						 
+						 </>
+						 ) :  <Text style={[ CatalogStyle.Txt ,{ color: lightMode ? Theme.preto : Theme.branco }]}>{section.title}</Text>}
+					</>
+					)}
+					renderItem={({ item, section  }) => {
+						if (section.horizontal) {
+							return null;
+						} else {
+							return (
+								<View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+									{this.prodPar({item})}
+									{this.prodImpar({item})}
+								</View>
+							); 	
+						}
+					}}
+					
+					ListFooterComponent={
+						<View style={{ height: 20 }} />
+					}
+				/>
+
+			</View>
+
+
+
+
+
+            )
+    }
+}
+
+
+const styles = StyleSheet.create({
+	container: {
+    	marginTop: StatusBar.currentHeight + 10 || 15,
+  	},
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const PRODUTOS = [
+	{
+		title: 'MAIS VISITADOS',
+		horizontal: true,
+		data: [
+			{
+				list: [
+				{
+					id: '1',
+					img: 'https://cdn.shopify.com/s/files/1/1292/7365/products/111553_1_grande.jpg?v=1568391856',
+					name: 'Pack 50 parafusos',
+					company: 'YourChoice Screw',
+					category: 'Categoria1a',
+					subcatg: 'Subcategoria4a',
+					price: 4.99,
+					date: '12/10/2021',
+					serial: '2130j',
+					views: '200'
+
+				},
+				{
+					id: '2',
+					img: 'https://images.pexels.com/photos/160834/coffee-cup-and-saucer-black-coffee-loose-coffee-beans-160834.jpeg?cs=srgb&dl=bean-beans-black-coffee-160834.jpg&fm=jpg',
+					name: 'Café',
+					company: 'Nespresso',
+					category: 'Categoria1a',
+					subcatg: 'Subcategoria4a',
+					price: 5,
+					date: '12/10/2021',
+					serial: '2230j',
+					views: '139'
+
+				},
+				{
+					id: '3',
+					img:'https://www.finsa.com/paweb/img/comun/img_finsa/madera_presentacion.jpg',
+					name: 'Madeira',
+					company: 'Navigator',
+					category: 'Categoria1a',
+					subcatg: 'Subcategoria4a',
+					price: 320,
+					date: '12/10/2021',
+					serial:'2330j',
+					views: '1052'
+				
+				}
+				
+				
+				]
+			
+			}
+		]
+	},
+	{
+		title: 'BASEADO EM PESQUISAS RECENTES',
+		data: [
+			{
+				list: [
+					{
+						id: '4',
+						img:'https://www.bhphotovideo.com/images/images2500x2500/Canon_5175B002_EF_24_70mm_f_2_8L_II_843008.jpg',
+						name: 'Lente canon 24-70 1.5',
+						company: 'Canon Portugal',
+						category:'Categoria1a',
+						subcatg: 'Subcategoria4a',
+						price: 1899.99,
+						date: '12/10/2021',
+						serial:'2330j',
+						views: '1052'
+
+					},
+					{
+						id: '5',
+						img:'https://www.botnroll.com/4644-large_default/-ecra-tatil-capacitivo-101-rgblvds-lcd-1024x600-.jpg',
+						name: 'Tablet',
+						company: 'Asus',
+						category:'Categoria1a',
+						subcatg: 'Subcategoria4a',
+						price: 179.99,
+						date: '12/10/2021',
+						serial:'2330j',
+						views: '1052'
+
+					},
+					{
+						id: '6',
+						img:'https://moodle.com/wp-content/uploads/2019/07/app.jpg',
+						name: 'Software',
+						company: 'Big Level',
+						category: 'Categoria1a',
+						subcatg: 'Subcategoria4a',
+						price: 220.99,
+						date: '12/10/2021',
+						serial:'2330j',
+						views: '1052'
+
+					}
+				]
+			
+			}
+		]
+	}
+];
+
+export default PRODUTOS;
