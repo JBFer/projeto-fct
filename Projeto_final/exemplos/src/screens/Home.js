@@ -65,7 +65,7 @@ export default function App({ navigation }) {
                 </View>
                 <View style={ HomeStyle.downPart }>
                     <View style={ HomeStyle.alinhar }>
-                        <Text style={[ HomeStyle.subtitle, { color: lightMode ? Theme.preto : Theme.branco } ] }>As minhas vendas </Text>
+                        <Text style={[ HomeStyle.subtitle, { color: lightMode ? Theme.preto : Theme.branco } ] }>As minhas compras </Text>
                         <Icon3 name='bar-chart' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco, marginTop: 5}} />
                     </View>
                     <View style={[ HomeStyle.fakeGraph, { borderColor: lightMode ? Theme.preto : Theme.branco } ]}>

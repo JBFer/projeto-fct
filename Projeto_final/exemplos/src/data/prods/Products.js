@@ -105,7 +105,7 @@ const PRODUTOS = [
 						company: 'Bic',
 						category:'Categoria1a',
 						subcatg: 'Subcategoria4a',
-						price: 179.99,
+						price: 4.99,
 						date: '12/10/2021',
 						serial:'2330j',
 						views: '1052'
