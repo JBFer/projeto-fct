@@ -8,6 +8,7 @@ import {
     Switch,
     ScrollView,
     TextInput,
+	Modal,
 	Image,
 	SectionList,
 	FlatList,
@@ -26,64 +27,90 @@ import EachCatg from '../components/EachCatg'
 import EachEnc from '../components/EachEnc'
 import EachCatgProfile from '../components/EachCatgProfile'
 
+import EncDetails from './EncDetails'
+
 import { lightMode } from '../constants/global'
 
 export default class App extends React.Component {
-
+	state = {
+		choose: 'encomendas',
+		catgInt: [],
+		visibleModal: false,
+		info: [{}],
+		id: '0',
+		precoTt: 0,
+		data: '',
+		numEnc: 0
+	}
 
 	renderTitle = ({ section }) => {
-		if ( section.title == 'mInfo' ){
 			return null;
-		} else {
-			return <Text style={[ ProfileStyle.title, { color: lightMode ? Theme.preto : Theme.branco, textAlign: 'center' } ]}>{section.title}</Text>
-		}
 	}
 	
 	
 	renderSection = ({ item, section }) => {
-		if ( item.id == 'catg' ){
-			return (
-				<FlatList
-				showsVerticalScrollIndicator={false}
-				showsHorizontalScrollIndicator={false}
-				style={{ backgroundColor: lightMode ? '#e4e4e4' : Theme.preto }}
-				data={item.list}
-				style={{ height: 120 }}
-				horizontal
-				renderItem={this.renderListItemCatg}
-				keyExtractor={this.keyExtractor}
-			 />
-			)
-		} else if ( item.id == 'encomendas' ) {
-			return (
-				<FlatList
-					showsVerticalScrollIndicator={false}
-					showsHorizontalScrollIndicator={false}
-					data={item.list}
-					renderItem={this.renderListItemEnc}
-					keyExtractor={this.keyExtractor}
-				 />
-			)
-		} else {
+		if ( item.id == 'catg' && this.state.choose == 'interesses' ){
 			return (
 				<>
-					<View style={{ alignItems: 'center', height: 80, width: '100%', marginTop: 10 }}>
-						<Text style={[ ProfileStyle.name, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.company }</Text>
-					</View>
+					<Text style={[ ProfileStyle.title, { color: lightMode ? Theme.preto : Theme.branco, textAlign: 'center' } ]}>Categorias de interesse</Text>
+					<FlatList
+						maxToRenderPerBatch={3}	
+						initialNumToRender={6}
+						showsVerticalScrollIndicator={false}
+						showsHorizontalScrollIndicator={false}
+						style={{ backgroundColor: lightMode ? '#e4e4e4' : Theme.preto }}
+						data={item.list}
+						style={{ height: 300 }}
+						numColumns={3}
+						renderItem={this.renderListItemCatg}
+						keyExtractor={this.keyExtractor}
+					/>
+				</>
+			)
+		} else if ( item.id == 'catg' && this.state.choose != 'interesses' ) {
+			return null
+		} else if ( item.id == 'encomendas' && this.state.choose == 'encomendas' ) {
+			return (
+				<>
+					<Text style={[ ProfileStyle.title, { color: lightMode ? Theme.preto : Theme.branco, textAlign: 'center' } ]}>Encomendas</Text>
+					<FlatList
+						maxToRenderPerBatch={3}	
+						initialNumToRender={6}
+						showsVerticalScrollIndicator={false}
+						showsHorizontalScrollIndicator={false}
+						data={item.list}
+						renderItem={this.renderListItemEnc}
+						keyExtractor={this.keyExtractor}
+					 />
+				</>
+			)
+		} else if ( item.id == 'encomendas' && this.state.choose != 'encomendas' ) {
+			return null
+		} else if ( item.id == 'info' && this.state.choose != 'info' ) {
+			return null
+		} else if ( item.id == 'info' && this.state.choose == 'info' ) {
+			return (
+				<>
 					<Text style={[ ProfileStyle.title, { color: lightMode ? Theme.preto : Theme.branco, textAlign: 'center' } ]}>Minhas Informações</Text>
-					<View style={{ alignItems: 'center', height: 200, width: '100%' }}>
+					<View style={{ alignItems: 'center', height: 500, width: '100%' }}>
 						<View style={ ProfileStyle.info } >
 							<View style={ { flex: 1, justifyContent: 'space-around' } }>
 								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Empresa:</Text>
+								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Contribuinte:</Text>
+								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Email:</Text>
+								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Telefone:</Text>
+								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Morada de Entrega:</Text>
+								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Morada de Faturação:</Text>
 								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Password:</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Local de Entrega:</Text>
 							</View>
 							<View style={ { flex: 1, justifyContent: 'space-around' } }>
 								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.company }</Text>
+								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.contribuinte }</Text>
+								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.email }</Text>
+								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.telefone }</Text>
+								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.moradaEnt }</Text>
+								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.moradaFat }</Text>
 								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.password }</Text>
-								<View>
-									<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.local }</Text>
-								</View>
 							</View>
 						</View>
 					</View>
@@ -92,19 +119,34 @@ export default class App extends React.Component {
 		}
 		
 	}
+	
+	showModalEnc = (propEnc) => {
+		this.setState({ visibleModal: true })
+		this.setState({ id: propEnc.id, info: propEnc.info, precoTt: propEnc.precoTt, data: propEnc.data, numEnc: propEnc.numEnc })
+	}
+	
+	stackCatg = (idCatg) => {
+		const catgInt = [ ...this.state.catgInt ]
+		catgInt.push({
+			id: idCatg.id,
+			category: idCatg.category
+		})
+
+		this.setState({catgInt})
+	}
 		
 	
 	
 	renderListItemCatg = ({ item }) => {
 		return (
-			<EachCatgProfile category={ item.category } icon={ item.icon } />
+			<EachCatgProfile category={ item.category } id={ item.id } icon={ item.icon } addCatg={(idCatg) => this.stackCatg(idCatg)}/>
 		)
 	}
 	
 	
 	renderListItemEnc = ({ item }) => {
 		return (
-			<EachEnc id={item.id} info={ item.info } precoTt={item.precoTt} data={item.data} />
+			<EachEnc id={item.id} numEnc={item.numEnc} info={ item.info } precoTt={item.precoTt} data={item.data} addEnc={(propEnc) => this.showModalEnc(propEnc) } />
 		)
 	}
 	
@@ -113,6 +155,23 @@ export default class App extends React.Component {
 	keyExtractor = (item) => {
     	return item.id
   	}
+	
+	
+	renderHeader = () => {
+		return (
+			<View style={{ height: 40, borderBottomWidth: 1, justifyContent: 'center', alignItems: 'center' , flexDirection: 'row', borderColor: '#D3D3D3' }}>
+				<TouchableOpacity onPress={() => this.setState({ choose: 'info' })} style={{ flex: 1, alignItems: 'center', borderRightWidth: 0.6, borderColor: '#D3D3D3'  }}>
+					<Text style={{ fontSize: 17, color: lightMode ? Theme.preto : Theme.branco }}>Informações</Text>
+				</TouchableOpacity>
+				<TouchableOpacity onPress={() => this.setState({ choose: 'encomendas' })} style={{ flex: 1, borderLeftWidth: 0.6, borderRightWidth: 0.6, alignItems: 'center', borderColor: '#D3D3D3' }}>
+					<Text style={{ fontSize: 17, color: lightMode ? Theme.preto : Theme.branco }}>Encomendas</Text>
+				</TouchableOpacity>
+				<TouchableOpacity onPress={() => this.setState({ choose: 'interesses' })} style={{ flex: 1, borderLeftWidth: 0.6, alignItems: 'center', borderColor: '#D3D3D3' }}>
+					<Text style={{ fontSize: 17, color: lightMode ? Theme.preto : Theme.branco }}>Interesses</Text>
+				</TouchableOpacity>
+			</View>
+		)
+	}
 
 	
 	
@@ -122,30 +181,41 @@ export default class App extends React.Component {
 		return (
 		<View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.preto } }>
 			<StatusBar style={lightMode ? 'dark' : 'light'} />
-
 			<View style={[ ProfileStyle.imageBack, { backgroundColor: lightMode ? '#e4e4e4' : Theme.preto } ]} >
 				<View style={{ width: 90, height: 90, borderRadius: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: lightMode ? Theme.preto : Theme.branco }}>
 					<Text style={{ fontSize: 35, color: lightMode ? Theme.branco : Theme.preto }}>BL</Text>	
 				</View>
+				<View style={{ alignItems: 'center', height: 80, width: '100%', marginTop: 10 }}>
+					<Text style={[ ProfileStyle.name, { color: lightMode ? Theme.preto : Theme.branco } ]} >BigLevel</Text>
+				</View>
 			</View>
-
+			<EncDetails 
+				themeMode={lightMode} 
+				isVisible={this.state.visibleModal} 
+				onCancel={() => { 
+					this.setState({ visibleModal: false })
+				}}
+				info={this.state.info}
+				id={this.state.id}
+				precoTt={this.state.precoTt}
+				data={this.state.data}
+				numEnc={this.state.numEnc}
+			/>
 			<View style={[ ProfileStyle.bodyPart, { backgroundColor: lightMode ? Theme.branco : Theme.backDark } ]}>
 					<SectionList
-					contentContainerStyle={{ paddingHorizontal: 10 }}
-					showsVerticalScrollIndicator={false}
-					showsHorizontalScrollIndicator={false}
-					style={{ width: '100%', height: '100%', overflow: 'hidden' }}
-					sections={CATEGORIAS}
-					stickySectionHeadersEnabled={false}
-					renderSectionHeader={this.renderTitle}
-					renderItem={this.renderSection}
-					ListFooterComponent={
-						<View style={{ height: 20 }} />
-					}
-					ListHeaderComponent={
-						<View style={{ height: 20, backgroundColor: 'black' }} />
-					}
-				/>
+						contentContainerStyle={{ paddingHorizontal: 10 }}
+						showsVerticalScrollIndicator={false}
+						showsHorizontalScrollIndicator={false}
+						style={{ width: '100%', height: '100%', overflow: 'hidden' }}
+						sections={CATEGORIAS}
+						stickySectionHeadersEnabled={false}
+						renderSectionHeader={this.renderTitle}
+						renderItem={this.renderSection}
+						ListFooterComponent={
+							<View style={{ height: 20 }} />
+						}
+						ListHeaderComponent={this.renderHeader}
+					/>
 				
 			</View>
 		</View>

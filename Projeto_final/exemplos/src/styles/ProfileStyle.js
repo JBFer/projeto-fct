@@ -3,14 +3,14 @@ export default{
 		//backgroundColor: 'red',
         width: '100%',
         height: 230,
-		justifyContent: 'center',
+		justifyContent: 'flex-end',
 		alignItems: 'center'
 	},
     bodyPart: {
 		overflow: 'hidden',
-		borderTopLeftRadius: 20,
-		borderTopRightRadius: 20,
-		marginTop: -20,
+		borderTopLeftRadius: 25,
+		borderTopRightRadius: 25,
+		marginTop: -25,
 		flex: 1,
         textAlign: 'center'
     },
@@ -18,7 +18,9 @@ export default{
 		fontSize: 25
 	},
 	title: {
-		fontSize: 20
+		fontSize: 20,
+		marginTop: 10,
+		marginBottom: 10
 	},
 	info: {
 		//backgroundColor: 'red', 

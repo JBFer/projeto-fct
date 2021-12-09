@@ -67,8 +67,8 @@ export default class App extends React.Component {
 					</View>
 					<Text style={[ CatalogStyle.Txt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
 					<FlatList
-						maxToRenderPerBatch={4}	
-						initialNumToRender={7}
+						maxToRenderPerBatch={10}	
+						initialNumToRender={20}
 						ListEmptyComponent={<NoProd />}
 						style={{ marginBottom: 10 }}
 						showsVerticalScrollIndicator={false}
@@ -85,8 +85,8 @@ export default class App extends React.Component {
 		} else {
 			return (	
 			  <FlatList  
-				maxToRenderPerBatch={6}	
-				initialNumToRender={10}
+				maxToRenderPerBatch={10}	
+				initialNumToRender={30}
 				ListEmptyComponent={<NoProd />}
 				showsVerticalScrollIndicator={false}
 				showsHorizontalScrollIndicator={false}
