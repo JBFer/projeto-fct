@@ -14,7 +14,7 @@ export default function HomeStack(Stack) {
             <Stack.Screen name='Main' component={HomeScreen} options={{headerShown: false}}/>
             <Stack.Screen name='Definicoes' component={Settings} 
                 options={{ 
-                    title: 'Definições',
+                    title: '',
                     headerStyle: {
                         backgroundColor: Theme.backDark,
                     },

@@ -3,7 +3,6 @@ export default{
 		//backgroundColor: 'red',
         width: '100%',
         height: 230,
-		justifyContent: 'flex-end',
 		alignItems: 'center'
 	},
     bodyPart: {
@@ -18,7 +17,7 @@ export default{
 		fontSize: 25
 	},
 	title: {
-		fontSize: 20,
+		fontSize: 22,
 		marginTop: 10,
 		marginBottom: 10
 	},

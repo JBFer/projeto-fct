@@ -40,7 +40,10 @@ export default class App extends React.Component {
 		id: '0',
 		precoTt: 0,
 		data: '',
-		numEnc: 0
+		numEnc: 0,
+		cont: '',
+		moradaFaturacao: '',
+		moradaEntrega: ''
 	}
 
 	renderTitle = ({ section }) => {
@@ -65,6 +68,7 @@ export default class App extends React.Component {
 						renderItem={this.renderListItemCatg}
 						keyExtractor={this.keyExtractor}
 					/>
+					<Button onPress={() => console.warn(this.state.catgInt) } title="Mostrar selecionados" />
 				</>
 			)
 		} else if ( item.id == 'catg' && this.state.choose != 'interesses' ) {
@@ -72,10 +76,12 @@ export default class App extends React.Component {
 		} else if ( item.id == 'encomendas' && this.state.choose == 'encomendas' ) {
 			return (
 				<>
-					<Text style={[ ProfileStyle.title, { color: lightMode ? Theme.preto : Theme.branco, textAlign: 'center' } ]}>Encomendas</Text>
+					<View style={{ width: '100%', height: 50, alignItems: 'center', justifyContent: 'center', marginBottom: -15 }}>
+						<Text style={[ ProfileStyle.title, { color: lightMode ? Theme.preto : Theme.branco, textAlign: 'center' } ]}>Encomendas</Text>
+					</View>
 					<FlatList
-						maxToRenderPerBatch={3}	
-						initialNumToRender={6}
+						maxToRenderPerBatch={5}	
+						initialNumToRender={8}
 						showsVerticalScrollIndicator={false}
 						showsHorizontalScrollIndicator={false}
 						data={item.list}
@@ -122,17 +128,28 @@ export default class App extends React.Component {
 	
 	showModalEnc = (propEnc) => {
 		this.setState({ visibleModal: true })
-		this.setState({ id: propEnc.id, info: propEnc.info, precoTt: propEnc.precoTt, data: propEnc.data, numEnc: propEnc.numEnc })
+		this.setState({ id: propEnc.id, info: propEnc.info, precoTt: propEnc.precoTt, data: propEnc.data, numEnc: propEnc.numEnc, cont: propEnc.cont, moradaFaturacao: propEnc.moradaFaturacao, moradaEntrega: propEnc.moradaEntrega })
 	}
 	
 	stackCatg = (idCatg) => {
-		const catgInt = [ ...this.state.catgInt ]
-		catgInt.push({
-			id: idCatg.id,
-			category: idCatg.category
-		})
+		let catgInt = [ ...this.state.catgInt ]
+		
+		let idClick = idCatg.id
+		
+		if (catgInt.some(e => e.id === idClick)) {
+			
+			let newArray = catgInt.filter(catg => catg.id !== idClick);
+			this.setState({catgInt: newArray})
+			
+		} else {
+			catgInt.push({
+				id: idCatg.id,
+				category: idCatg.category
+			})
 
-		this.setState({catgInt})
+			this.setState({catgInt})
+		}
+		
 	}
 		
 	
@@ -146,7 +163,7 @@ export default class App extends React.Component {
 	
 	renderListItemEnc = ({ item }) => {
 		return (
-			<EachEnc id={item.id} numEnc={item.numEnc} info={ item.info } precoTt={item.precoTt} data={item.data} addEnc={(propEnc) => this.showModalEnc(propEnc) } />
+			<EachEnc id={item.id} numEnc={item.numEnc} info={ item.info } precoTt={item.precoTt} data={item.data} cont={item.cont} moradaFaturacao={item.moradaFaturacao} moradaEntrega={item.moradaEntrega} addEnc={(propEnc) => this.showModalEnc(propEnc) } />
 		)
 	}
 	
@@ -178,15 +195,23 @@ export default class App extends React.Component {
 	
 	
     render (){
+		const { navigation } = this.props;
 		return (
 		<View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.preto } }>
 			<StatusBar style={lightMode ? 'dark' : 'light'} />
 			<View style={[ ProfileStyle.imageBack, { backgroundColor: lightMode ? '#e4e4e4' : Theme.preto } ]} >
-				<View style={{ width: 90, height: 90, borderRadius: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: lightMode ? Theme.preto : Theme.branco }}>
-					<Text style={{ fontSize: 35, color: lightMode ? Theme.branco : Theme.preto }}>BL</Text>	
+				<View style={{ width: '90%', height: '29%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+					<TouchableOpacity onPress={() => navigation.navigate('Definicoes')} onThemeChange={() => {}} style={{  }}>
+						<Icon2 name='menu' color={ lightMode ? Theme.preto : Theme.branco } size={38} />
+					</TouchableOpacity>
 				</View>
-				<View style={{ alignItems: 'center', height: 80, width: '100%', marginTop: 10 }}>
-					<Text style={[ ProfileStyle.name, { color: lightMode ? Theme.preto : Theme.branco } ]} >BigLevel</Text>
+				<View style={{ width: '100%', height: '71%', alignItems: 'center' }}>
+					<View style={{ width: 90, height: 90, borderRadius: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: lightMode ? Theme.preto : Theme.branco }}>
+						<Text style={{ fontSize: 35, color: lightMode ? Theme.branco : Theme.preto }}>BL</Text>	
+					</View>
+					<View style={{ alignItems: 'center', height: 80, width: '100%', marginTop: 5 }}>
+						<Text style={[ ProfileStyle.name, { color: lightMode ? Theme.preto : Theme.branco } ]} >BigLevel</Text>
+					</View>
 				</View>
 			</View>
 			<EncDetails 
@@ -200,6 +225,9 @@ export default class App extends React.Component {
 				precoTt={this.state.precoTt}
 				data={this.state.data}
 				numEnc={this.state.numEnc}
+				cont={this.state.cont}
+				moradaFaturacao={this.state.moradaFaturacao}
+				moradaEntrega={this.state.moradaEntrega}
 			/>
 			<View style={[ ProfileStyle.bodyPart, { backgroundColor: lightMode ? Theme.branco : Theme.backDark } ]}>
 					<SectionList

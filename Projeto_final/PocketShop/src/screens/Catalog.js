@@ -34,8 +34,13 @@ export default class App extends React.Component {
         showModal: false,
 		pesquisa: {},
 		searchTxt: '',
-		dataSource: [],
     }
+
+
+	searchFor = txt => {
+		let pesquisa = {searchTxt: txt}
+		this.setState({ pesquisa, searchTxt: txt })
+	}
 
 
 	renderTitle = ({ section }) => {
@@ -46,6 +51,7 @@ export default class App extends React.Component {
 			return <Text style={[ CatalogStyle.Txt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
 		}
 	}
+	
 	
 	
 	renderSection = ({ item, section }) => {
@@ -59,7 +65,7 @@ export default class App extends React.Component {
 						<TextInput 
 							style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
 							value={this.state.searchTxt}
-							onChangeText={txt => this.setState({ searchTxt: txt })}
+							onChangeText={txt => this.searchFor(txt)}
 						/>
 						<TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
 							<Icon2 name='search' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 4 }} />
@@ -70,7 +76,7 @@ export default class App extends React.Component {
 						maxToRenderPerBatch={10}	
 						initialNumToRender={20}
 						ListEmptyComponent={<NoProd />}
-						style={{ marginBottom: 10 }}
+						style={{ marginBottom: 5, height: 300 }}
 						showsVerticalScrollIndicator={false}
 						showsHorizontalScrollIndicator={false}
 						data={item.list}
@@ -140,6 +146,7 @@ export default class App extends React.Component {
 				<Filter 
 					themeMode={lightMode} 
 					isVisible={this.state.showModal} 
+					txt={this.state.searchTxt}
 					onCancel={() => { 
 						this.setState({ showModal: false })
 					}}

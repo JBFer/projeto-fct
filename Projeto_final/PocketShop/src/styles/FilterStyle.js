@@ -2,7 +2,7 @@ export default {
     title: {
         fontSize: 25
     }, titlePart: {
-        marginTop: 100,
+        marginTop: 60,
         height: 80,
         width: '100%',
         alignItems: 'center'
@@ -11,6 +11,7 @@ export default {
         width: '50%',
         fontSize: 20
     }, topPart: {
+		//backgroundColor: 'red',
         height: 100,
         width: '100%',
         justifyContent: 'center',
@@ -29,8 +30,9 @@ export default {
         width: 290,
         marginLeft: 60
     }, middlePart: {
+		//backgroundColor: 'blue',
         width: '90%',
-        height: 480, 
+        height: '58%', 
         marginHorizontal: 20,
         marginVertical: 10,
         //backgroundColor: 'red'
@@ -65,8 +67,9 @@ export default {
         flexGrow: 1,
         //backgroundColor: 'yellow'
     }, btnBoth: {
+		//backgroundColor: 'green',
         width: '90%',
-        height: 80,
+        height: '10%',
 		marginHorizontal: 20,
         flexDirection: 'row',
         justifyContent: 'flex-end'

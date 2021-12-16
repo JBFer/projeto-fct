@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StatusBar } from 'expo-status-bar'
 import { 
     StyleSheet,
@@ -27,13 +27,11 @@ export default function App({ navigation }) {
         <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark }}>
             <View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
                 <StatusBar style={lightMode ? 'dark' : 'light'} />
-                <View style={ HomeStyle.topPart }>
-                    <TouchableOpacity onPress={() => navigation.navigate('Definicoes')} onThemeChange={() => {}}>
-                        <Icon3 name='cog' color={ lightMode ? Theme.preto : Theme.branco } size={38} />
-                    </TouchableOpacity>
+                <View style={ HomeStyle.topPart }> 
                 </View>
                 <View style={ HomeStyle.titlePart }>
-                    <Text style={[ HomeStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>Bem vindo,                 BigLevel</Text>
+                	<Text style={[ HomeStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>Bem vindo,</Text>
+					<Text style={[ HomeStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>BigLevel</Text>
                 </View>
 
                 <View style={ HomeStyle.middlePart }>

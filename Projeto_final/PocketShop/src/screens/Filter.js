@@ -32,7 +32,7 @@ export default class Filter extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-			searchTxt: '',
+			searchTxt: this.props.txt,
             priceProd: 200,
             minPriceProd: 0,
             maxPriceProd: 200,
@@ -122,7 +122,9 @@ export default class Filter extends React.Component {
 		let choose = this.state.choose;
 		choose += 1;
 		this.setState({
-			choose
+			choose,
+			primeiroIcon: idCatg.icon,
+			primeiroCatg: idCatg.category,
 		})
 		//console.warn(choose)
 		//console.warn(this.state.stack)
@@ -259,7 +261,7 @@ export default class Filter extends React.Component {
     render() {
         return(
         <Modal visible={this.props.isVisible} animationType='slide'>
-            <View style={ { flex: 1, backgroundColor: this.props.themeMode ? Theme.branco : Theme.backDark } }>
+            <View style={ { height: '100%', width: '100%', backgroundColor: this.props.themeMode ? Theme.branco : Theme.backDark } }>
                 <View style={ FilterStyle.titlePart }>
                     <Text style={[ FilterStyle.title, { color: this.props.themeMode ? Theme.preto : Theme.branco } ]} >Pesquisa Avançada</Text>
                 </View>

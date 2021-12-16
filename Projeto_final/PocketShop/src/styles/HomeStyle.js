@@ -1,6 +1,5 @@
 export default{
     topPart: {
-        marginTop: 20,
         ////backgroundColor: 'red',
         justifyContent: 'space-between',
         width: '100%',

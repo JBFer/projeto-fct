@@ -13,7 +13,10 @@ export default props => {
 			precoTt: props.precoTt,
 			info: props.info,
 			data: props.data,
-			numEnc: props.numEnc
+			numEnc: props.numEnc,
+			cont: props.cont,
+			moradaFaturacao: props.moradaFaturacao,
+			moradaEntrega: props.moradaEntrega
 		}
 		props.addEnc(propEnc)
 	}
@@ -22,11 +25,11 @@ export default props => {
 		<View style={ styles.eachOne }>
       		<View style={ styles.eachOneT }>
 				<View style={{ width: '80%', height: '100%', justifyContent: 'center', backgroundColor: lightMode ? 'white' : Theme.backDark  }}>
-					<View style={{ flexDirection: 'row', alignItems: 'flex-end' , justifyContent:'space-between', height: '60%' }}>
+					<View style={{ flexDirection: 'row', alignItems: 'flex-end' , justifyContent:'space-between', height: '40%' }}>
 						<Text style={[ styles.eachTxt, { color: lightMode ? Theme.preto : Theme.branco } ]}>Nº Encomenda { props.numEnc }</Text>
 						<Text style={[ styles.eachPrice, { color: lightMode ? Theme.preto : Theme.branco } ]}>{props.precoTt}€</Text>
 					</View>
-					<View style={{ flexDirection: 'row', alignItems: 'center' , justifyContent:'space-between', height: '40%' }}>
+					<View style={{ flexDirection: 'row', alignItems: 'flex-end' , justifyContent:'space-between', height: '40%' }}>
 						<Text style={[ styles.eachDate, { color: lightMode ? Theme.preto : Theme.branco } ]}>{ props.info.length } produtos</Text>
 						<Text style={[ styles.eachDate, { color: lightMode ? Theme.preto : Theme.branco } ]}>{props.data}</Text>
 					</View>

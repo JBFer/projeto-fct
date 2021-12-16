@@ -83,6 +83,9 @@ const CATEGORIAS = [
 						numEnc: 1389,
 						precoTt: 19.96,
 						data: '12/04/2021',
+						cont: '261964828',
+						moradaFaturacao: 'Stª Maria da Feira',
+						moradaEntrega: 'Rio Meão',
 						info: [
 							{
 								idProd: '1',
@@ -103,6 +106,9 @@ const CATEGORIAS = [
 						numEnc: 2123,
 						precoTt: 415.95,
 						data: '13/04/2021',
+						cont: '261964828',
+						moradaFaturacao: 'Stª Maria da Feira',
+						moradaEntrega: 'Souto',
 						info: [
 							{
 								idProd: '5',
@@ -129,6 +135,9 @@ const CATEGORIAS = [
 						numEnc: 4632,
 						precoTt: 3305.94,
 						data: '16/04/2021',
+						cont: '261964828',
+						moradaFaturacao: 'Stª Maria da Feira',
+						moradaEntrega: 'Souto',
 						info: [
 							{
 								idProd: '5',
@@ -167,6 +176,9 @@ const CATEGORIAS = [
 						numEnc: 4739,
 						precoTt: 179.99,
 						data: '19/04/2021',
+						cont: '261964828',
+						moradaFaturacao: 'Stª Maria da Feira',
+						moradaEntrega: 'Souto',
 						info: [
 							{
 								idProd: '5',
@@ -181,6 +193,9 @@ const CATEGORIAS = [
 						numEnc: 3899,
 						precoTt: 194.96,
 						data: '12/04/2021',
+						cont: '261964828',
+						moradaFaturacao: 'Stª Maria da Feira',
+						moradaEntrega: 'Souto',
 						info: [
 							{
 								idProd: '5',
