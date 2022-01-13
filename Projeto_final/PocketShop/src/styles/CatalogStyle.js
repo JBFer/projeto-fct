@@ -7,12 +7,23 @@ export default{
         flexDirection: 'row',
         alignItems: 'center',
         paddingLeft: 5,
+    },
+    titlePart: {
+        //backgroundColor: 'red',
+        width: '100%',
+        height: 120,
+        textAlign: 'center'
+    },
+    welcome: {
+        fontFamily: 'sans-serif-light',
+        fontSize: 30,
+        textAlign: 'center'
     }, input: {
         borderBottomWidth: 1,
         width: '50%',
         fontSize: 20
     }, topPart: {
-		marginTop: 30,
+		marginTop: 10,
         height: 80,
 		marginBottom: 20,
         width: '100%',

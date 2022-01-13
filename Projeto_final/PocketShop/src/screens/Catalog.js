@@ -61,6 +61,10 @@ export default class App extends React.Component {
 		if ( item.id == 'visitados' ){
 			return (
 				<View style={{ marginBottom: 20 }}>
+					<View style={ CatalogStyle.titlePart }>
+                		<Text style={[ CatalogStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>Bem vindo,</Text>
+						<Text style={[ CatalogStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>BigLevel</Text>
+                	</View>
 					<View style={ CatalogStyle.topPart }>
 						<TextInput 
 							style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
@@ -106,12 +110,30 @@ export default class App extends React.Component {
 		)
 		}
 	}
+	
+	clickCheck = () => {
+		navigation.navigate('Definicoes')
+	}
 		
 	
 	
 	renderListItem = ({ item }) => {
+		const { navigation } = this.props;
 		return (
-			<EachProd onClick={this.clickCheck} name={item.name} image={item.img} date={item.date} company={item.company} price={item.price}/>
+			<EachProd onClick={ () => navigation.navigate('ProductDetails', { 
+					id: item.id,
+					name: item.name,
+					img: item.img,
+					price: item.price,
+					company: item.company,
+					desc: item.description,
+					date: item.date,
+					category: item.category,
+					subcategory: item.subcatg,
+					views: item.views,
+					serial: item.serial
+				})
+			} item={item} name={item.name} image={item.img} date={item.date} company={item.company} price={item.price}/>
 		)
 	}
 	
@@ -177,7 +199,6 @@ export default class App extends React.Component {
 					showsHorizontalScrollIndicator={false}
 					contentContainerStyle={{ paddingHorizontal: 10 }}
 					stickySectionHeadersEnabled={false}
-					onScroll={() => this.setState({ width: 1 }) }
 					sections={Products}
 					initialNumToRender={5}
 					renderSectionHeader={this.renderTitle}

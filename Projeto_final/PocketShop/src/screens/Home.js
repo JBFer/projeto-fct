@@ -29,10 +29,6 @@ export default function App({ navigation }) {
                 <StatusBar style={lightMode ? 'dark' : 'light'} />
                 <View style={ HomeStyle.topPart }> 
                 </View>
-                <View style={ HomeStyle.titlePart }>
-                	<Text style={[ HomeStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>Bem vindo,</Text>
-					<Text style={[ HomeStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>BigLevel</Text>
-                </View>
 
                 <View style={ HomeStyle.middlePart }>
                     <View style={ HomeStyle.alinhar }>

@@ -21,22 +21,6 @@ export default function HomeScreen() {
                 tabBarHideOnKeyboard: true,
             }}
         >
-            
-            <Tab.Screen 
-                name="Home" 
-                component={Home} 
-                options={{
-                    tabBarLabel: 'Página Inicial',
-                    tabBarLabelStyle: { marginBottom: 8, fontSize: 12 },
-                    tabBarIcon: ({ focused }) => (
-                        <View style={{ width: '50%', borderTopWidth: focused ? 1 : 0, borderColor: 'white', alignItems: 'center' }}>
-                            <Icon2 name="home" color={focused ? 'white' : 'gray'} size={25}/>
-                        </View>
-                    ),
-                }}
-            />
-            
-            
             <Tab.Screen 
                 name="Catalogo" 
                 component={Catalog}
@@ -50,6 +34,22 @@ export default function HomeScreen() {
                     ),
                 }}
             />
+            
+            <Tab.Screen 
+                name="Home" 
+                component={Home} 
+                options={{
+                    tabBarLabel: 'Favoritos',
+                    tabBarLabelStyle: { marginBottom: 8, fontSize: 12 },
+                    tabBarIcon: ({ focused }) => (
+                        <View style={{ width: '50%', borderTopWidth: focused ? 1 : 0, borderColor: 'white', alignItems: 'center' }}>
+                            <Icon name="heart" color={focused ? 'white' : 'gray'} size={25}/>
+                        </View>
+                    ),
+                }}
+            />
+            
+            
             
             <Tab.Screen 
                 name="Profile" 

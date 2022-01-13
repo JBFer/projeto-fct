@@ -1,6 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Settings from "../screens/Settings";
+import ProductDetails from "../screens/ProductDetails";
 import Home from "../screens/Home";
 
 import Theme from '../styles/Comum' 
@@ -21,6 +22,17 @@ export default function HomeStack(Stack) {
                     headerTintColor: '#fff',
                     
                 }} 
+            />
+			<Stack.Screen name='ProductDetails' component={ProductDetails} 
+                options={{ 
+                    title: '',
+					headerTransparent: true,
+					headerStyle: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    },
+					headerShadowVisible: false,
+					headerTintColor: this.lightMode ? '#fff' : '#000',
+                }}  
             />
         </Stack.Group>
     );

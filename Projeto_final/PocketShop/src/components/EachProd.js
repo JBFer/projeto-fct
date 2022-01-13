@@ -24,8 +24,8 @@ export default props => {
     }
 	
 	const toBigComp = (comp) => {
-		if (comp.length > 16){
-			const shortTitle = comp.slice(0, 16)+'...';
+		if (comp.length > 14){
+			const shortTitle = comp.slice(0, 14)+'...';
 			return (shortTitle)
 		} else {
 			const shortTitle = comp
@@ -37,7 +37,7 @@ export default props => {
 	
  	return (
 		<View>
-			<TouchableOpacity activeOpacity={0.8} style={[ styles.each, { borderColor: lightMode? Theme.branco : Theme.backDark } ]} onPress={() => props.onClick(props.name)}>
+			<TouchableOpacity activeOpacity={0.8} style={[ styles.each, { borderColor: lightMode? Theme.branco : Theme.backDark } ]} onPress={() => props.onClick()}>
 				<Image style={styles.image} source={{uri: props.image}}/>
 				<View style={[styles.imageLabelContainer, { backgroundColor: lightMode? Theme.backDark : Theme.preto }]}>
 					<View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between', padding: 5, paddingHorizontal: 7 }}>
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
 	image: {
 		width: '100%',
     	height: 210,
+		backgroundColor: lightMode ? Theme.white : Theme.backDark
 	}, imageLabelContainer: {
 		width: '100%',
 		height: 60,
