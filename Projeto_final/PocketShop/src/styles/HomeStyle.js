@@ -1,4 +1,11 @@
 export default{
+	headerPart: {
+		height: 120,
+		justifyContent: 'flex-end',
+		width: '100%',
+		borderBottomWidth: 2,
+		padding: 10,
+	},
     topPart: {
         ////backgroundColor: 'red',
         justifyContent: 'space-between',

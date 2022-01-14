@@ -7,12 +7,18 @@ import {
     Button,
     Switch,
     ScrollView,
+	FlatList,
     TextInput,
+	SafeAreaView,
     TouchableOpacity
 } from 'react-native';
 
 import Theme from '../styles/Comum' 
-import HomeStyle from '../styles/HomeStyle' 
+import FavStyle from '../styles/HomeStyle' 
+
+import Favorites from '../data/prods/Favs'
+
+import EachProd from '../components/ArrowFav'
 
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import Icon3 from 'react-native-vector-icons/FontAwesome'
@@ -20,56 +26,58 @@ import Icon2 from 'react-native-vector-icons/Ionicons'
 
 import { lightMode } from '../constants/global'
 
-export default function App({ navigation }) {
+export default class Fav extends React.Component {
     
-    
-    return (
-        <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark }}>
-            <View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
-                <StatusBar style={lightMode ? 'dark' : 'light'} />
-                <View style={ HomeStyle.topPart }> 
-                </View>
-
-                <View style={ HomeStyle.middlePart }>
-                    <View style={ HomeStyle.alinhar }>
-                        <Text style={[ HomeStyle.subtitle, { color: lightMode ? Theme.preto : Theme.branco } ] }>Produtos em alta </Text>
-                        <Icon name='fire-alt' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco}} />
-                    </View>
-                    
-                    <ScrollView showsHorizontalScrollIndicator={false} horizontal={true} decelerationRate={0.88} overScrollMode={'never'} contentContainerStyle={{ flexGrow: 1, alignItems: 'flex-end'}}>
-                            <TouchableOpacity activeOpacity={0.6} style={[ HomeStyle.eachProduct, { borderColor: lightMode ? Theme.preto : Theme.branco } ]}>
-                                <View>
-                                    <Text style={[ HomeStyle.Txt ,{ color: lightMode ? Theme.preto : Theme.branco }]}>Produto1</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.6} style={[ HomeStyle.eachProduct, { borderColor: lightMode ? Theme.preto : Theme.branco } ]}>
-                                <View>
-                                    <Text style={[ HomeStyle.Txt ,{ color: lightMode ? Theme.preto : Theme.branco }]}>Produto2</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.6} style={[ HomeStyle.eachProduct, { borderColor: lightMode ? Theme.preto : Theme.branco } ]}>
-                                <View>
-                                    <Text style={[ HomeStyle.Txt ,{ color: lightMode ? Theme.preto : Theme.branco }]}>Produto3</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.6} style={[ HomeStyle.eachProduct, { borderColor: lightMode ? Theme.preto : Theme.branco } ]}>
-                                <Text style={{ color: lightMode ? Theme.preto : Theme.branco, fontSize: 25, marginBottom: 17 }}>...</Text>
-                            </TouchableOpacity>
-                        </ScrollView>
-                </View>
-                <View style={ HomeStyle.downPart }>
-                    <View style={ HomeStyle.alinhar }>
-                        <Text style={[ HomeStyle.subtitle, { color: lightMode ? Theme.preto : Theme.branco } ] }>As minhas compras </Text>
-                        <Icon3 name='bar-chart' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco, marginTop: 5}} />
-                    </View>
-                    <View style={[ HomeStyle.fakeGraph, { borderColor: lightMode ? Theme.preto : Theme.branco } ]}>
-                        <View style={[ HomeStyle.eachPart, { backgroundColor: lightMode ? Theme.preto : Theme.branco } ]}></View>
-                        <View style={[ HomeStyle.eachPart, { backgroundColor: lightMode ? Theme.preto : Theme.branco, height: 80 } ]}></View>
-                        <View style={[ HomeStyle.eachPart, { backgroundColor: lightMode ? Theme.preto : Theme.branco, height: 20 } ]}></View>
-                        <View style={[ HomeStyle.eachPart, { backgroundColor: lightMode ? Theme.preto : Theme.branco, height: 120 } ]}></View>
-                    </View>
-                </View>
-            </View>
-        </ScrollView>
-  );
+	addFav = (un) => {
+		
+	}
+	
+	renderListItem = ({ item }) => {
+		const { navigation } = this.props;
+		return (
+			<EachProd onClick={ () => navigation.navigate('ProductDetails', { 
+					id: item.id,
+					name: item.name,
+					img: item.img,
+					price: item.price,
+					company: item.company,
+					desc: item.description,
+					date: item.date,
+					category: item.category,
+					subcategory: item.subcatg,
+					views: item.views,
+					serial: item.serial
+				})
+			} item={item} name={item.name} image={item.img} date={item.date} company={item.company} un={item.id} pressCheck={(un) => this.addFav(un)} price={item.price}/>
+		)
+	}
+	
+	
+	
+	keyExtractor = (item) => {
+    	return item.id
+  	}
+    render() {
+		return (
+			<View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
+				<View style={[ FavStyle.headerPart, { borderColor: lightMode? Theme.preto : Theme.branco } ]}>
+					<Text style={{ fontSize: 30,color: lightMode? Theme.preto : Theme.branco }} >Favoritos</Text>
+				</View>
+				<FlatList  
+					maxToRenderPerBatch={10}	
+					initialNumToRender={10}
+					style={{ backgroundColor: lightMode ? '#FAF9F6' : Theme.backDark }}
+					showsVerticalScrollIndicator={false}
+					showsHorizontalScrollIndicator={false}
+					data={Favorites}
+					renderItem={this.renderListItem}
+					keyExtractor={this.keyExtractor}
+					ListFooterComponent={
+						<View style={{ height: 20, backgroundColor: 'transparent', width: '100%' }} />
+					}
+				 />
+			</View>
+	  );
+		
+	}
 }
