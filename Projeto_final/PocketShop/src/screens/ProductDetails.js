@@ -84,7 +84,7 @@ const Details = ({ route, params }) => {
 					</View>
 					<View style={ DetailsStyle.bottomPart }>
 						<View style={{ backgroundColor: lightMode ? '#f4f4f5' : '#3c4146', width: '100%', padding: 10, borderRadius: 5, elevation: 5 }}>
-							<Text style={[ DetailsStyle.title, { color: lightMode ? Theme.preto : Theme.branco, width: '100%' , borderBottomWidth: 1, borderColor: lightMode ? Theme.preto : Theme.branco } ]}> Descrição </Text>
+							<Text style={[ DetailsStyle.title, { color: lightMode ? Theme.preto : Theme.branco, width: '100%' , borderBottomWidth: 1, borderColor: lightMode ? Theme.preto : Theme.branco } ]}> Sobre </Text>
 							<Text style={{color: lightMode ? Theme.preto : Theme.branco, fontSize: 16, textAlign: 'justify', paddingTop: 5}}>    {desc}</Text>
 						</View>
 						<View style={{ width: '100%', alignItems: 'center', marginTop: 70 }}>

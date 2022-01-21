@@ -65,7 +65,9 @@ export default class Filter extends React.Component {
 					icon: idCatg.icon,
 					category: idCatg.category
 				})
-
+				
+				
+				
 				this.setState({ 
 					primeiroIcon: idCatg.icon, 
 					primeiroCatg: idCatg.category,
@@ -121,11 +123,17 @@ export default class Filter extends React.Component {
 		
 		let choose = this.state.choose;
 		choose += 1;
-		this.setState({
-			choose,
-			primeiroIcon: idCatg.icon,
-			primeiroCatg: idCatg.category,
+		if ( this.state.primeiro || this.state.terceiro ) {
+			this.setState({
+				choose
 		})
+		} else {
+			this.setState({
+				choose,
+				primeiroIcon: idCatg.icon,
+				primeiroCatg: idCatg.category,
+		})
+		}
 		//console.warn(choose)
 		//console.warn(this.state.stack)
 	}

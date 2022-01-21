@@ -16,12 +16,13 @@ export default{
     },
     welcome: {
         fontFamily: 'sans-serif-light',
-        fontSize: 30,
+		fontWeight: 'bold',
+        fontSize: 20,
         textAlign: 'center'
     }, input: {
-        borderBottomWidth: 1,
-        width: '50%',
-        fontSize: 20
+        width: '85%',
+        fontSize: 18,
+		marginLeft: 15,
     }, topPart: {
 		marginTop: 10,
         height: 80,

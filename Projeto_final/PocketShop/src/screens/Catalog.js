@@ -61,19 +61,19 @@ export default class App extends React.Component {
 		if ( item.id == 'visitados' ){
 			return (
 				<View style={{ marginBottom: 20 }}>
-					<View style={ CatalogStyle.titlePart }>
-                		<Text style={[ CatalogStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>Bem vindo,</Text>
-						<Text style={[ CatalogStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>BigLevel</Text>
-                	</View>
 					<View style={ CatalogStyle.topPart }>
-						<TextInput 
-							style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
-							value={this.state.searchTxt}
-							onChangeText={txt => this.searchFor(txt)}
-						/>
-						<TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
-							<Icon2 name='search' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 4 }} />
-						</TouchableOpacity>
+						<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: lightMode ? Theme.preto : Theme.branco }}>
+							<TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
+								<Icon2 name='search' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
+							</TouchableOpacity>
+							<TextInput 
+								style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
+								placeholder='Procurar'
+								placeholderTextColor={lightMode ? '#7d868f' : '#babfc4'}
+								value={this.state.searchTxt}
+								onChangeText={txt => this.searchFor(txt)}
+							/>
+						</View>
 					</View>
 					<Text style={[ CatalogStyle.Txt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
 					<FlatList
@@ -185,6 +185,7 @@ export default class App extends React.Component {
 					<TouchableOpacity onPress={() => { this.setState({ showModal: true }) }}>
 						<Icon2 name='filter' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco}} />
 					</TouchableOpacity>
+					<Text style={[ CatalogStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>PocketShop</Text>
 					<TouchableOpacity onPress={() => { this.irCart() }}>
 						<Icon3 name='shopping-cart' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco, paddingRight: 10}} />
 					</TouchableOpacity>

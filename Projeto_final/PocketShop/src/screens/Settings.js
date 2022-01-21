@@ -19,7 +19,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import Icon2 from 'react-native-vector-icons/Ionicons'
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 
 
 export default class App extends React.Component {
@@ -41,6 +40,7 @@ export default class App extends React.Component {
     switchToggler = () => {
         this.state.isEnabled === false ? this.setState({ isEnabled : true}) : this.setState({ isEnabled : false});
         this.state.themeMode === false ? this.setState({ themeMode : true}) : this.setState({ themeMode : false});
+		
     };
 
     
@@ -56,8 +56,8 @@ export default class App extends React.Component {
 						<Text style={[ SettingsStyle.txt, { color: this.state.themeMode ? Theme.preto : Theme.branco } ]}>Tema { this.state.themeMode ? 'claro' : 'escuro' }</Text>
 						<Switch
 							style={{ backgroundColor: this.state.themeMode ? Theme.branco : Theme.backDark }}
-							trackColor={{ false: "#767577", true: "#00C0F9" }}
-							thumbColor={this.state.isEnabled ? "#04d9ff" : "#f4f3f4"}
+							trackColor={{ false: "#767577", true: "#58a63e" }}
+							thumbColor={this.state.isEnabled ? "#37fd12" : "#f4f3f4"}
 							onValueChange={this.switchToggler}
 							value={this.state.isEnabled}
 						/>
