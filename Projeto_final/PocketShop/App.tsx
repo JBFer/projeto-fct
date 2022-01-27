@@ -6,7 +6,6 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import Routes from './src/Navigation/Routes'
 import Catalog from './src/screens/Catalog';
-import Theme from './src/components/chooseTheme'
 
 
 function App() {

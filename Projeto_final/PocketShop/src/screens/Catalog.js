@@ -223,7 +223,7 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
 	container: {
-    	marginTop: StatusBar.currentHeight + 10 || 15,
+    	marginTop: 15,
 		borderBottomLeftRadius: 7,
 		borderBottomRightRadius: 7,
 		borderColor: '#D3D3D3'

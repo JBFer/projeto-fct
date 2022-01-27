@@ -1,28 +1,43 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+//import AsyncStorage from '@react-native-async-storage/async-storage';
 
-/*let config = {}
+//let config = { lightMode: true }
 
-try {
-	let config = await AsyncStorage.getItem('@appConfig')
+//try {
+	//let config = AsyncStorage.setItem('@appConfig', JSON.stringify(false))
 	
-	if (config === null) {
+	/*
+	AsyncStorage.getItem('@appConfig', (err, value) => {
+		if (err) {
+			console.log(err)
+		} else {
+			let config = JSON.parse(value) // boolean false
+			return config
+		}
+	})
+
+	 if (config === null) {
 		try {
 			config = {
 				lightMode: true
 			}
-			
-			await AsyncStorage.setItem('@appConfig', JSON.stringify(config))
+			AsyncStorage.setItem('@appConfig', JSON.stringify(config))
+
 		} catch (e) {
 			console.warn(e);
 		}
 	} else {
 		config = JSON.parse(config)
-	}
-} catch (e) {
+	} 
+
+
+} 
+
+catch (e) {
 	console.warn(e)
 }
+*/
 
-export { config }*/
+//export { config }
 
 /*(async () => {
       let config = await AsyncStorage.getItem('@appConfig');
@@ -31,6 +46,9 @@ export { config }*/
 
 //let config = await AsyncStorage.getItem('@appConfig');
 
+
+// AsyncStorage.setItem('key', JSON.stringify(false))
+
 const lightMode = true
 
-export { lightMode }
+export { lightMode };
