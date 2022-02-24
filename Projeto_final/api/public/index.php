@@ -10,7 +10,14 @@ use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 
+session_start();
+
 require __DIR__ . '/../vendor/autoload.php';
+
+DEFINE("APP_PATH", __DIR__ . '/../app/');
+
+require_once(APP_PATH . 'utils.php');
+require_once(APP_PATH . 'dbconnect.php');
 
 // Instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
@@ -37,7 +44,18 @@ $container = $containerBuilder->build();
 // Instantiate the app
 AppFactory::setContainer($container);
 $app = AppFactory::create();
+
+/* require_once(APP_DATA . '/../app/utils.php');
+$app->utils = new Utils(); */
+// Register utils
+
+$app->utils = new Utils();
+$app->db = get_db();
+
+
 $callableResolver = $app->getCallableResolver();
+
+
 
 // Register middleware
 $middleware = require __DIR__ . '/../app/middleware.php';
@@ -76,7 +94,10 @@ $app->addBodyParsingMiddleware();
 $errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $logError, $logErrorDetails);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
 
+
+
 // Run App & Emit Response
 $response = $app->handle($request);
 $responseEmitter = new ResponseEmitter();
 $responseEmitter->emit($response);
+
