@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import Icon2 from 'react-native-vector-icons/Ionicons'
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { api_url } from '../constants/host';
 
 
 export default class App extends React.Component {
@@ -28,6 +29,10 @@ export default class App extends React.Component {
             themeMode: true,
 			isEnabled: false
         }
+    }
+
+	logout = () => {
+        fetch(api_url+'logout')
     }
 
     
@@ -84,7 +89,7 @@ export default class App extends React.Component {
 						</TouchableOpacity>
 					</View>
 					
-					<TouchableOpacity onPress={() => this.changeTheme()}>
+					<TouchableOpacity onPress={() => this.logout()}>
 						<Text style={[ SettingsStyle.txt, { color: 'red', marginTop: 10 } ]}>Logout</Text>
 					</TouchableOpacity>
 				</View>

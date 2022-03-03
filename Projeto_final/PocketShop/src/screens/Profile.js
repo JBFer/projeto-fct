@@ -30,6 +30,9 @@ import EachCatgProfile from '../components/EachCatgProfile'
 import EncDetails from './EncDetails'
 
 import { lightMode } from '../constants/global'
+import { products_user } from '../services/products';
+import { login } from '../services/user';
+
 
 export default class App extends React.Component {
 	state = {
@@ -69,6 +72,7 @@ export default class App extends React.Component {
 						keyExtractor={this.keyExtractor}
 					/>
 					<Button onPress={() => console.warn(this.state.catgInt) } title="Mostrar selecionados" />
+					<Button onPress={() => console.warn(products_user()) } title="Mostrar products" />
 				</>
 			)
 		} else if ( item.id == 'catg' && this.state.choose != 'interesses' ) {
