@@ -22,7 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { api_url } from '../constants/host';
 
 
-export default class App extends React.Component {
+export default class Settings extends React.Component {
     constructor(props){
         super(props)
         this.state = {
@@ -33,6 +33,7 @@ export default class App extends React.Component {
 
 	logout = () => {
         fetch(api_url+'logout')
+		this.props.passarProps(false)
     }
 
     

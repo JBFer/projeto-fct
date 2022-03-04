@@ -16,13 +16,8 @@ import {
 import Theme from '../styles/Comum' 
 import LoginStyle from '../styles/LoginStyle' 
 
-import Icon from 'react-native-vector-icons/FontAwesome5'
-import Icon3 from 'react-native-vector-icons/FontAwesome'
-import Icon2 from 'react-native-vector-icons/Ionicons'
-
 import { lightMode } from '../constants/global'
 import { api_url } from '../constants/host';
-import Loading from './Loading';
 
 export default class Login extends React.Component {
     state = {
@@ -71,11 +66,9 @@ export default class Login extends React.Component {
     }
 
     render() {
+        console.log(this.props.showModal)
         return (
             <View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
-                <Loading 
-					isVisible={true}
-				/>
                 <StatusBar style={lightMode ? 'dark' : 'light'} backgroundColor="white" />
                 <ImageBackground style={{ flex: 1 }} resizeMode='cover' source={require("../../assets/imageBackground.png")}>
                     <View style={ LoginStyle.topPart } ></View>

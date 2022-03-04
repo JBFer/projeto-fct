@@ -14,10 +14,10 @@ use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
 $app->get('/products/all[/{order}]', function(Request $request, Response $response){
 
-    $ret = get_app()->utils->check_user();
+/*     $ret = get_app()->utils->check_user();
     if(!$ret->status){
         return get_app()->utils->return_json($ret, $response);
-    }
+    } */
    
     $query = "SELECT * FROM products";
 

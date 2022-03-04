@@ -68,7 +68,6 @@ $app->post('/login', function(Request $request, Response $response){
 
 $app->get('/verifylogin', function(Request $request, Response $response){
 
-
     if(isset($_SESSION["email"])) {
         $ret = (object) [
             'status' => true,
@@ -79,8 +78,8 @@ $app->get('/verifylogin', function(Request $request, Response $response){
     } else {
         $ret = (object) [
             'status' => false,
-            'error' => 404,
-            'msg' => 'Error 404, you need to login ',
+            'error' => 401,
+            'msg' => 'Error 401, you need to login ',
             'login' => false
         ];
     }
@@ -99,6 +98,7 @@ $app->get('/logout', function(Request $request, Response $response){
         'status' => true,
         'error' => 200,
         'msg' => 'Ok 200, succesfull logout',
+        'login' => false,
     ];
 
 return get_app()->utils->return_json($ret, $response);
