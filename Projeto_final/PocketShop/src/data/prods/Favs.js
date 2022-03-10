@@ -1,4 +1,51 @@
-const FAVORITES = [
+import { api_url } from "../../constants/host";
+
+export default xoninho = () => {
+	const favs = () => {
+		try {
+		  fetch( api_url+'products/favorites')
+			.then(response => response.json())
+			.then(data => {
+				console.log("sdawdawd")
+				return data.list;
+		})
+		return value;
+		} catch(e) {
+		  // error reading value
+		}
+	  }
+	  //return favs;
+	  
+	return  [
+		 {
+		  "active": 1,
+		  "company": "Hahn Group",
+		  "details": "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident",
+		  "idProducts": 83,
+		  "id_comp": 13,
+		  "img": "http://dummyimage.com/127x100.png/cc0000/ffffff",
+		  "name": "Soup - Tomato Mush. Florentine",
+		  "price": 594.59,
+		  "stock": "2022-02-03",
+		  "stock": 505,
+		  "subcatg": 2,
+		  "views": 583,
+		},
+	  ];
+
+	/* var lista;
+
+	fetch( api_url+'products/favorites')
+		.then(response => response.json())
+		.then(data => {
+			lista = data.list;
+			//console.log(lista)
+			return lista;
+		}) */
+
+}
+
+/*const FAVORITES = [
 	{
 		id: '2',
 		img: 'https://www.nespresso.com/ecom/medias/sys_master/public/12807617511454/Desktop-PDP-6272x2432.jpg?impolicy=productPdpSafeZone&imwidth=1238',
@@ -43,4 +90,4 @@ const FAVORITES = [
 	}
 ];
 
-export default FAVORITES;
+export default FAVORITES;*/

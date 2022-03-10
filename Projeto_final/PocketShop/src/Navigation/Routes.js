@@ -21,7 +21,7 @@ export default function Routes() {
     }, []);
 
     const login = (login_status) => {
-        console.log('BING BONG FUCKKKKKKKKKKKKKK')
+        //console.log('BING BONG')
         setlogged(login_status)
     }
 

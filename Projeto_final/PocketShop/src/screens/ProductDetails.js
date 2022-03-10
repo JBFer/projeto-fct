@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar'
 import { 
     StyleSheet,
@@ -27,19 +27,38 @@ import Icon2 from 'react-native-vector-icons/Ionicons'
 
 
 import { lightMode } from '../constants/global'
+import { api_url } from '../constants/host';
 
 const Details = ({ route, params }) => {
+	const [data, setData] = useState({});
+
+	const { id, name, img, price, company, desc, date, category, subcategory, views, serial } = route.params;
+
+	useEffect(() => {
+		//console.warn(id);
+		fetch( api_url+'products/updateViews/'+id, {
+			method: 'PUT'
+		}),
+		fetch( api_url+'products/specs/'+id)
+			.then(response => response.json())
+			.then(data => {
+				//console.log(data.object);
+				setData(data.object);
+			})
+	}, [id])
 	
-	const renderTitle = ({ section }) => {
+	const renderTitle = ({ }) => {
 		return null
 	}
 	 
 	 
 	const irCart = () => {
-		console.warn('ir Cart')
+		if (data.stock > 0){
+			console.warn('ir Cart')
+		} else {
+			console.warn('Sem stock')
+		}
 	}
-	
-	
 	
 	const renderSection = ({ item, section }) => {
 		return (
@@ -52,14 +71,14 @@ const Details = ({ route, params }) => {
 						<View style={{ width: '100%' }}>
 							<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
 								<View style={{ width: '75%' }}>
-									<Text style={[ DetailsStyle.title, { color: lightMode ? Theme.preto : Theme.branco } ]}>{name}</Text>
+									<Text style={[ DetailsStyle.title, { color: lightMode ? Theme.preto : Theme.branco } ]}>{data.name}</Text>
 								</View>
 								<View>
-									<Text style={[ DetailsStyle.title, { color: lightMode ? Theme.preto : Theme.branco } ]}>{price}€</Text>
+									<Text style={[ DetailsStyle.title, { color: lightMode ? Theme.preto : Theme.branco } ]}>{data.price}€</Text>
 								</View>
 							</View>
 							<View style={{ height: 70, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
-								<Text style={{ fontSize: 15, color: lightMode ? Theme.preto : Theme.branco }}>{company}</Text>
+								<Text style={{ fontSize: 15, color: lightMode ? Theme.preto : Theme.branco }}>{data.comp_name}</Text>
 								<TouchableOpacity onPress={() => { irCart() }}>
 									<View style={{ paddingRight: 20, borderWidth: 1, borderRadius: 15, width: 120, height: 40, alignItems: 'center', flexDirection: 'row', borderColor: '#03C04A', justifyContent: 'center' }}>
 										<Text style={{ fontSize: 15, color: '#03C04A', borderRightWidth: 1, paddingRight: 7, paddingLeft: 15, borderColor: '#03C04A' }}>Adicionar</Text>
@@ -70,10 +89,10 @@ const Details = ({ route, params }) => {
 						</View>
 						<View style={{ height: 70, width: '100%', flexDirection: 'row', marginTop: 20 }}>
 							<View style={[ DetailsStyle.catg, { backgroundColor: lightMode ? '#f4f4f5' : '#3c4146', marginRight: 20, paddingHorizontal: 15  } ]}>
-								<Text style={{ fontSize: 15, color: lightMode ? Theme.preto : Theme.branco }}>{category}</Text>
+								<Text style={{ fontSize: 15, color: lightMode ? Theme.preto : Theme.branco }}>{data.catg_name}</Text>
 							</View>
 							<View style={[ DetailsStyle.catg, { backgroundColor: lightMode ? '#f4f4f5' : '#3c4146'  , marginRight: 20, paddingHorizontal: 15} ]}>
-								<Text style={{ fontSize: 15, color: lightMode ? Theme.preto : Theme.branco }}>{subcategory}</Text>
+								<Text style={{ fontSize: 15, color: lightMode ? Theme.preto : Theme.branco }}>{data.subcatg_name}</Text>
 							</View>
 						</View>
 					</View>
@@ -85,16 +104,14 @@ const Details = ({ route, params }) => {
 					<View style={ DetailsStyle.bottomPart }>
 						<View style={{ backgroundColor: lightMode ? '#f4f4f5' : '#3c4146', width: '100%', padding: 10, borderRadius: 5, elevation: 5 }}>
 							<Text style={[ DetailsStyle.title, { color: lightMode ? Theme.preto : Theme.branco, width: '100%' , borderBottomWidth: 1, borderColor: lightMode ? Theme.preto : Theme.branco } ]}> Sobre </Text>
-							<Text style={{color: lightMode ? Theme.preto : Theme.branco, fontSize: 16, textAlign: 'justify', paddingTop: 5}}>    {desc}</Text>
+							<Text style={{color: lightMode ? Theme.preto : Theme.branco, fontSize: 16, textAlign: 'justify', paddingTop: 5}}>    {data.details}</Text>
 						</View>
 						<View style={{ width: '100%', alignItems: 'center', marginTop: 70 }}>
-								<Image resizeMode='contain' style={{ width: '80%', height: 130, borderWidth: 1, borderColor: lightMode ? Theme.preto : Theme.branco }} />
-								<Text style={{ fontSize: 25, marginTop: 7, color: lightMode ? Theme.preto : Theme.branco }}>{company}</Text>
+								<Image resizeMode='contain' source={{uri: data.comp_logo }} style={{ width: '80%', height: 130, borderWidth: 1, borderColor: lightMode ? Theme.branco : Theme.preto }} />
+								<Text style={{ fontSize: 25, marginTop: 7, color: lightMode ? Theme.preto : Theme.branco }}>{data.comp_name}</Text>
 							<View style={{ width: '90%', marginTop: 20}} >
-								<Text style={[ DetailsStyle.companyInfo, { color: lightMode ? Theme.preto : Theme.branco } ]}>Morada: Rua das Casas, nº2, Lisboa</Text>
-								<Text style={[ DetailsStyle.companyInfo, { color: lightMode ? Theme.preto : Theme.branco } ]}>Telemóvel: 999 999 999</Text>
-								<Text style={[ DetailsStyle.companyInfo, { color: lightMode ? Theme.preto : Theme.branco } ]}>Telefone: 000 000 000</Text>
-								<Text style={[ DetailsStyle.companyInfo, { color: lightMode ? Theme.preto : Theme.branco } ]}>Email: empresa@gmail.com</Text>
+								<Text style={[ DetailsStyle.companyInfo, { color: lightMode ? Theme.preto : Theme.branco } ]}>Telefone: {data.comp_tel}</Text>
+								<Text style={[ DetailsStyle.companyInfo, { color: lightMode ? Theme.preto : Theme.branco } ]}>Email: {data.comp_email}</Text>
 							</View>
 						</View>
 						<View style={{ alignItems: 'center', justifyContent: 'center', height: 250, borderWidth: 1, marginTop: 70, marginBottom: 30, borderColor: lightMode ? Theme.preto : Theme.branco }}>
@@ -103,8 +120,8 @@ const Details = ({ route, params }) => {
 					</View>
 					<View style={[ DetailsStyle.footer, { borderColor: lightMode ? '#3c4146' : '#bfc3c8'} ]}>
 						<View style={{ alignItems: 'center', justifyContent: 'space-around', flexDirection: 'row', width: '100%', marginTop: 5}} >
-							<Text style={{ color: lightMode ? '#3c4146' : '#bfc3c8'}}>Views: {views}</Text>
-							<Text style={{ color: lightMode ? '#3c4146' : '#bfc3c8'}}>Model: {serial}</Text>
+							<Text style={{ color: lightMode ? '#3c4146' : '#bfc3c8'}}>Views: {data.views}</Text>
+							<Text style={{ color: lightMode ? '#3c4146' : '#bfc3c8'}}>Stock:{data.stock}</Text>
 						</View>
 					</View>
 				</View>
@@ -114,13 +131,11 @@ const Details = ({ route, params }) => {
 		
 	}
 	
-	const { id, name, img, price, company, desc, date, category, subcategory, views, serial } = route.params;
-	
 	return(
 		<View style={{ flex: 1 }}>
 			<StatusBar backgroundColor={lightMode ? 'white' : 'black'} style={lightMode ? 'dark' : 'light'} />
 			<View style={{ marginTop: StatusBar.currentHeight || 25, width: '100%', height: 220, position: 'absolute' }}>
-				<Image resizeMode='cover' style={{ width: '100%', height: '100%' }} source={{uri: img }} />
+				<Image resizeMode='cover' style={{ width: '100%', height: '100%' }} source={{uri: data.img }} />
 			</View>
 			<SectionList
 				showsVerticalScrollIndicator={false}

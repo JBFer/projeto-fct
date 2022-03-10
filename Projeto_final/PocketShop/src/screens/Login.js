@@ -23,12 +23,14 @@ export default class Login extends React.Component {
     state = {
         email: "",
 		password: "",
-        login: false
+        login: false,
+        txtLog: "",
+        color: 'red'
     }
 
     mandarLogin = () => {
 		const login_status = true
-        console.log(login_status)
+        //console.log(login_status)
 		this.props.is_logged(login_status)
 	}
 
@@ -40,33 +42,33 @@ export default class Login extends React.Component {
 		this.setState({ password: txt_pass })
 	}
 
-    //email: this.state.email,
-    //pass: this.state.password,
-
     login = () => {
-        console.log('entrou')
+        this.setState({ txtLog: "" })
+        //console.log('entrou')
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: this.state.email, pass: this.state.password }),
         }
-        console.log('passou aqui tmb')
+        //console.log('passou aqui tmb')
         fetch(api_url+'login', requestOptions)
             .then(response => response.json())
             .then(data => { 
                 if(data.login == true) {
-                    console.log('login feito')
+                    this.setState({ txtLog: "Conta encontrada, bem-vindo!", color: 'green' })
+                    //console.log('login feito')
                     this.setState({ login: true })
                     this.mandarLogin()
                     //window.location.href = 'Catalog.js'
                     //navigation.navigate('HomeScreen')
-                }
-                console.log('ta false nino') 
+                } else {
+                    //console.log('erraste primo')
+                    this.setState({ txtLog: "Email ou password incorretos!", color: 'red' })
+                } 
             })
     }
 
     render() {
-        console.log(this.props.showModal)
         return (
             <View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
                 <StatusBar style={lightMode ? 'dark' : 'light'} backgroundColor="white" />
@@ -75,7 +77,6 @@ export default class Login extends React.Component {
                     <View style={ LoginStyle.middlePart } >
                         <View style={{ flex: 1 }} >
                             <Text style={ LoginStyle.title }>PocketShop</Text>
-                            <Text style={ LoginStyle.subtitle }>Login</Text>
                         </View>
                         <View style={{ flex: 2.5, width: '100%', alignItems: 'center' }} >
                             <TextInput
@@ -93,10 +94,14 @@ export default class Login extends React.Component {
                                 value={this.state.searchTxt}
 								onChangeText={txt_pass => this.user_pass(txt_pass)}
                                 />
+                                <Text style={{ marginTop: 40, color: this.state.color }} >{ this.state.txtLog }</Text>
                         </View>
-                        <View style={{ flex: 1, width: '100%', alignItems: 'center' }} >
+                        <View style={{ flex: 1, width: '100%', alignItems: 'center', marginBottom: 20 }} >
                             <TouchableOpacity style={ LoginStyle.button } activeOpacity={.6} onPress={() => this.login()} >
                                 <Text style={{ fontSize: 19 }} >Entrar</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ marginBottom: 10 }} activeOpacity={.4} onPress={() => Linking.openURL("http://jf-api.epizy.com/")} >
+                                <Text style={{ color: '#1520A6' }} >Esqueci-me da password</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={.4} onPress={() => Linking.openURL("http://jf-api.epizy.com/")} >
                                 <Text style={{ color: '#1520A6' }} >Termos e condições</Text>

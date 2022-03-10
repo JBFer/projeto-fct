@@ -39,7 +39,7 @@ $app->get('/products/all[/{order}]', function(Request $request, Response $respon
             'status' => true,
             'error' => 200,
             'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
-            'data' => $data
+            'list' => $data
         ];
     } else {
         $ret = (object) [
@@ -127,8 +127,276 @@ $app->get('/products/user[/{order}]', function (Request $request, Response $resp
             'status' => true,
             'error' => 200,
             'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
-            'idUSer' => $_SESSION["id"],
-            'data' => $data
+            'idUser' => $_SESSION["id"],
+            'list' => $data
+        ];
+    } else {
+        $ret = (object) [
+            'status' => false,
+            'error' => 404,
+            'msg' => 'Error 404, no products found '
+        ];
+    }
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//get favorites
+
+$app->get('/products/favorites[/{order}]', function (Request $request, Response $response) {
+  
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $query = "
+        SELECT DISTINCT
+            products.*
+        FROM products
+        LEFT JOIN pc ON pc.id_prod = products.idProducts
+        LEFT JOIN collections ON collections.idCollections = pc.id_col
+        LEFT JOIN favorites ON favorites.id_prod = products.idProducts
+        WHERE
+            favorites.id_user = ?
+            AND
+            products.active = 1
+            AND
+            (
+                collections.idCollections IS NULL
+                OR
+                collections.status = 1
+            )
+            AND(
+                pc.id_col IS NULL
+                OR
+                pc.id_col NOT IN (
+                    SELECT
+                        uc.id_col
+                    FROM uc
+                    WHERE
+                        uc.id_user = ?
+                )
+            )
+    ";
+
+    $order = $request->getAttribute('order');
+
+    $field = $order ?? null;
+
+    $sql = get_app()->utils->order_function($query, $field);
+
+    $stmt = get_app()->db->prepare($sql);
+
+    $stmt->bind_param('ii', $_SESSION["id"], $_SESSION["id"]);
+    
+    $ok = $stmt->execute();
+
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifo    u (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    
+    if (count($data)) {
+        $ret = (object) [
+            'status' => true,
+            'error' => 200,
+            'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+            'idUser' => $_SESSION["id"],
+            'list' => $data
+        ];
+    } else {
+        $ret = (object) [
+            'status' => false,
+            'error' => 404,
+            'msg' => 'Error 404, no products found '
+        ];
+    }
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//get product specs
+
+$app->get('/products/specs/{id:[0-9]+}', function (Request $request, Response $response) {
+  
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $id = $request->getAttribute('id');
+
+    $query = "
+        SELECT DISTINCT
+            products.*,
+            subcategories.name as subcatg_name,
+            categories.name as catg_name,
+            companies.name as comp_name,
+            companies.details as comp_details,
+            companies.email as comp_email,
+            companies.tel as comp_tel,
+            companies.logo as comp_logo
+        FROM products
+        LEFT JOIN pc ON pc.id_prod = products.idProducts
+        LEFT JOIN collections ON collections.idCollections = pc.id_col
+        LEFT JOIN companies ON companies.idCompanies = (SELECT products.id_comp from products where idProducts = ?)
+        LEFT JOIN subcategories ON subcategories.idSubcategories = (SELECT products.subcatg from products where idProducts = ?)
+        LEFT JOIN categories ON categories.idCategories = subcategories.id_catg
+        WHERE
+            products.idProducts = ?
+            AND
+            products.active = 1
+            AND
+            (
+                collections.idCollections IS NULL
+                OR
+                collections.status = 1
+            )
+            AND(
+                pc.id_col IS NULL
+                OR
+                pc.id_col NOT IN (
+                    SELECT
+                        uc.id_col
+                    FROM uc
+                    WHERE
+                        uc.id_user = ?
+                )
+            )
+    ";
+
+    $order = $request->getAttribute('order');
+
+    $field = $order ?? null;
+
+    $sql = get_app()->utils->order_function($query, $field);
+
+    $stmt = get_app()->db->prepare($sql);
+
+    $stmt->bind_param('iiii', $id, $id, $id, $_SESSION["id"]);
+    
+    $ok = $stmt->execute();
+
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifo    u (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_object();
+
+    if(!$data){
+        $ret = (object) [
+            'status' => false,
+            'error' => 404,
+            'msg' => 'Error 404, no products found '
+        ];
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $ret = (object) [
+        'status' => true,
+        'error' => 200,
+        'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+        'idUser' => $_SESSION["id"],
+        'object' => $data
+    ];
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//get get images
+
+$app->get('/products/images/{id:[0-9]+}', function (Request $request, Response $response) {
+  
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $id = $request->getAttribute('id');
+
+    $query = "
+        SELECT DISTINCT
+            images.img_url
+        FROM images
+        LEFT JOIN products ON products.idProducts = images.id_prod
+        LEFT JOIN pc ON pc.id_prod = products.idProducts
+        LEFT JOIN collections ON collections.idCollections = pc.id_col
+        WHERE
+            images.id_prod = ?
+            AND
+            products.active = 1
+            AND
+            (
+                collections.idCollections IS NULL
+                OR
+                collections.status = 1
+            )
+            AND(
+                pc.id_col IS NULL
+                OR
+                pc.id_col NOT IN (
+                    SELECT
+                        uc.id_col
+                    FROM uc
+                    WHERE
+                        uc.id_user = ?
+                )
+            )
+    ";
+
+    $order = $request->getAttribute('order');
+
+    $field = $order ?? null;
+
+    $sql = get_app()->utils->order_function($query, $field);
+
+    $stmt = get_app()->db->prepare($sql);
+
+    $stmt->bind_param('ii', $id, $_SESSION["id"]);
+    
+    $ok = $stmt->execute();
+
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifo    u (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    
+    if (count($data)) {
+        $ret = (object) [
+            'status' => true,
+            'error' => 200,
+            'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+            'idUser' => $_SESSION["id"],
+            'list' => $data
         ];
     } else {
         $ret = (object) [
@@ -222,7 +490,7 @@ $app->get('/products/search/{txtSearch}[/{order}]', function (Request $request, 
             'status' => true,
             'error' => 200,
             'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
-            'data' => $data
+            'list' => $data
         ];
     } else {
         $ret = (object) [
@@ -308,7 +576,7 @@ $app->get('/products/id/{id:[0-9]+}', function (Request $request, Response $resp
             'status' => true,
             'error' => 200,
             'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
-            'data' => $data
+            'list' => $data
         ];
     } else {
         $ret = (object) [
@@ -395,7 +663,7 @@ $app->get('/products/filter/{subcategory:[0-9]+}[/{order}]', function (Request $
             'status' => true,
             'error' => 200,
             'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
-            'data' => $data
+            'list' => $data
         ];
     } else {
         $ret = (object) [

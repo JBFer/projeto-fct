@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator()
 
 export default HomeStack = props => {
     const passar = () => {
-        console.log("chega aqui amigo, agr falta passar pra cima")
+        //console.log("chega aqui amigo, agr falta passar pra cima")
         props.is_logged(false)
     }
     return (
