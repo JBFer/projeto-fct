@@ -50,22 +50,21 @@ catch (e) {
 // AsyncStorage.setItem('key', JSON.stringify(false))
 
 var ThemeMode = (function() {
-    var lightMode = true;
-  
-    var getLightMode = function() {
-      return lightMode;
-    };
-  
-    var setLightMode = function(changeTheme) {
-        lightMode ? false : true;    
-    };
-  
-    return {
-        getLightMode: getLightMode,
-        setLightMode: setLightMode,
-    }
-  
-  })();
+	var lightMode = true;
+
+	var getLightMode = function() {
+		return lightMode;
+	};
+
+	var setLightMode = function(changeTheme) {
+		lightMode ? false : true;    
+	};
+
+	return {
+		getLightMode: getLightMode,
+		setLightMode: setLightMode,
+	}
+})();
   
   //export default ThemeMode;
 

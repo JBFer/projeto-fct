@@ -1,6 +1,7 @@
 import React from "react";
 import Settings from "../screens/Settings";
 import ProductDetails from "../screens/ProductDetails";
+import ImageLayout from "../screens/ImageLayout";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
@@ -32,6 +33,17 @@ export default HomeStack = props => {
                     {props=><Settings passarProps={() => passar()}/>}
                 </Stack.Screen>
                 <Stack.Screen name='ProductDetails' component={ProductDetails} 
+                    options={{ 
+                        title: '',
+                        headerTransparent: true,
+                        headerStyle: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                        },
+                        headerShadowVisible: false,
+                        headerTintColor: this.lightMode ? '#fff' : '#000',
+                    }}  
+                />
+                <Stack.Screen name='ImageLayout' component={ImageLayout} 
                     options={{ 
                         title: '',
                         headerTransparent: true,

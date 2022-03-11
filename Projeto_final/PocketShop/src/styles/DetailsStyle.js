@@ -15,10 +15,11 @@ export default{
 	},
 	middlePart: {
         paddingTop: 20,
-		height: 300,
 		width: '100%',
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		marginTop: 25,
+		marginBottom: 25
     },
 	bottomPart: {
         paddingTop: 20,
@@ -26,6 +27,7 @@ export default{
 		marginBottom: 30
     },
 	companyInfo: {
+		textAlign: 'center',
 		fontSize: 16,
 		marginTop: 2
 	},
