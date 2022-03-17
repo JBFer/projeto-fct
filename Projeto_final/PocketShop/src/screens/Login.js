@@ -43,26 +43,23 @@ export default class Login extends React.Component {
 	}
 
     login = () => {
+        //login process
         this.setState({ txtLog: "" })
-        //console.log('entrou')
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: this.state.email, pass: this.state.password }),
         }
-        //console.log('passou aqui tmb')
         fetch(api_url+'login', requestOptions)
             .then(response => response.json())
             .then(data => { 
                 if(data.login == true) {
                     this.setState({ txtLog: "Conta encontrada, bem-vindo!", color: 'green' })
-                    //console.log('login feito')
+                    //console.log('user can login')
                     this.setState({ login: true })
                     this.mandarLogin()
-                    //window.location.href = 'Catalog.js'
-                    //navigation.navigate('HomeScreen')
                 } else {
-                    //console.log('erraste primo')
+                    //console.log('user cant login')
                     this.setState({ txtLog: "Email ou password incorretos!", color: 'red' })
                 } 
             })

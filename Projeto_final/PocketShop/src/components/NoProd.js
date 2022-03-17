@@ -9,7 +9,7 @@ import { lightMode } from '../constants/global'
 export default props => {
  	return (
 		<View style={{ height: 200, borderRadius: 10, marginTop: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row', padding: 38 }}>
-			<Text style={{ fontSize: 17 }}>Sem produtos registados</Text>
+			<Text style={{ fontSize: 17, color: lightMode ? Theme.preto : Theme.branco }}>Sem produtos registados</Text>
 			<Image style={{ width: 100, height: 100, resizeMode: 'stretch' }} source={require('../../assets/lightLogo.png')}/>
 		</View>
   	)

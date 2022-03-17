@@ -26,8 +26,8 @@ export default class Settings extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            themeMode: true,
-			isEnabled: false
+            themeMode: false,
+			isEnabled: true
         }
     }
 

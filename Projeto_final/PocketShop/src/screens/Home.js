@@ -26,17 +26,20 @@ import Icon2 from 'react-native-vector-icons/Ionicons'
 
 import { lightMode } from '../constants/global'
 import { api_url } from '../constants/host';
+import { ThemeProvider } from '@react-navigation/native';
+import Loading from '../components/Loading';
 
 export default class Fav extends React.Component {
 	state = {
-		array:[]
+		array:[],
+		loading: true
 	}
 
 	componentDidMount() {
 		fetch( api_url+'products/favorites')
 			.then(response => response.json())
 			.then(data => {
-				this.setState({ array: data.list });
+				this.setState({ array: data.list, loading: false });
 			})
 	}
     
@@ -75,9 +78,12 @@ export default class Fav extends React.Component {
 		return (
 			<View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
 				<View style={[ FavStyle.headerPart, { borderColor: lightMode? Theme.preto : Theme.branco } ]}>
-					<Text style={{ fontSize: 30,color: lightMode? Theme.preto : Theme.branco }} >Favoritos</Text>
+					<Text style={{ fontSize: 30,color: lightMode? Theme.preto : Theme.branco }}>Favoritos</Text>
 				</View>
-				<FlatList  
+				{this.state.loading ? 
+					<Loading/> 
+				: 
+					<FlatList  
 					maxToRenderPerBatch={10}	
 					initialNumToRender={10}
 					style={{ backgroundColor: lightMode ? '#FAF9F6' : Theme.backDark }}
@@ -89,7 +95,7 @@ export default class Fav extends React.Component {
 					ListFooterComponent={
 						<View style={{ height: 20, backgroundColor: 'transparent', width: '100%' }} />
 					}
-				 />
+				 />}
 			</View>
 	  );
 		

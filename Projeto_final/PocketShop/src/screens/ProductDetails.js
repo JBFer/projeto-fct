@@ -16,6 +16,8 @@ import {
     TouchableOpacity
 } from 'react-native';
 
+import Related from '../components/Related'
+
 import Theme from '../styles/Comum' 
 import DetailsStyle from '../styles/DetailsStyle' 
 
@@ -34,10 +36,12 @@ const Details = ({ route, params, navigation }) => {
 	const [data, setData] = useState({});
 	const [images, setImages] = useState([]);
 	const [stock, setStock] = useState(false);
+	const [carousel, setCarousel] = useState(null);
 
-	const { id, img } = route.params;
+	let { id, img } = route.params;
 
 	useEffect(() => {
+		let isMounted = true;
 		//console.warn(id);
 		fetch( api_url+'products/updateViews/'+id, {
 			method: 'PUT'
@@ -46,20 +50,35 @@ const Details = ({ route, params, navigation }) => {
 			.then(response => response.json())
 			.then(data => {
 				//console.log(data.object);
-				setImages(data.list);
+				if (isMounted) {
+					setImages(data.list)
+				} else {
+					console.log("aborted setState on unmounted component")
+				}
 			}),
 		fetch( api_url+'products/specs/'+id)
 			.then(response => response.json())
 			.then(data => {
 				//console.log(data.object);
-				setData(data.object);
-				if(data.object.stock < 10){
-					setStock(true);
+				if (isMounted){
+					setData(data.object);
+					if(data.object.stock < 10){
+						setStock(true);
+					} else {
+						setStock(false)
+					}
 				} else {
-					setStock(false)
+					console.log("aborted setState on unmounted component")
 				}
 			})
-	}, [id])
+			return () => {
+				setData({});
+				setImages([]);
+				setStock(false);
+				setCarousel(null)
+				isMounted = false;
+			};
+	}, [])
 	 
 	const irCart = () => {
 		if (data.stock > 0){
@@ -70,9 +89,10 @@ const Details = ({ route, params, navigation }) => {
 	}
 
 	const goImg = () => {
+		//console.warn(carousel.currentIndex)
  		navigation.push('ImageLayout', { 
 			list: images,
-			currentImg: this._carousel.currentIndex
+			currentImg: carousel.currentIndex
 		}) 
 	}
 
@@ -134,7 +154,7 @@ const Details = ({ route, params, navigation }) => {
 							{
 								images ? (
 									<Carousel
-										ref={(c) => { this._carousel = c; }}
+										ref={c => { setCarousel(c); }}
 										data={images}
 										renderItem={_renderItem}
 										sliderWidth={400}
@@ -158,14 +178,17 @@ const Details = ({ route, params, navigation }) => {
 									<Text style={[ DetailsStyle.companyInfo, { color: lightMode ? Theme.preto : Theme.branco } ]}>Email: {data.comp_email}</Text>
 								</View>
 							</View>
-							<View style={{ alignItems: 'center', justifyContent: 'center', height: 250, borderWidth: 1, marginTop: 70, marginBottom: 30, borderColor: lightMode ? Theme.preto : Theme.branco }}>
-									<Text style={{ fontSize: 20, color: lightMode ? Theme.preto : Theme.branco }}>Mais produtos relacionados</Text>
+							<View style={{ alignItems: 'center', justifyContent: 'center', borderTopWidth: 1, marginTop: 70, marginBottom: 30, borderColor: lightMode ? Theme.preto : Theme.branco }}>
+								<View style={{ width: '100%', marginTop: 20 }}>
+									<Text style={{ width: '100%', fontSize: 20, color: lightMode ? Theme.preto : Theme.branco  }}>Produtos relacionados:</Text>
+								</View>
+								<Related navigation={navigation} filter={data.subcatg}/>
 							</View>
 						</View>
 						<View style={[ DetailsStyle.footer, { borderColor: lightMode ? '#3c4146' : '#bfc3c8'} ]}>
 							<View style={{ alignItems: 'center', justifyContent: 'space-around', flexDirection: 'row', width: '100%', marginTop: 5}} >
 								<Text style={{ color: lightMode ? '#3c4146' : '#bfc3c8'}}>Views: {data.views}</Text>
-								<Text style={{ color: lightMode ? '#3c4146' : '#bfc3c8'}}>Stock:{data.stock}</Text>
+								<Text style={{ color: lightMode ? '#3c4146' : '#bfc3c8'}}>{data.pubdate}</Text>
 							</View>
 						</View>
 					</View>

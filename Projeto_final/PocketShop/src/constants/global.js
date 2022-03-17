@@ -68,7 +68,7 @@ var ThemeMode = (function() {
   
   //export default ThemeMode;
 
-const lightMode = true
+const lightMode = false
 
 
 export { lightMode };

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {Text,
         View,
         StyleSheet,
@@ -10,8 +10,8 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 
 import Theme from '../styles/Comum' 
 
-export default ImageLayout = ({ route, params, navigation }) => {
-    const { list, currentImg } = route.params;
+export default ImageLayout = ({ route }) => {
+    let { list, currentImg } = route.params;
     
     return(
         <View style={{ height: '100%', width: '100%', backgroundColor: lightMode ? Theme.branco : Theme.backDark }}>
@@ -24,7 +24,7 @@ export default ImageLayout = ({ route, params, navigation }) => {
                         backgroundColor={ lightMode ? Theme.branco : Theme.backDark}
                         flipThreshold={40}
                         maxOverflow={800}
-                        pageAnimateTime={300}
+                        pageAnimateTime={200}
                    />
                 </View>
         </View>

@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, FlatList, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Theme from '../styles/Comum'  
 import { lightMode } from '../constants/global'
-import CatalogStyle from '../styles/CatalogStyle' 
 
-import Products from '../data/prods/Products'
+import { api_url } from '../constants/host';
 
 
 
@@ -15,7 +14,28 @@ export default props => {
 	
 	const changeIcon = () => {
 		icon ? setIcon(false) : setIcon(true)
-		icon ? console.warn('O produto de id ' + props.un + ' foi retirado aos favoritos' ) : console.warn('O produto de id ' + props.un + ' foi adicionado aos favoritos' )
+		icon ? 
+			retirar()
+		: 
+			adicionar()
+	}
+
+	const retirar = () => {
+		fetch( api_url+'removeFavorite/'+props.un, {
+			method: 'DELETE'
+		})
+		console.warn('O produto de id ' + props.un + ' foi retirado aos favoritos' )
+	}
+
+	const adicionar = () => {
+		fetch( api_url+'addFavorite', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				 id_prod: props.un 
+			})
+		})
+		console.warn('O produto de id ' + props.un + ' foi adicionado aos favoritos' )
 	}
 	
 	const toBig = (title) => {
