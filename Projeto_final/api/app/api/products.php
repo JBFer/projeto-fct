@@ -336,7 +336,7 @@ $app->get('/products/images/{id:[0-9]+}', function (Request $request, Response $
 
     $query = "
         SELECT DISTINCT
-            images.img_url
+            images.url
         FROM images
         LEFT JOIN products ON products.idProducts = images.id_prod
         LEFT JOIN pc ON pc.id_prod = products.idProducts
@@ -885,8 +885,76 @@ $app->put('/products/updateViews/{idProducts:[0-9]+}', function (Request $reques
     ];
 
     return get_app()->utils->return_json($ret, $response);
-
-
-
-
 } );
+
+//adicionar favorito
+
+$app->post('/addFavorite', function(Request $request, Response $response){
+
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $post = $request->getParsedBody();
+    $id_prod = $post['id_prod'];
+
+    $query = "INSERT INTO favorites (id_user, id_prod) VALUES (?, ?)";
+
+    $stmt = get_app()->db->prepare($query);
+    $stmt->bind_param('ii', $_SESSION["id"], $id_prod);
+
+    $ok = $stmt->execute();
+
+    
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifou (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $ret = (object) [
+        'status' => true,
+        'error' => 200,
+        'msg' => 'Ok 200, new favorite added',
+    ];
+    
+return get_app()->utils->return_json($ret, $response);
+});
+
+//remover favorito
+
+$app->delete('/removeFavorite/{id_prod:[0-9]+}', function(Request $request, Response $response){
+
+    $id_prod = $request->getAttribute('id_prod');
+
+    $query = "DELETE FROM favorites WHERE id_user = ? AND id_prod = ?";
+
+    $stmt = get_app()->db->prepare($query);
+    $stmt->bind_param('ii', $_SESSION["id"], $id_prod);
+
+    $ok = $stmt->execute();
+
+    
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifou (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $ret = (object) [
+        'status' => true,
+        'error' => 200,
+        'msg' => 'Ok 200, favorite removed',
+    ];
+    
+return get_app()->utils->return_json($ret, $response);
+});
