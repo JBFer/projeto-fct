@@ -27,8 +27,6 @@ import Icon2 from 'react-native-vector-icons/Ionicons'
 
 import Carousel from 'react-native-snap-carousel';
 
-import ImageLayout from './ImageLayout'
-
 import { lightMode } from '../constants/global'
 import { api_url } from '../constants/host';
 
@@ -41,7 +39,6 @@ const Details = ({ route, params, navigation }) => {
 	let { id, img } = route.params;
 
 	useEffect(() => {
-		let isMounted = true;
 		//console.warn(id);
 		fetch( api_url+'products/updateViews/'+id, {
 			method: 'PUT'
@@ -50,34 +47,20 @@ const Details = ({ route, params, navigation }) => {
 			.then(response => response.json())
 			.then(data => {
 				//console.log(data.object);
-				if (isMounted) {
-					setImages(data.list)
-				} else {
-					console.log("aborted setState on unmounted component")
-				}
+				setImages(data.list)
 			}),
 		fetch( api_url+'products/specs/'+id)
 			.then(response => response.json())
 			.then(data => {
 				//console.log(data.object);
-				if (isMounted){
-					setData(data.object);
-					if(data.object.stock < 10){
-						setStock(true);
-					} else {
-						setStock(false)
-					}
+				setData(data.object);
+				if(data.object.stock < 10){
+					setStock(true);
 				} else {
-					console.log("aborted setState on unmounted component")
+					setStock(false)
 				}
 			})
-			return () => {
-				setData({});
-				setImages([]);
-				setStock(false);
-				setCarousel(null)
-				isMounted = false;
-			};
+		 
 	}, [])
 	 
 	const irCart = () => {

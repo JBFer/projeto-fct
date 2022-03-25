@@ -142,6 +142,96 @@ $app->get('/products/user[/{order}]', function (Request $request, Response $resp
 
 });
 
+//filtrar user mais visitados
+
+$app->get('/products/visited[/{order}[/{limit:[0-9]+}]]', function (Request $request, Response $response) {
+  
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $query = "
+        SELECT DISTINCT
+            products.*
+        FROM products
+        LEFT JOIN pc ON pc.id_prod = products.idProducts
+        LEFT JOIN collections ON collections.idCollections = pc.id_col
+        WHERE
+            products.active = 1
+            AND
+            (
+                collections.idCollections IS NULL
+                OR
+                collections.status = 1
+            )
+            AND(
+                pc.id_col IS NULL
+                OR
+                pc.id_col NOT IN (
+                    SELECT
+                        uc.id_col
+                    FROM uc
+                    WHERE
+                        uc.id_user = ?
+                )
+            )
+    ";
+
+    $order = $request->getAttribute('order');
+
+    $limit = $request->getAttribute('limit');
+
+    $field = $order ?? null;
+
+    $field2 = $limit ?? null;
+
+    $sql = get_app()->utils->order_function($query, $field);
+
+    $sql = $field2 ? get_app()->utils->limit_function($sql, $field2) : $sql;
+
+    $stmt = get_app()->db->prepare($sql);
+
+    $order = $request->getAttribute('order');
+
+    $stmt->bind_param('i',  $_SESSION["id"]);
+    
+    $ok = $stmt->execute();
+
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifo    u (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    
+    if (count($data)) {
+        $ret = (object) [
+            'status' => true,
+            'error' => 200,
+            'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+            'idUser' => $_SESSION["id"],
+            'list' => $data
+        ];
+    } else {
+        $ret = (object) [
+            'status' => false,
+            'error' => 404,
+            'msg' => 'Error 404, no products found '
+        ];
+    }
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
 //get favorites
 
 $app->get('/products/favorites[/{order}]', function (Request $request, Response $response) {
@@ -410,7 +500,7 @@ $app->get('/products/images/{id:[0-9]+}', function (Request $request, Response $
 
 });
 
-//filtrar por nome
+//filtrar por nome ou empresa
 
 $app->get('/products/search/{txtSearch}[/{order}]', function (Request $request, Response $response) {
 
@@ -430,7 +520,11 @@ $app->get('/products/search/{txtSearch}[/{order}]', function (Request $request, 
         WHERE
             products.active = 1
             AND
-            products.name LIKE ?
+            (
+                products.name LIKE ?
+                OR
+                products.company LIKE ?
+            )
             AND
             (
                 collections.idCollections IS NULL
@@ -460,7 +554,7 @@ $app->get('/products/search/{txtSearch}[/{order}]', function (Request $request, 
 
     $param = "%" . $txtSearch . "%";
 
-    $stmt->bind_param('si', $param, $_SESSION["id"]);
+    $stmt->bind_param('ssi', $param, $param, $_SESSION["id"]);
     
     $ok = $stmt->execute();
 

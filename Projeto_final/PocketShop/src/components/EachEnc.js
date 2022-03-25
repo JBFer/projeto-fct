@@ -46,7 +46,7 @@ export default props => {
 
 const styles = StyleSheet.create({
 	eachOne: {
-		marginVertical: 20,
+		marginVertical: 10,
 		backgroundColor: '#D3D3D3',
 		width: '100%',
 		height: 100,

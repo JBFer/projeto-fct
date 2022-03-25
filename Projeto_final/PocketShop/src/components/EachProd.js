@@ -10,10 +10,10 @@ import Products from '../data/prods/Products'
 
 
 
-export default props => {
+export default class EachProd extends React.PureComponent {
 	
 	
-	const toBig = (title) => {
+	toBig = (title) => {
 		if (title.length > 11){
 			const shortTitle = title.slice(0, 11)+'...';
 			return (shortTitle)
@@ -23,9 +23,9 @@ export default props => {
 		}
     }
 	
-	const toBigComp = (comp) => {
-		if (comp.length > 14){
-			const shortTitle = comp.slice(0, 14)+'...';
+	toBigComp = (comp) => {
+		if (comp.length > 12){
+			const shortTitle = comp.slice(0, 12)+'...';
 			return (shortTitle)
 		} else {
 			const shortTitle = comp
@@ -34,24 +34,26 @@ export default props => {
     }
 	
     
-	
- 	return (
-		<View>
-			<TouchableOpacity activeOpacity={0.8} style={[ styles.each, { borderColor: lightMode? Theme.branco : Theme.backDark } ]} onPress={() => props.onClick()}>
-				<Image style={styles.image} source={{uri: props.image}}/>
-				<View style={[styles.imageLabelContainer, { backgroundColor: lightMode? Theme.backDark : Theme.preto }]}>
-					<View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between', padding: 5, paddingHorizontal: 7 }}>
-						<Text style={[ CatalogStyle.Txt ,{ color: Theme.branco, fontSize: 16 }]}>{toBig(props.name)}</Text>
-						<Text style={[ CatalogStyle.Txt ,{ color: Theme.branco, fontSize: 16 }]}>{props.price}€</Text>
+	render () {
+		return (
+			<View>
+				<TouchableOpacity activeOpacity={0.8} style={[ styles.each, { borderColor: lightMode? Theme.branco : Theme.backDark } ]} onPress={() => this.props.onClick()}>
+					<Image style={styles.image} source={{uri: this.props.image}}/>
+					<View style={[styles.imageLabelContainer, { backgroundColor: lightMode? Theme.backDark : Theme.preto }]}>
+						<View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between', padding: 5, paddingHorizontal: 7 }}>
+							<Text style={[ CatalogStyle.Txt ,{ color: Theme.branco, fontSize: 16 }]}>{this.toBig(this.props.name)}</Text>
+							<Text style={[ CatalogStyle.Txt ,{ color: Theme.branco, fontSize: 16 }]}>{this.props.price}€</Text>
+						</View>
+						<View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between', padding: 5, paddingHorizontal: 7 }}>
+							<Text style={[ styles.txt2 ,{ color: Theme.branco }]}>{this.props.date}</Text>
+							<Text style={[ styles.txt ,{ color: Theme.branco }]}>{this.toBigComp(this.props.company)}</Text>
+						</View>
 					</View>
-					<View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'space-between', padding: 5, paddingHorizontal: 7 }}>
-						<Text style={[ styles.txt2 ,{ color: Theme.branco }]}>{props.date}</Text>
-						<Text style={[ styles.txt ,{ color: Theme.branco }]}>{toBigComp(props.company)}</Text>
-					</View>
-				</View>
-			</TouchableOpacity>
-		</View>
-  	)
+				</TouchableOpacity>
+			</View>
+		)
+	}
+ 	
 }
 
 const styles = StyleSheet.create({

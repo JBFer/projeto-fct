@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StatusBar } from 'expo-status-bar'
 import { 
     StyleSheet,
     Text,
     View,
-    Button,
-    Switch,
-    ScrollView,
     TextInput,
 	FlatList,
 	SectionList,
-	SafeAreaView,
-	Animated,
     TouchableOpacity
 } from 'react-native';
 
@@ -28,19 +23,59 @@ import Icon3 from 'react-native-vector-icons/FontAwesome'
 import Icon2 from 'react-native-vector-icons/Ionicons'
 
 import { lightMode } from '../constants/global'
+import { api_url } from '../constants/host';
+import Loading from '../components/Loading';
 
-export default class App extends React.Component {
+export default class App extends React.PureComponent {
     state = {
         showModal: false,
 		pesquisa: {},
 		searchTxt: '',
+		search: false,
+		array:[],
+		array_v:[],
+		array_pesq:[],
+		loading: true,
+		loading1: true,
+		loading2: false
+	}
+
+
+	componentDidMount() {
+		setTimeout(() => {
+			fetch( api_url+'products/visited/views/10')
+				.then(response => response.json())
+				.then(data => {
+					this.setState({ array_v: data.list, loading1: false });
+				})
+		}, 1000);
+		setTimeout(() => {
+			fetch( api_url+'products/user')
+				.then(response => response.json())
+				.then(data => {
+					this.setState({ array: data.list, loading: false });
+				})
+		}, 1500);
+	}
+
+
+
+	searchInput = () => {
+		this.setState({ loading2: true, search: true })
+		setTimeout(() => {
+			fetch(api_url+'products/search/'+this.state.searchTxt)
+				.then(response => response.json())
+				.then(data => {
+					this.setState({ array_pesq: data.list, loading2: false });
+				})
+		}, 1500);
     }
 
 
-	searchFor = txt => {
+ 	searchFor = txt => {
 		let pesquisa = {searchTxt: txt}
 		this.setState({ pesquisa, searchTxt: txt })
-	}
+	} 
 
 
 	renderTitle = ({ section }) => {
@@ -53,114 +88,105 @@ export default class App extends React.Component {
 	}
 	
 	
-	
-	renderSection = ({ item, section }) => {
-		
-		//console.warn(item.id)
-		
-		if ( item.id == 'visitados' ){
-			return (
-				<View style={{ marginBottom: 20 }}>
-					<View style={ CatalogStyle.topPart }>
-						<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: lightMode ? Theme.preto : Theme.branco }}>
-							<TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
-								<Icon2 name='search' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
-							</TouchableOpacity>
-							<TextInput 
-								style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
-								placeholder='Procurar'
-								placeholderTextColor={lightMode ? '#7d868f' : '#babfc4'}
-								value={this.state.searchTxt}
-								onChangeText={txt => this.searchFor(txt)}
-							/>
-						</View>
-					</View>
-					<Text style={[ CatalogStyle.Txt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
-					<FlatList
-						maxToRenderPerBatch={10}	
-						initialNumToRender={20}
-						ListEmptyComponent={<NoProd />}
-						style={{ marginBottom: 5, height: 300 }}
-						showsVerticalScrollIndicator={false}
-						showsHorizontalScrollIndicator={false}
-						data={item.list}
-						horizontal
-						renderItem={this.renderListItem}
-						keyExtractor={this.keyExtractor}
-					/>
-				</View>
-			
-			 
-		)
-		} else {
-			return (	
-			  <FlatList  
-				maxToRenderPerBatch={10}	
-				initialNumToRender={30}
-				ListEmptyComponent={<NoProd />}
-				showsVerticalScrollIndicator={false}
-				showsHorizontalScrollIndicator={false}
-				data={item.list}
-				numColumns={2}
-				renderItem={this.renderListItem}
-				keyExtractor={this.keyExtractor}
-			 />
-			
-			 
-		)
-		}
+	keyExtractor = (item) => {
+    	return item.idProducts.toString()
 	}
 	
-	clickCheck = () => {
-		navigation.navigate('Definicoes')
+	irCart = () => {
+		console.warn('Ir cart')
 	}
-		
+	
 	
 	
 	renderListItem = ({ item }) => {
 		const { navigation } = this.props;
 		return (
 			<EachProd onClick={ () => navigation.navigate('ProductDetails', { 
-					id: item.id,
+					id: item.idProducts,
 					name: item.name,
 					img: item.img,
 					price: item.price,
+					id_comp: item.id_comp,
 					company: item.company,
-					desc: item.description,
-					date: item.date,
-					category: item.category,
+					desc: item.details,
+					date: item.stock,
 					subcategory: item.subcatg,
 					views: item.views,
-					serial: item.serial
+					stock: item.stock,
+					active: item.active
 				})
-			} item={item} name={item.name} image={item.img} date={item.date} company={item.company} price={item.price}/>
+			} item={item} name={item.name} image={item.img} date={item.pubdate} company={item.company} un={item.idProducts} price={item.price}/>
 		)
 	}
 	
 	
 	
-	keyExtractor = (item) => {
-    	return item.id
-  	}
 
-	
-	
 
-	searchInput = () => {
-		console.warn(this.state.pesquisa)
-	}
-	
-	clickCheck = (nome) => {
-		console.warn(nome)
-	}
-	
-	irVisitados = () => {
-		console.warn('Ver mais')
-	}
-	irCart = () => {
-		console.warn('Ir cart')
-	}
-
+	renderSection = ({ item, section }) => {
+			
+			//console.warn(item.id)
+			
+			if ( item.id == 'visitados' ){
+				return (
+					<View style={{ marginBottom: 20 }}>
+						<View style={ CatalogStyle.topPart }>
+							<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: lightMode ? Theme.preto : Theme.branco }}>
+								<TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
+									<Icon2 name='search' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
+								</TouchableOpacity>
+								<TextInput 
+									style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
+									placeholder='Procurar'
+									placeholderTextColor={lightMode ? '#7d868f' : '#babfc4'}
+									value={this.state.searchTxt}
+									onChangeText={txt => this.searchFor(txt)}
+								/>
+							</View>
+						</View>
+						<Text style={[ CatalogStyle.Txt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
+						{this.state.loading1 ? 
+							<Loading/> 
+						: 
+							<FlatList
+								ListEmptyComponent={<NoProd />}
+								style={{ marginBottom: 5, height: 300 }}
+								showsVerticalScrollIndicator={false}
+								showsHorizontalScrollIndicator={false}
+								data={this.state.array_v}
+								horizontal
+								renderItem={this.renderListItem}
+								keyExtractor={this.keyExtractor}
+							/>
+						}
+					</View>
+				
+				
+			)
+			} else {
+				return (	
+					
+					<View>
+						{this.state.loading ? 
+							<Loading/> 
+						: 
+							<FlatList  
+								ListEmptyComponent={<NoProd />}
+								initialNumToRender={20}
+								showsVerticalScrollIndicator={false}
+								showsHorizontalScrollIndicator={false}
+								data={this.state.array}
+								numColumns={2}
+								renderItem={this.renderListItem}
+								keyExtractor={this.keyExtractor}
+							/>
+						}
+					</View>
+				
+				
+			)
+			}
+		}
     
     render() {
         return (
@@ -191,24 +217,59 @@ export default class App extends React.Component {
 					</TouchableOpacity>
 				</View>
 				
-				
-				
-				
-				
-				<SectionList
-					showsVerticalScrollIndicator={false}
-					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={{ paddingHorizontal: 10 }}
-					stickySectionHeadersEnabled={false}
-					sections={Products}
-					initialNumToRender={5}
-					renderSectionHeader={this.renderTitle}
-					renderItem={this.renderSection}
-					
-					ListFooterComponent={
-						<View style={{ height: 20 }} />
-					}
-				/>
+				{ !this.state.search ? 
+					<SectionList
+						showsVerticalScrollIndicator={false}
+						showsHorizontalScrollIndicator={false}
+						contentContainerStyle={{ paddingHorizontal: 10 }}
+						stickySectionHeadersEnabled={false}
+						sections={Products}
+						renderSectionHeader={this.renderTitle}
+						renderItem={this.renderSection}
+						
+						ListFooterComponent={
+							<View style={{ height: 20 }} />
+						}
+					/>
+					:
+						this.state.loading2 ?
+							<Loading/>
+						:
+							<View>
+								<FlatList  
+									contentContainerStyle={{ paddingHorizontal: 10 }}
+									ListEmptyComponent={<NoProd />}
+									showsVerticalScrollIndicator={false}
+									showsHorizontalScrollIndicator={false}
+									data={this.state.array_pesq}
+									numColumns={2}
+									renderItem={this.renderListItem}
+									keyExtractor={this.keyExtractor}
+									ListHeaderComponent={
+										<View style={ CatalogStyle.topPart }>
+											<View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
+												<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: lightMode ? Theme.preto : Theme.branco }}>
+													<TouchableOpacity activeOpacity={0.4} onPress={() => this.setState({ search: false, searchTxt: '' })}>
+														<Icon2 name='arrow-back' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
+													</TouchableOpacity>
+													<TextInput 
+														style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
+														placeholder='Procurar'
+														placeholderTextColor={lightMode ? '#7d868f' : '#babfc4'}
+														value={this.state.searchTxt}
+														onChangeText={txt => this.searchFor(txt)}
+													/>
+												</View>
+											</View>
+										</View>
+									}
+									ListFooterComponent={
+										<View style={{ height: 100 }} />
+									}
+								/>
+					</View>
+				}
+
 
 			</View>
 

@@ -46,6 +46,12 @@ class Utils {
 
         return $query;
     }
+
+    public function limit_function($query, $field2){
+        $query = $query . " LIMIT $field2 ";
+
+        return $query;
+    }
 }
 
 function get_app()

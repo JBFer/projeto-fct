@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar'
 import { 
-    StyleSheet,
     Text,
     View,
     Button,
-    Switch,
-    ScrollView,
-    TextInput,
-	Modal,
-	Image,
 	SectionList,
 	FlatList,
     TouchableOpacity
@@ -36,7 +30,7 @@ import { login } from '../services/user';
 
 export default class App extends React.Component {
 	state = {
-		choose: 'encomendas',
+		choose: 'info',
 		catgInt: [],
 		visibleModal: false,
 		info: [{}],
@@ -58,7 +52,6 @@ export default class App extends React.Component {
 		if ( item.id == 'catg' && this.state.choose == 'interesses' ){
 			return (
 				<>
-					<Text style={[ ProfileStyle.title, { color: lightMode ? Theme.preto : Theme.branco, textAlign: 'center' } ]}>Categorias de interesse</Text>
 					<FlatList
 						maxToRenderPerBatch={3}	
 						initialNumToRender={6}
@@ -80,9 +73,6 @@ export default class App extends React.Component {
 		} else if ( item.id == 'encomendas' && this.state.choose == 'encomendas' ) {
 			return (
 				<>
-					<View style={{ width: '100%', height: 50, alignItems: 'center', justifyContent: 'center', marginBottom: -15 }}>
-						<Text style={[ ProfileStyle.title, { color: lightMode ? Theme.preto : Theme.branco, textAlign: 'center' } ]}>Encomendas</Text>
-					</View>
 					<FlatList
 						maxToRenderPerBatch={5}	
 						initialNumToRender={8}
@@ -101,7 +91,6 @@ export default class App extends React.Component {
 		} else if ( item.id == 'info' && this.state.choose == 'info' ) {
 			return (
 				<>
-					<Text style={[ ProfileStyle.title, { color: lightMode ? Theme.preto : Theme.branco, textAlign: 'center' } ]}>Minhas Informações</Text>
 					<View style={{ alignItems: 'center', height: 500, width: '100%' }}>
 						<View style={ ProfileStyle.info } >
 							<View style={ { flex: 1, justifyContent: 'space-around' } }>

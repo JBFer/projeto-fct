@@ -36,11 +36,13 @@ export default class Fav extends React.Component {
 	}
 
 	componentDidMount() {
-		fetch( api_url+'products/favorites')
-			.then(response => response.json())
-			.then(data => {
-				this.setState({ array: data.list, loading: false });
-			})
+		setTimeout(() => {
+			fetch( api_url+'products/favorites')
+				.then(response => response.json())
+				.then(data => {
+					this.setState({ array: data.list, loading: false });
+				})
+		}, 1000);
 	}
     
 	addFav = (un) => {

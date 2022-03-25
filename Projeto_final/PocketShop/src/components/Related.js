@@ -1,19 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar'
 import { 
-    StyleSheet,
-    Text,
-    View,
-    Button,
-    Switch,
-    ScrollView,
-    TextInput,
-	Modal,
-	Image,
-	SafeAreaView,
-	SectionList,
-	FlatList,
-    TouchableOpacity
+	FlatList
 } from 'react-native';
 
 import Theme from '../styles/Comum' 
@@ -24,17 +12,20 @@ import EachProd from './EachProd';
 import NoProd from './NoProd';
 
 export default props => {
-	const [data, setData] = useState([]);
+	const [produtos, setData] = useState([]);
 
 	useEffect(() => {
-		//console.warn(id);
-		fetch( api_url+'products/filter/'+props.filter)
-			.then(response => response.json())
-			.then(data => {
-				//console.log(data.object);
-				setData(data.list);
-			})
-	})
+		//console.warn(id)
+        //console.warn(props.filter)
+        fetch( api_url+'products/filter/'+props.filter)
+            .then(response => response.json())
+            .then(data => {
+                //console.log(data.object);
+                //console.warn(data)
+                setData(data.list);
+            })
+        
+	},[props.filter])
 
 	const _renderItem = ({item}) => {
         return (
@@ -68,7 +59,7 @@ export default props => {
             style={{ marginBottom: 5, marginTop: 20, height: 300 }}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
-            data={data}
+            data={produtos}
             horizontal
             renderItem={_renderItem}
             keyExtractor={_keyExtractor}
