@@ -13,6 +13,8 @@ import {
 import Theme from '../styles/Comum' 
 import CatalogStyle from '../styles/CatalogStyle' 
 
+import Home from './Home'
+
 import Filter from './Filter' 
 import EachProd from '../components/EachProd'
 import Products from '../data/prods/Products'
@@ -22,7 +24,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import Icon3 from 'react-native-vector-icons/FontAwesome'
 import Icon2 from 'react-native-vector-icons/Ionicons'
 
-import { lightMode } from '../constants/global'
+import myGlobals from '../constants/global'
 import { api_url } from '../constants/host';
 import Loading from '../components/Loading';
 
@@ -32,6 +34,7 @@ export default class App extends React.PureComponent {
 		pesquisa: {},
 		searchTxt: '',
 		search: false,
+		change: false,
 		array:[],
 		array_v:[],
 		array_pesq:[],
@@ -83,7 +86,7 @@ export default class App extends React.PureComponent {
 			return null
 		}
 		else {
-			return <Text style={[ CatalogStyle.Txt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
+			return <Text style={[ CatalogStyle.Txt, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
 		}
 	}
 	
@@ -93,7 +96,8 @@ export default class App extends React.PureComponent {
 	}
 	
 	irCart = () => {
-		console.warn('Ir cart')
+		myGlobals.lightMode = !myGlobals.lightMode;
+		console.warn(myGlobals.lightMode)
 	}
 	
 	
@@ -109,13 +113,13 @@ export default class App extends React.PureComponent {
 					id_comp: item.id_comp,
 					company: item.company,
 					desc: item.details,
-					date: item.stock,
+					date: item.pubdate,
 					subcategory: item.subcatg,
 					views: item.views,
 					stock: item.stock,
-					active: item.active
+					favorite: item.favorite
 				})
-			} item={item} name={item.name} image={item.img} date={item.pubdate} company={item.company} un={item.idProducts} price={item.price}/>
+			} item={item} name={item.name} image={item.img} date={item.pubdate} company={item.company} un={item.idProducts} price={item.price} favorite={item.favorite} pressCheck={() => new Home().changeFavoriteState(1)}/>
 		)
 	}
 	
@@ -131,20 +135,20 @@ export default class App extends React.PureComponent {
 				return (
 					<View style={{ marginBottom: 20 }}>
 						<View style={ CatalogStyle.topPart }>
-							<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: lightMode ? Theme.preto : Theme.branco }}>
+							<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: myGlobals.lightMode ? Theme.preto : Theme.branco }}>
 								<TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
-									<Icon2 name='search' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
+									<Icon2 name='search' size={25} style={{ color: myGlobals.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
 								</TouchableOpacity>
 								<TextInput 
-									style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
+									style={ [CatalogStyle.input, { color: myGlobals.lightMode ? Theme.preto : Theme.branco , borderBottomColor: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}
 									placeholder='Procurar'
-									placeholderTextColor={lightMode ? '#7d868f' : '#babfc4'}
+									placeholderTextColor={myGlobals.lightMode ? '#7d868f' : '#babfc4'}
 									value={this.state.searchTxt}
 									onChangeText={txt => this.searchFor(txt)}
 								/>
 							</View>
 						</View>
-						<Text style={[ CatalogStyle.Txt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
+						<Text style={[ CatalogStyle.Txt, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
 						{this.state.loading1 ? 
 							<Loading/> 
 						: 
@@ -173,6 +177,7 @@ export default class App extends React.PureComponent {
 							<FlatList  
 								ListEmptyComponent={<NoProd />}
 								initialNumToRender={20}
+								style={{ width: '100%', alignItems: 'center' }}
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}
 								data={this.state.array}
@@ -190,9 +195,9 @@ export default class App extends React.PureComponent {
     
     render() {
         return (
-			<View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
+			<View style={ { flex: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark } }>
 				<Filter 
-					themeMode={lightMode} 
+					themeMode={myGlobals.lightMode} 
 					isVisible={this.state.showModal} 
 					txt={this.state.searchTxt}
 					onCancel={() => { 
@@ -205,15 +210,15 @@ export default class App extends React.PureComponent {
 
 
 
-				<StatusBar style={lightMode ? 'dark' : 'light'} />
+				<StatusBar style={myGlobals.lightMode ? 'dark' : 'light'} />
 
 				<View style={[ CatalogStyle.headerPart, styles.container ]}>
 					<TouchableOpacity onPress={() => { this.setState({ showModal: true }) }}>
-						<Icon2 name='filter' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco}} />
+						<Icon2 name='filter' size={25} style={{ color: myGlobals.lightMode ? Theme.preto : Theme.branco}} />
 					</TouchableOpacity>
-					<Text style={[ CatalogStyle.welcome, { color: lightMode ? Theme.preto : Theme.branco } ]}>PocketShop</Text>
+					<Text style={[ CatalogStyle.welcome, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>PocketShop</Text>
 					<TouchableOpacity onPress={() => { this.irCart() }}>
-						<Icon3 name='shopping-cart' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco, paddingRight: 10}} />
+						<Icon3 name='shopping-cart' size={25} style={{ color: myGlobals.lightMode ? Theme.preto : Theme.branco, paddingRight: 10}} />
 					</TouchableOpacity>
 				</View>
 				
@@ -248,14 +253,14 @@ export default class App extends React.PureComponent {
 									ListHeaderComponent={
 										<View style={ CatalogStyle.topPart }>
 											<View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
-												<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: lightMode ? Theme.preto : Theme.branco }}>
+												<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: myGlobals.lightMode ? Theme.preto : Theme.branco }}>
 													<TouchableOpacity activeOpacity={0.4} onPress={() => this.setState({ search: false, searchTxt: '' })}>
-														<Icon2 name='arrow-back' size={25} style={{ color: lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
+														<Icon2 name='arrow-back' size={25} style={{ color: myGlobals.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
 													</TouchableOpacity>
 													<TextInput 
-														style={ [CatalogStyle.input, { color: lightMode ? Theme.preto : Theme.branco , borderBottomColor: lightMode ? Theme.preto : Theme.branco } ]}
+														style={ [CatalogStyle.input, { color: myGlobals.lightMode ? Theme.preto : Theme.branco , borderBottomColor: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}
 														placeholder='Procurar'
-														placeholderTextColor={lightMode ? '#7d868f' : '#babfc4'}
+														placeholderTextColor={myGlobals.lightMode ? '#7d868f' : '#babfc4'}
 														value={this.state.searchTxt}
 														onChangeText={txt => this.searchFor(txt)}
 													/>

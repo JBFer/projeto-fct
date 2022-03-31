@@ -6,7 +6,7 @@ import {
 
 import Theme from '../styles/Comum' 
 
-import { lightMode } from '../constants/global'
+import myGlobals from '../constants/global'
 import { api_url } from '../constants/host';
 import EachProd from './EachProd';
 import NoProd from './NoProd';
@@ -41,9 +41,10 @@ export default props => {
                 subcategory: item.subcatg,
                 views: item.views,
                 stock: item.stock,
-                active: item.active
+                active: item.active,
+                favorite: item.favorite
             })
-        } item={item} name={item.name} image={item.img} date={item.pubdate} company={item.company} un={item.idProducts} price={item.price}/>
+        } item={item} name={item.name} image={item.img} date={item.pubdate} company={item.company} un={item.idProducts} price={item.price} favorite={item.favorite}/>
         );
     }
 

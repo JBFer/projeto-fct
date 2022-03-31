@@ -24,7 +24,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import Icon3 from 'react-native-vector-icons/FontAwesome'
 import Icon2 from 'react-native-vector-icons/Ionicons'
 
-import { lightMode } from '../constants/global'
+import myGlobals from '../constants/global'
 import { api_url } from '../constants/host';
 import { ThemeProvider } from '@react-navigation/native';
 import Loading from '../components/Loading';
@@ -35,18 +35,27 @@ export default class Fav extends React.Component {
 		loading: true
 	}
 
+	//fazer loading dos favoritos
+
 	componentDidMount() {
 		setTimeout(() => {
-			fetch( api_url+'products/favorites')
-				.then(response => response.json())
-				.then(data => {
-					this.setState({ array: data.list, loading: false });
-				})
-		}, 1000);
+			this.fetchdata()
+		}, 800);
 	}
+
+	fetchdata = () => {
+		fetch( api_url+'products/favorites')
+			.then(response => response.json())
+			.then(data => {
+				this.setState({ array: data.list, loading: false });
+			})
+	}
+
+	//quando é clicado um dos buttons do favorito
     
-	addFav = (un) => {
-		console.log("a")
+	changeFavoriteState = () => {
+		console.log("change")
+		this.fetchdata()
 	}
 
 	renderListItem = ({ item }) => {
@@ -60,13 +69,12 @@ export default class Fav extends React.Component {
 					id_comp: item.id_comp,
 					company: item.company,
 					desc: item.details,
-					date: item.stock,
+					date: item.pubdate,
 					subcategory: item.subcatg,
 					views: item.views,
 					stock: item.stock,
-					active: item.active
 				})
-			} item={item} name={item.name} image={item.img} date={item.stock} company={item.company} un={item.idProducts} pressCheck={(un) => this.addFav(un)} price={item.price}/>
+			} item={item} name={item.name} price={item.price} image={item.img} date={item.pubdate} company={item.company} un={item.idProducts} pressCheck={() => this.changeFavoriteState()}/>
 		)
 	}
 	
@@ -78,9 +86,9 @@ export default class Fav extends React.Component {
   	}
     render() {
 		return (
-			<View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
-				<View style={[ FavStyle.headerPart, { borderColor: lightMode? Theme.preto : Theme.branco } ]}>
-					<Text style={{ fontSize: 30,color: lightMode? Theme.preto : Theme.branco }}>Favoritos</Text>
+			<View style={ { flex: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark } }>
+				<View style={[ FavStyle.headerPart, { borderColor: myGlobals.lightMode? Theme.preto : Theme.branco } ]}>
+					<Text style={{ fontSize: 30,color: myGlobals.lightMode? Theme.preto : Theme.branco }}>Favoritos</Text>
 				</View>
 				{this.state.loading ? 
 					<Loading/> 
@@ -88,7 +96,7 @@ export default class Fav extends React.Component {
 					<FlatList  
 					maxToRenderPerBatch={10}	
 					initialNumToRender={10}
-					style={{ backgroundColor: lightMode ? '#FAF9F6' : Theme.backDark }}
+					style={{ backgroundColor: myGlobals.lightMode ? '#FAF9F6' : Theme.backDark }}
 					showsVerticalScrollIndicator={false}
 					showsHorizontalScrollIndicator={false}
 					data={this.state.array}

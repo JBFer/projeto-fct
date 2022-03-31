@@ -23,7 +23,7 @@ import EachCatgProfile from '../components/EachCatgProfile'
 
 import EncDetails from './EncDetails'
 
-import { lightMode } from '../constants/global'
+import myGlobals from '../constants/global'
 import { products_user } from '../services/products';
 import { login } from '../services/user';
 
@@ -57,9 +57,8 @@ export default class App extends React.Component {
 						initialNumToRender={6}
 						showsVerticalScrollIndicator={false}
 						showsHorizontalScrollIndicator={false}
-						style={{ backgroundColor: lightMode ? '#e4e4e4' : Theme.preto }}
+						style={{ backgroundColor: myGlobals.lightMode ? '#e4e4e4' : Theme.preto, height: 300 }}
 						data={item.list}
-						style={{ height: 300 }}
 						numColumns={3}
 						renderItem={this.renderListItemCatg}
 						keyExtractor={this.keyExtractor}
@@ -94,22 +93,22 @@ export default class App extends React.Component {
 					<View style={{ alignItems: 'center', height: 500, width: '100%' }}>
 						<View style={ ProfileStyle.info } >
 							<View style={ { flex: 1, justifyContent: 'space-around' } }>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Empresa:</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Contribuinte:</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Email:</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Telefone:</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Morada de Entrega:</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Morada de Faturação:</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >Password:</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Empresa:</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Contribuinte:</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Email:</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Telefone:</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Morada de Entrega:</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Morada de Faturação:</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Password:</Text>
 							</View>
 							<View style={ { flex: 1, justifyContent: 'space-around' } }>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.company }</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.contribuinte }</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.email }</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.telefone }</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.moradaEnt }</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.moradaFat }</Text>
-								<Text style={[ ProfileStyle.spec, { color: lightMode ? Theme.preto : Theme.branco } ]} >{ item.password }</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.company }</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.contribuinte }</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.email }</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.telefone }</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.moradaEnt }</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.moradaFat }</Text>
+								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.password }</Text>
 							</View>
 						</View>
 					</View>
@@ -171,13 +170,13 @@ export default class App extends React.Component {
 		return (
 			<View style={{ height: 40, borderBottomWidth: 1, justifyContent: 'center', alignItems: 'center' , flexDirection: 'row', borderColor: '#D3D3D3' }}>
 				<TouchableOpacity onPress={() => this.setState({ choose: 'info' })} style={{ flex: 1, alignItems: 'center', borderRightWidth: 0.6, borderColor: '#D3D3D3'  }}>
-					<Text style={{ fontSize: 17, color: lightMode ? Theme.preto : Theme.branco }}>Informações</Text>
+					<Text style={{ fontSize: 17, color: myGlobals.lightMode ? Theme.preto : Theme.branco }}>Informações</Text>
 				</TouchableOpacity>
 				<TouchableOpacity onPress={() => this.setState({ choose: 'encomendas' })} style={{ flex: 1, borderLeftWidth: 0.6, borderRightWidth: 0.6, alignItems: 'center', borderColor: '#D3D3D3' }}>
-					<Text style={{ fontSize: 17, color: lightMode ? Theme.preto : Theme.branco }}>Encomendas</Text>
+					<Text style={{ fontSize: 17, color: myGlobals.lightMode ? Theme.preto : Theme.branco }}>Encomendas</Text>
 				</TouchableOpacity>
 				<TouchableOpacity onPress={() => this.setState({ choose: 'interesses' })} style={{ flex: 1, borderLeftWidth: 0.6, alignItems: 'center', borderColor: '#D3D3D3' }}>
-					<Text style={{ fontSize: 17, color: lightMode ? Theme.preto : Theme.branco }}>Interesses</Text>
+					<Text style={{ fontSize: 17, color: myGlobals.lightMode ? Theme.preto : Theme.branco }}>Interesses</Text>
 				</TouchableOpacity>
 			</View>
 		)
@@ -190,25 +189,25 @@ export default class App extends React.Component {
     render (){
 		const { navigation } = this.props;
 		return (
-		<View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.preto } }>
-			<StatusBar style={lightMode ? 'dark' : 'light'} />
-			<View style={[ ProfileStyle.imageBack, { backgroundColor: lightMode ? '#e4e4e4' : Theme.preto } ]} >
+		<View style={ { flex: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.preto } }>
+			<StatusBar style={myGlobals.lightMode ? 'dark' : 'light'} />
+			<View style={[ ProfileStyle.imageBack, { backgroundColor: myGlobals.lightMode ? '#e4e4e4' : Theme.preto } ]} >
 				<View style={{ width: '90%', height: '29%', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
 					<TouchableOpacity onPress={() => navigation.navigate('Definicoes')} onThemeChange={() => {}} style={{  }}>
-						<Icon2 name='menu' color={ lightMode ? Theme.preto : Theme.branco } size={38} />
+						<Icon2 name='menu' color={ myGlobals.lightMode ? Theme.preto : Theme.branco } size={38} />
 					</TouchableOpacity>
 				</View>
 				<View style={{ width: '100%', height: '71%', alignItems: 'center' }}>
-					<View style={{ width: 90, height: 90, borderRadius: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: lightMode ? Theme.preto : Theme.branco }}>
-						<Text style={{ fontSize: 35, color: lightMode ? Theme.branco : Theme.preto }}>BL</Text>	
+					<View style={{ width: 90, height: 90, borderRadius: 100, alignItems: 'center', justifyContent: 'center', backgroundColor: myGlobals.lightMode ? Theme.preto : Theme.branco }}>
+						<Text style={{ fontSize: 35, color: myGlobals.lightMode ? Theme.branco : Theme.preto }}>BL</Text>	
 					</View>
 					<View style={{ alignItems: 'center', height: 80, width: '100%', marginTop: 5 }}>
-						<Text style={[ ProfileStyle.name, { color: lightMode ? Theme.preto : Theme.branco } ]} >BigLevel</Text>
+						<Text style={[ ProfileStyle.name, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >BigLevel</Text>
 					</View>
 				</View>
 			</View>
 			<EncDetails 
-				themeMode={lightMode} 
+				themeMode={myGlobals.lightMode} 
 				isVisible={this.state.visibleModal} 
 				onCancel={() => { 
 					this.setState({ visibleModal: false })
@@ -222,7 +221,7 @@ export default class App extends React.Component {
 				moradaFaturacao={this.state.moradaFaturacao}
 				moradaEntrega={this.state.moradaEntrega}
 			/>
-			<View style={[ ProfileStyle.bodyPart, { backgroundColor: lightMode ? Theme.branco : Theme.backDark } ]}>
+			<View style={[ ProfileStyle.bodyPart, { backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark } ]}>
 					<SectionList
 						contentContainerStyle={{ paddingHorizontal: 10 }}
 						showsVerticalScrollIndicator={false}

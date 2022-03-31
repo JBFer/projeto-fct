@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import Theme from '../styles/Comum'  
-import { lightMode } from '../constants/global'
+import myGlobals from '../constants/global'
 
 
 export default props => {
@@ -19,8 +19,8 @@ export default props => {
  	return (
 		<View style={ styles.eachOne }>
       		<TouchableOpacity activeOpacity={0.5} style={ styles.eachOneT } onPress={() => {mandarCatg()}}>
-				<Icon name={props.icon} size={35} style={{ color: lightMode ? Theme.preto : Theme.branco }} />
-		 		<Text style={[ styles.eachTxt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{props.category}</Text>
+				<Icon name={props.icon} size={35} style={{ color: myGlobals.lightMode ? Theme.preto : Theme.branco }} />
+		 		<Text style={[ styles.eachTxt, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{props.category}</Text>
      		</TouchableOpacity>
 		</View>
   	)

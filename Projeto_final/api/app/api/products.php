@@ -64,10 +64,15 @@ $app->get('/products/user[/{order}]', function (Request $request, Response $resp
 
     $query = "
         SELECT DISTINCT
-            products.*
+            products.*,
+            CASE
+                WHEN favorites.idFavorites IS NULL THEN 0
+                ELSE 1
+            END AS favorite
         FROM products
         LEFT JOIN pc ON pc.id_prod = products.idProducts
         LEFT JOIN collections ON collections.idCollections = pc.id_col
+        LEFT JOIN favorites ON favorites.id_prod = products.idProducts AND favorites.id_user = ?
         WHERE
             products.active = 1
             AND
@@ -97,7 +102,7 @@ $app->get('/products/user[/{order}]', function (Request $request, Response $resp
 
     $stmt = get_app()->db->prepare($sql);
 
-    $stmt->bind_param('i', $_SESSION["id"]);
+    $stmt->bind_param('ii', $_SESSION["id"], $_SESSION["id"]);
     
     $ok = $stmt->execute();
 
@@ -153,10 +158,15 @@ $app->get('/products/visited[/{order}[/{limit:[0-9]+}]]', function (Request $req
 
     $query = "
         SELECT DISTINCT
-            products.*
+            products.*,
+            CASE
+				WHEN favorites.idFavorites IS NULL THEN 0
+                ELSE 1
+            END AS favorite
         FROM products
         LEFT JOIN pc ON pc.id_prod = products.idProducts
         LEFT JOIN collections ON collections.idCollections = pc.id_col
+        LEFT JOIN favorites ON favorites.id_prod = products.idProducts AND favorites.id_user = ?
         WHERE
             products.active = 1
             AND
@@ -194,7 +204,7 @@ $app->get('/products/visited[/{order}[/{limit:[0-9]+}]]', function (Request $req
 
     $order = $request->getAttribute('order');
 
-    $stmt->bind_param('i',  $_SESSION["id"]);
+    $stmt->bind_param('ii',  $_SESSION["id"],  $_SESSION["id"]);
     
     $ok = $stmt->execute();
 
@@ -202,7 +212,7 @@ $app->get('/products/visited[/{order}[/{limit:[0-9]+}]]', function (Request $req
         $ret = (object) [
             'status' => false,
             'error' => 500,
-            'msg' => 'Error 500, a database pifo    u (งº_º)ง'
+            'msg' => 'Error 500, a database pifou (งº_º)ง'
         ];
 
         return get_app()->utils->return_json($ret, $response);
@@ -698,10 +708,15 @@ $app->get('/products/filter/{subcategory:[0-9]+}[/{order}]', function (Request $
 
     $query = "
         SELECT DISTINCT
-            products.*
+            products.*,
+            CASE
+				WHEN favorites.idFavorites IS NULL THEN 0
+                ELSE 1
+            END AS favorite
         FROM products
         LEFT JOIN pc ON pc.id_prod = products.idProducts
         LEFT JOIN collections ON collections.idCollections = pc.id_col
+        LEFT JOIN favorites ON favorites.id_prod = products.idProducts AND favorites.id_user = ?
         WHERE
             products.active = 1
             AND
@@ -732,7 +747,7 @@ $app->get('/products/filter/{subcategory:[0-9]+}[/{order}]', function (Request $
     $sql = get_app()->utils->order_function($query, $field);
 
     $stmt = get_app()->db->prepare($sql);
-    $stmt->bind_param('ii', $subcategory, $_SESSION["id"]);
+    $stmt->bind_param('iii', $_SESSION["id"], $subcategory, $_SESSION["id"]);
 
     $ok = $stmt->execute();
 

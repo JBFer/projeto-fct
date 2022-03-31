@@ -49,26 +49,41 @@ catch (e) {
 
 // AsyncStorage.setItem('key', JSON.stringify(false))
 
-var ThemeMode = (function() {
+/*
+var detectChange = (function() {
+	var flag = false;
 	var lightMode = true;
 
+	var getFlag = function() {
+		return flag;
+	};
+	
 	var getLightMode = function() {
 		return lightMode;
 	};
 
-	var setLightMode = function(changeTheme) {
-		lightMode ? false : true;    
+	var setFlag = function(detectChange) {
+		flag = flag ? false : true;    
+	};
+
+	var setLightMode = function(detectChange) {
+		lightMode = lightMode ? false : true;    
 	};
 
 	return {
+		getFlag: getFlag,
 		getLightMode: getLightMode,
+		setFlag: setFlag,
 		setLightMode: setLightMode,
 	}
 })();
   
-  //export default ThemeMode;
+export default detectChange;
+*/
 
-const lightMode = false
+export default {
+	lightMode: false,
+	changes: false
+};
 
-
-export { lightMode };
+//export { lightMode };

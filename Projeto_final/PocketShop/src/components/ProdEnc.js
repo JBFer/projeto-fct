@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import Theme from '../styles/Comum'  
-import { lightMode } from '../constants/global'
+import myGlobals from '../constants/global'
 
 export default props => {
 	
@@ -13,13 +13,13 @@ export default props => {
       		<View style={ styles.eachOneT }>
 				<View style={{ width: '90%', height: '100%', justifyContent: 'center'  }}>
 					<View style={{ flexDirection: 'row', alignItems: 'flex-end' , justifyContent:'space-between', height: '60%' }}>
-						<Text style={[ styles.eachTxt, { color: lightMode ? Theme.preto : Theme.branco } ]}>{props.name}</Text>
-						<Text style={[ styles.eachDate, { color: lightMode ? Theme.preto : Theme.branco } ]}>{props.qnt}x</Text>
+						<Text style={[ styles.eachTxt, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{props.name}</Text>
+						<Text style={[ styles.eachDate, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{props.qnt}x</Text>
 					</View>
 					<View style={{ flexDirection: 'row', alignItems: 'center' , justifyContent:'space-between', height: '40%' }}>
 						<View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-							<Text style={{ color: lightMode ? Theme.preto : Theme.branco, fontSize: 10, marginBottom: 2.2 }}>Preço p/UN</Text>
-							<Text style={[ styles.eachPrice, { color: lightMode ? Theme.preto : Theme.branco } ]}> {props.price}€</Text>
+							<Text style={{ color: myGlobals.lightMode ? Theme.preto : Theme.branco, fontSize: 10, marginBottom: 2.2 }}>Preço p/UN</Text>
+							<Text style={[ styles.eachPrice, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}> {props.price}€</Text>
 						</View>
 					</View>
 				</View>

@@ -16,7 +16,7 @@ import {
 import Theme from '../styles/Comum' 
 import LoginStyle from '../styles/LoginStyle' 
 
-import { lightMode } from '../constants/global'
+import myGlobals from '../constants/global'
 import { api_url } from '../constants/host';
 
 export default class Login extends React.Component {
@@ -67,8 +67,8 @@ export default class Login extends React.Component {
 
     render() {
         return (
-            <View style={ { flex: 1, backgroundColor: lightMode ? Theme.branco : Theme.backDark } }>
-                <StatusBar style={lightMode ? 'dark' : 'light'} backgroundColor="white" />
+            <View style={ { flex: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark } }>
+                <StatusBar style={myGlobals.lightMode ? 'dark' : 'light'} backgroundColor="white" />
                 <ImageBackground style={{ flex: 1 }} resizeMode='cover' source={require("../../assets/imageBackground.png")}>
                     <View style={ LoginStyle.topPart } ></View>
                     <View style={ LoginStyle.middlePart } >

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Theme from '../styles/Comum'  
-import { lightMode } from '../constants/global'
+import myGlobals from '../constants/global'
 
 import { api_url } from '../constants/host';
 
@@ -24,7 +24,7 @@ export default props => {
 		fetch( api_url+'removeFavorite/'+props.un, {
 			method: 'DELETE'
 		})
-		console.warn('O produto de id ' + props.un + ' foi retirado aos favoritos' )
+		Alert.alert('Produto removido', 'O produto de id ' + props.un + ' foi retirado dos favoritos' )
 	}
 
 	const adicionar = () => {
@@ -35,7 +35,7 @@ export default props => {
 				 id_prod: props.un 
 			})
 		})
-		console.warn('O produto de id ' + props.un + ' foi adicionado aos favoritos' )
+		Alert.alert('Produto adicionado', 'O produto de id ' + props.un + ' foi adicionado aos favoritos' )
 	}
 	
 	const toBig = (title) => {
@@ -62,7 +62,7 @@ export default props => {
 	
  	return (
 		<View>
-			<TouchableOpacity activeOpacity={0.8} style={[ styles.each, { borderColor: lightMode? Theme.branco : Theme.backDark } ]} onPress={() => props.onClick()}>
+			<TouchableOpacity activeOpacity={0.8} style={[ styles.each, { borderColor: myGlobals.lightMode? Theme.branco : Theme.backDark } ]} onPress={() => props.onClick()}>
 				<View transform={([{ rotate: '62deg' }])} style={ styles.imgPlace }>
 					<Image transform={([{ rotate: '-62deg' }])} resizeMode='cover' style={styles.image} source={{uri: props.image}} />
 				</View>
@@ -77,7 +77,7 @@ export default props => {
 					<TouchableOpacity style={{ width: 35, height: 35, alignItems: 'flex-end', justifyContent: 'center' }} 
 						onPress={() => {
 							changeIcon()
-							props.pressCheck(props.un)
+							props.pressCheck()
 						}} >
 						{ icon &&
 							<Icon name='heart' id='iconX' color = '#03C04A' size={22}/>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 		height: 130,
 		marginTop: 20,
 		elevation: 4,
-		backgroundColor: lightMode ? Theme.branco : Theme.preto,
+		backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.preto,
 		marginLeft: 10,
 		marginRight: 10
 	},
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
 		overflow: 'hidden',
 		marginLeft: -55,
 		borderTopWidth: 1,
-		borderColor: lightMode? Theme.preto : Theme.branco,
+		borderColor: myGlobals.lightMode? Theme.preto : Theme.branco,
 		zIndex: 100
 	},
 	imgLabelTop: {
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
 	},
 	labelTxt: {
 		fontSize: 15,
-		color: lightMode? Theme.preto : Theme.branco
+		color: myGlobals.lightMode? Theme.preto : Theme.branco
 	}
 })
 
