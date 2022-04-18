@@ -30,24 +30,36 @@ import { ThemeProvider } from '@react-navigation/native';
 import Loading from '../components/Loading';
 
 export default class Fav extends React.Component {
-	state = {
-		array:[],
-		loading: true
-	}
+	constructor (props) {
+		super(props)
+		this.state = {
+			array:[],
+			isFetching: false,
+			loading: true          
+		}
+	  }
 
 	//fazer loading dos favoritos
 
 	componentDidMount() {
 		setTimeout(() => {
-			this.fetchdata()
+			fetch( api_url+'products/favorites')
+				.then(response => response.json())
+				.then(data => {
+					this.setState({ array: data.list, loading: false, isFetching: false });
+				})
 		}, 800);
+	}
+
+	onRefresh() {
+		this.setState({isFetching: true,},() => {this.fetchdata();});
 	}
 
 	fetchdata = () => {
 		fetch( api_url+'products/favorites')
 			.then(response => response.json())
 			.then(data => {
-				this.setState({ array: data.list, loading: false });
+				this.setState({ array: data.list, loading: false, isFetching: false });
 			})
 	}
 
@@ -100,6 +112,8 @@ export default class Fav extends React.Component {
 					showsVerticalScrollIndicator={false}
 					showsHorizontalScrollIndicator={false}
 					data={this.state.array}
+					onRefresh={() => this.onRefresh()}
+    				refreshing={this.state.isFetching}
 					renderItem={this.renderListItem}
 					keyExtractor={this.keyExtractor}
 					ListFooterComponent={

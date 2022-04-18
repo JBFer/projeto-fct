@@ -1,5 +1,6 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar'
+import store from '../constants/store'
 import { 
     StyleSheet,
     Text,
@@ -12,8 +13,6 @@ import {
 
 import Theme from '../styles/Comum' 
 import CatalogStyle from '../styles/CatalogStyle' 
-
-import Home from './Home'
 
 import Filter from './Filter' 
 import EachProd from '../components/EachProd'
@@ -30,6 +29,8 @@ import Loading from '../components/Loading';
 
 export default class App extends React.PureComponent {
     state = {
+		//lightMode: store.getState("lightMode").value,
+		lightMode: myGlobals.lightMode,
         showModal: false,
 		pesquisa: {},
 		searchTxt: '',
@@ -38,13 +39,30 @@ export default class App extends React.PureComponent {
 		array:[],
 		array_v:[],
 		array_pesq:[],
+		categories:[],
+		subcategories:[],
 		loading: true,
 		loading1: true,
-		loading2: false
+		loading2: false,
+		isFetching: false
 	}
 
 
 	componentDidMount() {
+		this.fetchdata()
+	}
+
+	fetchdata = () => {
+		fetch(api_url+'products/catgs')
+			.then(response => response.json())
+			.then(data => {
+				this.setState({ categories: data.list });
+			})
+		fetch(api_url+'products/subcatgs')
+			.then(response => response.json())
+			.then(data => {
+				this.setState({ subcategories: data.list });
+			})
 		setTimeout(() => {
 			fetch( api_url+'products/visited/views/10')
 				.then(response => response.json())
@@ -56,27 +74,48 @@ export default class App extends React.PureComponent {
 			fetch( api_url+'products/user')
 				.then(response => response.json())
 				.then(data => {
-					this.setState({ array: data.list, loading: false });
+					this.setState({ array: data.list, loading: false, isFetching: false });
 				})
 		}, 1500);
 	}
 
-
-
+	onRefresh() {
+		this.setState({
+			isFetching: true,
+			array:[],
+			array_v:[],
+			loading: true,
+			loading1: true,
+		},() => {
+			this.fetchdata()
+		});
+	}
+	
 	searchInput = () => {
 		this.setState({ loading2: true, search: true })
-		setTimeout(() => {
-			fetch(api_url+'products/search/'+this.state.searchTxt)
-				.then(response => response.json())
-				.then(data => {
-					this.setState({ array_pesq: data.list, loading2: false });
-				})
-		}, 1500);
+		if (!this.state.pesquisa.subcatg){
+			setTimeout(() => {
+				fetch(api_url+'products/search/'+this.state.searchTxt)
+					.then(response => response.json())
+					.then(data => {
+						this.setState({ array_pesq: data.list, loading2: false });
+					})
+			}, 1500);
+		} else {
+			setTimeout(() => {
+				fetch(api_url+'products/search/'+this.state.searchTxt+'/'+this.state.pesquisa.subcatg)
+					.then(response => response.json())
+					.then(data => {
+						this.setState({ array_pesq: data.list, loading2: false });
+					})
+			}, 1500);
+		}
+
     }
 
 
  	searchFor = txt => {
-		let pesquisa = {searchTxt: txt}
+		let pesquisa = {searchTxt: txt, subcatg: null}
 		this.setState({ pesquisa, searchTxt: txt })
 	} 
 
@@ -86,7 +125,7 @@ export default class App extends React.PureComponent {
 			return null
 		}
 		else {
-			return <Text style={[ CatalogStyle.Txt, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
+			return <Text style={[ CatalogStyle.Txt, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
 		}
 	}
 	
@@ -96,8 +135,13 @@ export default class App extends React.PureComponent {
 	}
 	
 	irCart = () => {
-		myGlobals.lightMode = !myGlobals.lightMode;
-		console.warn(myGlobals.lightMode)
+		console.warn('Ir cart')
+		/* setTimeout(() => {
+			let light = store.getState("lightMode").value
+			console.log(light)
+			store.setState("lightMode", !light,{persist: true})
+		}, 2000);
+		console.log(store.getState("lightMode").value) */
 	}
 	
 	
@@ -119,7 +163,7 @@ export default class App extends React.PureComponent {
 					stock: item.stock,
 					favorite: item.favorite
 				})
-			} item={item} name={item.name} image={item.img} date={item.pubdate} company={item.company} un={item.idProducts} price={item.price} favorite={item.favorite} pressCheck={() => new Home().changeFavoriteState(1)}/>
+			} item={item} name={item.name} image={item.img} date={item.pubdate} company={item.company} un={item.idProducts} price={item.price} favorite={item.favorite} />
 		)
 	}
 	
@@ -135,20 +179,20 @@ export default class App extends React.PureComponent {
 				return (
 					<View style={{ marginBottom: 20 }}>
 						<View style={ CatalogStyle.topPart }>
-							<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: myGlobals.lightMode ? Theme.preto : Theme.branco }}>
+							<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: this.state.lightMode ? Theme.preto : Theme.branco }}>
 								<TouchableOpacity activeOpacity={0.4} onPress={() => this.searchInput()}>
-									<Icon2 name='search' size={25} style={{ color: myGlobals.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
+									<Icon2 name='search' size={25} style={{ color: this.state.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
 								</TouchableOpacity>
 								<TextInput 
-									style={ [CatalogStyle.input, { color: myGlobals.lightMode ? Theme.preto : Theme.branco , borderBottomColor: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}
+									style={ [CatalogStyle.input, { color: this.state.lightMode ? Theme.preto : Theme.branco , borderBottomColor: this.state.lightMode ? Theme.preto : Theme.branco } ]}
 									placeholder='Procurar'
-									placeholderTextColor={myGlobals.lightMode ? '#7d868f' : '#babfc4'}
+									placeholderTextColor={this.state.lightMode ? '#7d868f' : '#babfc4'}
 									value={this.state.searchTxt}
 									onChangeText={txt => this.searchFor(txt)}
 								/>
 							</View>
 						</View>
-						<Text style={[ CatalogStyle.Txt, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
+						<Text style={[ CatalogStyle.Txt, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>{section.title}</Text>
 						{this.state.loading1 ? 
 							<Loading/> 
 						: 
@@ -158,6 +202,7 @@ export default class App extends React.PureComponent {
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}
 								data={this.state.array_v}
+								refreshing={this.state.isFetching}
 								horizontal
 								renderItem={this.renderListItem}
 								keyExtractor={this.keyExtractor}
@@ -181,6 +226,7 @@ export default class App extends React.PureComponent {
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}
 								data={this.state.array}
+								refreshing={this.state.isFetching}
 								numColumns={2}
 								renderItem={this.renderListItem}
 								keyExtractor={this.keyExtractor}
@@ -195,11 +241,13 @@ export default class App extends React.PureComponent {
     
     render() {
         return (
-			<View style={ { flex: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark } }>
+			<View style={ { flex: 1, backgroundColor: this.state.lightMode ? Theme.branco : Theme.backDark } }>
 				<Filter 
-					themeMode={myGlobals.lightMode} 
+					themeMode={this.state.lightMode} 
 					isVisible={this.state.showModal} 
 					txt={this.state.searchTxt}
+					categories={this.state.categories}
+					subcategories={this.state.subcategories}
 					onCancel={() => { 
 						this.setState({ showModal: false })
 					}}
@@ -210,15 +258,15 @@ export default class App extends React.PureComponent {
 
 
 
-				<StatusBar style={myGlobals.lightMode ? 'dark' : 'light'} />
+				<StatusBar style={this.state.lightMode ? 'dark' : 'light'} />
 
 				<View style={[ CatalogStyle.headerPart, styles.container ]}>
 					<TouchableOpacity onPress={() => { this.setState({ showModal: true }) }}>
-						<Icon2 name='filter' size={25} style={{ color: myGlobals.lightMode ? Theme.preto : Theme.branco}} />
+						<Icon2 name='filter' size={25} style={{ color: this.state.lightMode ? Theme.preto : Theme.branco}} />
 					</TouchableOpacity>
-					<Text style={[ CatalogStyle.welcome, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>PocketShop</Text>
+					<Text style={[ CatalogStyle.welcome, { color: this.state.lightMode ? Theme.preto : Theme.branco } ]}>PocketShop</Text>
 					<TouchableOpacity onPress={() => { this.irCart() }}>
-						<Icon3 name='shopping-cart' size={25} style={{ color: myGlobals.lightMode ? Theme.preto : Theme.branco, paddingRight: 10}} />
+						<Icon3 name='shopping-cart' size={25} style={{ color: this.state.lightMode ? Theme.preto : Theme.branco, paddingRight: 10}} />
 					</TouchableOpacity>
 				</View>
 				
@@ -229,6 +277,8 @@ export default class App extends React.PureComponent {
 						contentContainerStyle={{ paddingHorizontal: 10 }}
 						stickySectionHeadersEnabled={false}
 						sections={Products}
+						onRefresh={() => this.onRefresh()}
+    					refreshing={this.state.isFetching}
 						renderSectionHeader={this.renderTitle}
 						renderItem={this.renderSection}
 						
@@ -238,7 +288,25 @@ export default class App extends React.PureComponent {
 					/>
 					:
 						this.state.loading2 ?
-							<Loading/>
+							<View>
+								<View style={[ CatalogStyle.topPart, { paddingHorizontal: 10 } ]}>
+									<View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
+										<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: this.state.lightMode ? Theme.preto : Theme.branco }}>
+											<TouchableOpacity activeOpacity={0.4} onPress={() => this.setState({ search: false, searchTxt: '' })}>
+												<Icon2 name='arrow-back' size={25} style={{ color: this.state.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
+											</TouchableOpacity>
+											<TextInput 
+												style={ [CatalogStyle.input, { color: this.state.lightMode ? Theme.preto : Theme.branco , borderBottomColor: this.state.lightMode ? Theme.preto : Theme.branco } ]}
+												placeholder='Procurar'
+												placeholderTextColor={this.state.lightMode ? '#7d868f' : '#babfc4'}
+												value={this.state.searchTxt}
+												onChangeText={txt => this.searchFor(txt)}
+											/>
+										</View>
+									</View>
+								</View>
+								<Loading/>
+							</View>
 						:
 							<View>
 								<FlatList  
@@ -248,19 +316,20 @@ export default class App extends React.PureComponent {
 									showsHorizontalScrollIndicator={false}
 									data={this.state.array_pesq}
 									numColumns={2}
+									refreshing={this.state.isFetching}
 									renderItem={this.renderListItem}
 									keyExtractor={this.keyExtractor}
 									ListHeaderComponent={
 										<View style={ CatalogStyle.topPart }>
 											<View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
-												<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: myGlobals.lightMode ? Theme.preto : Theme.branco }}>
+												<View style={{ width: '93%', flexDirection: 'row', borderWidth: 1, paddingHorizontal: 15, paddingBottom: 10, paddingTop: 10, borderRadius: 25, alignItems: 'center', borderColor: this.state.lightMode ? Theme.preto : Theme.branco }}>
 													<TouchableOpacity activeOpacity={0.4} onPress={() => this.setState({ search: false, searchTxt: '' })}>
-														<Icon2 name='arrow-back' size={25} style={{ color: myGlobals.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
+														<Icon2 name='arrow-back' size={25} style={{ color: this.state.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
 													</TouchableOpacity>
 													<TextInput 
-														style={ [CatalogStyle.input, { color: myGlobals.lightMode ? Theme.preto : Theme.branco , borderBottomColor: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}
+														style={ [CatalogStyle.input, { color: this.state.lightMode ? Theme.preto : Theme.branco , borderBottomColor: this.state.lightMode ? Theme.preto : Theme.branco } ]}
 														placeholder='Procurar'
-														placeholderTextColor={myGlobals.lightMode ? '#7d868f' : '#babfc4'}
+														placeholderTextColor={this.state.lightMode ? '#7d868f' : '#babfc4'}
 														value={this.state.searchTxt}
 														onChangeText={txt => this.searchFor(txt)}
 													/>

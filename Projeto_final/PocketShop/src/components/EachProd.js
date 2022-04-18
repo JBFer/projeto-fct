@@ -84,7 +84,6 @@ export default class EachProd extends React.PureComponent {
 						<TouchableOpacity style={{ width: 35, height: 35, borderRadius: 50, backgroundColor: 'rgba(229,246,223, 0.8)', justifyContent: 'center', alignItems: 'center', marginRight: 10, marginTop: 10 }} 
 							onPress={() => {
 								this.changeIcon()
-								this.props.pressCheck()
 							}} >
 							{ this.state.icon &&
 								<Icon style={{ marginTop: 3 }} name='heart' id='iconX' color = '#03C04A' size={22}/>

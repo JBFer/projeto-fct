@@ -57,7 +57,7 @@ export default class App extends React.Component {
 						initialNumToRender={6}
 						showsVerticalScrollIndicator={false}
 						showsHorizontalScrollIndicator={false}
-						style={{ backgroundColor: myGlobals.lightMode ? '#e4e4e4' : Theme.preto, height: 300 }}
+						style={{ height: 300 }}
 						data={item.list}
 						numColumns={3}
 						renderItem={this.renderListItemCatg}

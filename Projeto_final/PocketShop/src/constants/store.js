@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { createStore } from 'state-pool';
 
-import { NavigationContainer } from '@react-navigation/native';
+const store = createStore();
 
-import Routes from './src/Navigation/Routes';
-import store from './src/constants/store';
 
-/*var store = createStore();  // Create a store for storing our global state
-
-let storeSaveStateTimerId: any = null
+// ===================================================
+// Use this if you want to allow store persistance in local storage
+let timerId = null
 const DEBOUNCE_TIME = 500  // In milliseconds
 
-Store.persist({
-    PERSIST_ENTIRE_STORE: false,  // Use this only if you want to persist the entire store
-    saveState: function(key, value, isInitialSet){
+store.persist({
+    // PERSIST_ENTIRE_STORE: true,  // Use this only if you want to persist the entire store
+    saveState: function (key, value, isInitialSet) {
         const doStateSaving = () => {
             try {
                 const serializedState = JSON.stringify(value);
@@ -24,7 +20,7 @@ Store.persist({
             }
         }
 
-        if(isInitialSet){
+        if (isInitialSet) {
             // We don't debounce saving state since it's the initial set
             // so it's called only once and we need our storage to be updated
             // right away
@@ -34,11 +30,11 @@ Store.persist({
             // Here we debounce saving state because it's the update and this function
             // is called every time the store state changes. However, it should not
             // be called too often because it triggers the expensive `JSON.stringify` operation.
-            clearTimeout(storeSaveStateTimerId);
-            storeSaveStateTimerId = setTimeout(doStateSaving, DEBOUNCE_TIME);
+            clearTimeout(timerId);
+            timerId = setTimeout(doStateSaving, DEBOUNCE_TIME);
         }
     },
-    loadState: function(key){
+    loadState: function (key) {
         try {
             const serializedState = window.localStorage.getItem(key);
             if (serializedState === null) {
@@ -51,28 +47,14 @@ Store.persist({
             return undefined
         }
     },
-    removeState: function(key){
+    removeState: function (key) {
         window.localStorage.removeItem(key);
     },
-     clear: function(){
+    clear: function () {
         window.localStorage.clear();
-    } 
+    }
 })
+// ===================================================
 
-*/
-store.getState("lightMode", {default: false, persist: true});  // Create and initialize "lightMode" global state
-store.setState("changes", false);  // Create and initialize "changes" global state
 
-function App() {
-
-    return(
-        
-        <NavigationContainer>
-            <Routes/>
-        </NavigationContainer>
-    )
-    
-}
-
-export default App;
-
+export default store;
