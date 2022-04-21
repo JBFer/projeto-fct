@@ -17,7 +17,7 @@ export default props => {
 	useEffect(() => {
 		//console.warn(id)
         //console.warn(props.filter)
-        fetch( api_url+'products/filter/'+props.filter)
+        fetch( api_url+'products/filter/'+props.filter+'/'+props.id)
             .then(response => response.json())
             .then(data => {
                 //console.log(data.object);

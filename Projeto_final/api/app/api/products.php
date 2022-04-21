@@ -53,7 +53,7 @@ $app->get('/products/all[/{order}]', function(Request $request, Response $respon
     return get_app()->utils->return_json($ret, $response);
 });
 
-//filtrar com user
+/* //filtrar com user
 
 $app->get('/products/user[/{order}]', function (Request $request, Response $response) {
   
@@ -110,7 +110,8 @@ $app->get('/products/user[/{order}]', function (Request $request, Response $resp
         $ret = (object) [
             'status' => false,
             'error' => 500,
-            'msg' => 'Error 500, a database pifo    u (งº_º)ง'
+            'msg' => 'Error 500, a database pifou (งº_º)ง',
+            'list' => []
         ];
 
         return get_app()->utils->return_json($ret, $response);
@@ -139,17 +140,18 @@ $app->get('/products/user[/{order}]', function (Request $request, Response $resp
         $ret = (object) [
             'status' => false,
             'error' => 404,
-            'msg' => 'Error 404, no products found '
+            'msg' => 'Error 404, no products found ',
+            'list' => []
         ];
     }
 
     return get_app()->utils->return_json($ret, $response);
 
-});
+}); */
 
 //filtrar user mais visitados
 
-$app->get('/products/visited[/{order}[/{limit:[0-9]+}]]', function (Request $request, Response $response) {
+$app->get('/products/user[/{inicio:[0-9]+}/{final:[0-9]+}[/{order}]]', function (Request $request, Response $response) {
   
     $ret = get_app()->utils->check_user();
     if(!$ret->status){
@@ -190,22 +192,28 @@ $app->get('/products/visited[/{order}[/{limit:[0-9]+}]]', function (Request $req
 
     $order = $request->getAttribute('order');
 
-    $limit = $request->getAttribute('limit');
+    $inicio = $request->getAttribute('inicio');
+
+    $final = $request->getAttribute('final');
 
     $field = $order ?? null;
 
-    $field2 = $limit ?? null;
+    $inicio1 = $inicio ?? null;
 
-    $sql = get_app()->utils->order_function($query, $field);
+    $final1 = $final ?? null;
 
-    $sql = $field2 ? get_app()->utils->limit_function($sql, $field2) : $sql;
+    $sql = $field ? get_app()->utils->order_function($query, $field) : $query;
+    
+    $sql = $final1 ? get_app()->utils->limit_function($sql, $inicio1, $final1) : $query;
 
+    //var_dump($sql); die();
+    
     $stmt = get_app()->db->prepare($sql);
 
     $order = $request->getAttribute('order');
 
     $stmt->bind_param('ii',  $_SESSION["id"],  $_SESSION["id"]);
-    
+
     $ok = $stmt->execute();
 
     if(!$ok){
@@ -352,8 +360,8 @@ $app->get('/products/specs/{id:[0-9]+}', function (Request $request, Response $r
         LEFT JOIN pc ON pc.id_prod = products.idProducts
         LEFT JOIN collections ON collections.idCollections = pc.id_col
         LEFT JOIN companies ON companies.idCompanies = (SELECT products.id_comp from products where idProducts = ?)
-        LEFT JOIN subcategories ON subcategories.idSubcategories = (SELECT products.subcatg from products where idProducts = ?)
-        LEFT JOIN categories ON categories.idCategories = subcategories.id_catg
+        LEFT JOIN subcategories ON subcategories.id = (SELECT products.subcatg from products where idProducts = ?)
+        LEFT JOIN categories ON categories.id = subcategories.id_catg
         WHERE
             products.idProducts = ?
             AND
@@ -510,30 +518,81 @@ $app->get('/products/images/{id:[0-9]+}', function (Request $request, Response $
 
 });
 
-//filtrar por nome ou empresa
+//procurar por nome ou empresa
 
-$app->get('/products/search/{txtSearch}[/{order}]', function (Request $request, Response $response) {
+$app->get('/products/search[/{txtSearch}]', function (Request $request, Response $response) {
 
     $ret = get_app()->utils->check_user();
+
     if(!$ret->status){
         return get_app()->utils->return_json($ret, $response);
     }
     
-    $txtSearch = $request->getAttribute('txtSearch');
-    
+    $txtSearch = $request->getAttribute('txtSearch') ?? '';
+    $subcategory = (int) ($_GET['subcat'] ?? 0);
+    $category = (int) ($_GET['cat'] ?? 0);
+    $priceMin = (float) ($_GET['price_min'] ?? 0);
+    $priceMax = (float) ($_GET['price_max'] ?? 0);
+
+/*
+    $subcategory = $request->getAttribute('subcategory') ?? null;
+
+    if (is_null($subcategory) && preg_match('/^[0-9]+$/', $txtSearch) ) {
+        $subcategory = $txtSearch;
+        $txtSearch = '';
+    }
+
+    if (is_null($subcategory)) {
+        $subcategory = 0;
+    }
+*/
+
     $query = "
         SELECT DISTINCT
-            products.*
+            products.*,
+            CASE
+                WHEN favorites.idFavorites IS NULL THEN 0
+                ELSE 1
+            END AS favorite
         FROM products
         LEFT JOIN pc ON pc.id_prod = products.idProducts
         LEFT JOIN collections ON collections.idCollections = pc.id_col
+        LEFT JOIN favorites ON favorites.id_prod = products.idProducts AND favorites.id_user = ?
         WHERE
             products.active = 1
             AND
             (
-                products.name LIKE ?
+                ? = 0
                 OR
-                products.company LIKE ?
+                products.subcatg = ?
+            )
+            AND
+            (
+                ? = 0
+                OR
+                products.subcatg IN (
+                    SELECT
+                        id
+                    FROM subcategories
+                    WHERE
+                        id_catg = ?
+                )
+            )
+            AND
+            (
+                products.price >= ?
+            )
+            AND
+            (
+                ? = 0
+                OR
+                products.price <= ?
+            )
+            AND
+            (
+                products.name LIKE CONCAT('%', ?, '%')
+                OR
+                products.company LIKE CONCAT('%', ?, '%')
             )
             AND
             (
@@ -562,9 +621,24 @@ $app->get('/products/search/{txtSearch}[/{order}]', function (Request $request, 
 
     $stmt = get_app()->db->prepare($sql);
 
-    $param = "%" . $txtSearch . "%";
+    //$param = "%" . $txtSearch . "%";
+    //$param = $txtSearch;
 
-    $stmt->bind_param('ssi', $param, $param, $_SESSION["id"]);
+    //$stmt->bind_param('isiidd', $_SESSION["id"], $txtSearch, $subcategory, $category, $priceMin, $priceMax);
+    $stmt->bind_param(
+        'iiiiidddssi',
+        $_SESSION['id'],
+        $subcategory,
+        $subcategory,
+        $category,
+        $category,
+        $priceMin,
+        $priceMax,
+        $priceMax,
+        $txtSearch,
+        $txtSearch,
+        $_SESSION['id']
+    );
     
     $ok = $stmt->execute();
 
@@ -607,7 +681,6 @@ $app->get('/products/search/{txtSearch}[/{order}]', function (Request $request, 
     return get_app()->utils->return_json($ret, $response);
 
 });
-
 
 //filtrar products só por id
 
@@ -697,7 +770,7 @@ $app->get('/products/id/{id:[0-9]+}', function (Request $request, Response $resp
 // filtrar products por subcategoria
 
 
-$app->get('/products/filter/{subcategory:[0-9]+}[/{order}]', function (Request $request, Response $response) {
+$app->get('/products/filter/{subcategory:[0-9]+}/{id:[0-9]+}[/{order}]', function (Request $request, Response $response) {
 
     $ret = get_app()->utils->check_user();
     if(!$ret->status){
@@ -705,6 +778,9 @@ $app->get('/products/filter/{subcategory:[0-9]+}[/{order}]', function (Request $
     }
     
     $subcategory = $request->getAttribute('subcategory');
+
+    $id = $request->getAttribute('id');
+
 
     $query = "
         SELECT DISTINCT
@@ -721,6 +797,8 @@ $app->get('/products/filter/{subcategory:[0-9]+}[/{order}]', function (Request $
             products.active = 1
             AND
             products.subcatg = ?
+            AND
+            products.idProducts != ?
             AND
             (
                 collections.idCollections IS NULL
@@ -747,7 +825,7 @@ $app->get('/products/filter/{subcategory:[0-9]+}[/{order}]', function (Request $
     $sql = get_app()->utils->order_function($query, $field);
 
     $stmt = get_app()->db->prepare($sql);
-    $stmt->bind_param('iii', $_SESSION["id"], $subcategory, $_SESSION["id"]);
+    $stmt->bind_param('iiii', $_SESSION["id"], $subcategory, $id, $_SESSION["id"]);
 
     $ok = $stmt->execute();
 
@@ -1066,4 +1144,126 @@ $app->delete('/removeFavorite/{id_prod:[0-9]+}', function(Request $request, Resp
     ];
     
 return get_app()->utils->return_json($ret, $response);
+});
+
+//get categories
+
+$app->get('/products/catgs', function (Request $request, Response $response) {
+
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+    
+    $query = "
+        SELECT DISTINCT
+            *
+        FROM
+        categories
+    ";
+
+    $order = $request->getAttribute('order');
+
+    $field = $order ?? null;
+
+    $sql = get_app()->utils->order_function($query, $field);
+
+    $stmt = get_app()->db->prepare($sql);
+
+    $ok = $stmt->execute();
+
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifou (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    //echo '<pre>';var_dump($data); die();
+
+    
+    if (count($data)) {
+        $ret = (object) [
+            'status' => true,
+            'error' => 200,
+            'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+            'list' => $data
+        ];
+    } else {
+        $ret = (object) [
+            'status' => false,
+            'error' => 404,
+            'msg' => 'Error 404, no categories found '
+        ];
+    }
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//get subcategories
+
+$app->get('/products/subcatgs', function (Request $request, Response $response) {
+
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+    
+    $query = "
+        SELECT
+            *
+        FROM
+        subcategories
+    ";
+
+    $order = $request->getAttribute('order');
+
+    $field = $order ?? null;
+
+    $sql = get_app()->utils->order_function($query, $field);
+
+    $stmt = get_app()->db->prepare($sql);
+
+    $ok = $stmt->execute();
+
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifou (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    //echo '<pre>';var_dump($data); die();
+
+    
+    if (count($data)) {
+        $ret = (object) [
+            'status' => true,
+            'error' => 200,
+            'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+            'list' => $data
+        ];
+    } else {
+        $ret = (object) [
+            'status' => false,
+            'error' => 404,
+            'msg' => 'Error 404, no categories found '
+        ];
+    }
+
+    return get_app()->utils->return_json($ret, $response);
+
 });

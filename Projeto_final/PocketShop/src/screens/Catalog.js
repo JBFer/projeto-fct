@@ -44,15 +44,13 @@ export default class App extends React.PureComponent {
 		loading: true,
 		loading1: true,
 		loading2: false,
-		isFetching: false
+		isFetching: false,
+		inicial: 1,
+		n_elementos: 40
 	}
 
 
 	componentDidMount() {
-		this.fetchdata()
-	}
-
-	fetchdata = () => {
 		fetch(api_url+'products/catgs')
 			.then(response => response.json())
 			.then(data => {
@@ -63,21 +61,27 @@ export default class App extends React.PureComponent {
 			.then(data => {
 				this.setState({ subcategories: data.list });
 			})
+		this.fetchdata()
+	}
+
+
+	fetchdata = () => {
 		setTimeout(() => {
-			fetch( api_url+'products/visited/views/10')
+			fetch( api_url+'products/user/0/10/views')
 				.then(response => response.json())
 				.then(data => {
 					this.setState({ array_v: data.list, loading1: false });
 				})
 		}, 1000);
 		setTimeout(() => {
-			fetch( api_url+'products/user')
+			fetch( api_url+'products/user/'+((this.state.inicial-1)*this.state.n_elementos)+'/'+this.state.n_elementos)
 				.then(response => response.json())
 				.then(data => {
-					this.setState({ array: data.list, loading: false, isFetching: false });
+					this.setState({ array: data.list, loading: false, isFetching: false, inicial: this.state.inicial + 1 , n_elementos: this.state.n_elementos  });
 				})
 		}, 1500);
 	}
+
 
 	onRefresh() {
 		this.setState({
@@ -86,36 +90,85 @@ export default class App extends React.PureComponent {
 			array_v:[],
 			loading: true,
 			loading1: true,
+			inicial: 1,
+			n_elementos: 40
 		},() => {
 			this.fetchdata()
 		});
 	}
 	
+
 	searchInput = () => {
 		this.setState({ loading2: true, search: true })
-		if (!this.state.pesquisa.subcatg){
-			setTimeout(() => {
-				fetch(api_url+'products/search/'+this.state.searchTxt)
-					.then(response => response.json())
-					.then(data => {
-						this.setState({ array_pesq: data.list, loading2: false });
-					})
-			}, 1500);
-		} else {
-			setTimeout(() => {
-				fetch(api_url+'products/search/'+this.state.searchTxt+'/'+this.state.pesquisa.subcatg)
-					.then(response => response.json())
-					.then(data => {
-						this.setState({ array_pesq: data.list, loading2: false });
-					})
-			}, 1500);
+
+		let url = api_url + 'products/search';
+
+		if (this.state.searchTxt) {
+			url += '/' + this.state.searchTxt;
 		}
+
+		let params = '';
+
+		if (this.state.pesquisa.subcatg) {
+			params = '?subcat=' + this.state.pesquisa.subcatg;
+		}
+
+		
+		if (this.state.pesquisa.catg) {
+			if (params.length) {
+				params += '&';
+			} else {
+				params += '?';
+			}
+
+			params += 'cat=' + this.state.pesquisa.catg;
+		}
+		if (this.state.pesquisa.price_min) {
+			if (params.length) {
+				params += '&';
+			} else {
+				params += '?';
+			}
+
+			params += 'price_min=' + this.state.pesquisa.min_price;
+		}
+		if (this.state.pesquisa.max_price) {
+			if (params.length) {
+				params += '&';
+			} else {
+				params += '?';
+			}
+
+			params += 'price_max=' + this.state.pesquisa.max_price;
+		}
+		
+
+		url += params;
+
+		setTimeout(() => {
+			fetch(url)
+				.then(response => response.json())
+				.then(data => {
+					this.setState({ array_pesq: data.list, loading2: false });
+				})
+		}, 1500);
 
     }
 
 
+	addArray = () => {
+		setTimeout(() => {
+			fetch( api_url+'products/user/'+((this.state.inicial-1)*this.state.n_elementos)+'/'+this.state.n_elementos)
+				.then(response => response.json())
+				.then(data => {
+					this.setState({ array: [ ...this.state.array, ...data.list], inicial: this.state.inicial + 1, n_elementos: this.state.n_elementos });
+				})
+		}, 500);
+	}
+
+
  	searchFor = txt => {
-		let pesquisa = {searchTxt: txt, subcatg: null}
+		let pesquisa = {searchTxt: txt, subcatg: null, catg: null, min_price: 0, max_price: 1000}
 		this.setState({ pesquisa, searchTxt: txt })
 	} 
 
@@ -129,11 +182,12 @@ export default class App extends React.PureComponent {
 		}
 	}
 	
-	
+
 	keyExtractor = (item) => {
     	return item.idProducts.toString()
 	}
 	
+
 	irCart = () => {
 		console.warn('Ir cart')
 		/* setTimeout(() => {
@@ -144,8 +198,7 @@ export default class App extends React.PureComponent {
 		console.log(store.getState("lightMode").value) */
 	}
 	
-	
-	
+
 	renderListItem = ({ item }) => {
 		const { navigation } = this.props;
 		return (
@@ -167,9 +220,6 @@ export default class App extends React.PureComponent {
 		)
 	}
 	
-	
-	
-
 
 	renderSection = ({ item, section }) => {
 			
@@ -230,6 +280,8 @@ export default class App extends React.PureComponent {
 								numColumns={2}
 								renderItem={this.renderListItem}
 								keyExtractor={this.keyExtractor}
+								onEndReached={() => this.addArray()}
+								onEndReachedThreshold={6}
 							/>
 						}
 					</View>
@@ -239,6 +291,7 @@ export default class App extends React.PureComponent {
 			}
 		}
     
+
     render() {
         return (
 			<View style={ { flex: 1, backgroundColor: this.state.lightMode ? Theme.branco : Theme.backDark } }>

@@ -9,7 +9,7 @@ const PRODUTOS = [
 		]
 	},
 	{
-		title: 'BASEADO EM PESQUISAS RECENTES',
+		title: 'TODOS OS PRODUTOS',
 		key: 'recentes',
 		data: [
 			{

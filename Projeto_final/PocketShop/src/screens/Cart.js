@@ -12,25 +12,20 @@ import {
 } from 'react-native';
 
 import Theme from '../styles/Comum' 
-import ProfileStyle from '../styles/ProfileStyle' 
 
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import Icon2 from 'react-native-vector-icons/Ionicons'
 
 import myGlobals from '../constants/global'
 
-export default function App({ navigation }) {
+export default function Cart({ navigation }) {
 
     
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark }}>
+            <StatusBar style={myGlobals.lightMode ? 'dark' : 'light'} />
             <View style={ { flex: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark } }>
-                <StatusBar style={myGlobals.lightMode ? 'dark' : 'light'} />
-                <View style={ ProfileStyle.topPart }>
-		
-                </View>
-                <View style={ ProfileStyle.titlePart }>
-                    <Text style={[ ProfileStyle.welcome, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>Perfil</Text>
+                <View>
                 </View>
             </View>
         </ScrollView>

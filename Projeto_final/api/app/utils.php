@@ -47,8 +47,8 @@ class Utils {
         return $query;
     }
 
-    public function limit_function($query, $field2){
-        $query = $query . " LIMIT $field2 ";
+    public function limit_function($query, $inicio, $final){
+        $query = $query . " LIMIT " . $inicio . ", " . $final ." ";
 
         return $query;
     }

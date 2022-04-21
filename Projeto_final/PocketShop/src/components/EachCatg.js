@@ -5,20 +5,9 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import Theme from '../styles/Comum'  
 
 export default props => {
-	
-	const mandarProps = () => {
-		const idCatg = {
-			id: props.id,
-			icon: props.icon,
-			category: props.category
-		}
-		props.onAdicionarStack(idCatg)
-	}
-	
-	
  	return (
 		<View style={ styles.eachOne }>
-      		<TouchableOpacity activeOpacity={0.5} onPress={() => {mandarProps()}} style={ styles.eachOneT }>
+      		<TouchableOpacity activeOpacity={0.5} onPress={() => {props.onAdicionarStack()}} style={ styles.eachOneT }>
 				<Icon name={props.icon} size={35}/>
 		 		<Text style={ styles.eachTxt }>{props.category}</Text>
      		</TouchableOpacity>
@@ -28,10 +17,9 @@ export default props => {
 
 const styles = StyleSheet.create({
 	eachOne: {
-		width: '33.3%',
-		//backgroundColor: 'green'
+		minWidth: 95,
+		margin: 2
 	}, eachOneT: {
-		width: '100%',
 		alignItems: 'center',
 		justifyContent: 'center',
 		//backgroundColor: 'green'

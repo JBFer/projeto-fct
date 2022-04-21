@@ -174,7 +174,7 @@ const Details = ({ route, params, navigation }) => {
 								<View style={{ width: '100%', marginTop: 20 }}>
 									<Text style={{ width: '100%', fontSize: 20, color: myGlobals.lightMode ? Theme.preto : Theme.branco  }}>Produtos relacionados:</Text>
 								</View>
-								<Related navigation={navigation} filter={subcategory}/>
+								<Related navigation={navigation} filter={subcategory} id={route.params.id}/>
 							</View>
 						</View>
 						<View style={[ DetailsStyle.footer, { borderColor: myGlobals.lightMode ? '#3c4146' : '#bfc3c8'} ]}>
