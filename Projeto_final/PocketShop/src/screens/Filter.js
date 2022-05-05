@@ -101,7 +101,7 @@ export default class Filter extends React.Component {
     
     render() {
         return(
-			<Modal visible={this.props.isVisible} animationType='slide'>
+			<Modal visible={this.props.isVisible} animationType='slide'  onRequestClose={() => this.props.onCancel()}>
 				<View style={ { flex: 1, backgroundColor: this.props.themeMode ? Theme.branco : Theme.backDark } }>
 					<View style={{ width: '100%', height:180, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
 						<View style={{ backgroundColor: '#555555', width: 100, height: 100, alignItems: 'center', justifyContent: 'center', borderRadius: 50 }}>

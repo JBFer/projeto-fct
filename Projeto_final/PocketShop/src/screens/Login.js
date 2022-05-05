@@ -10,7 +10,8 @@ import {
     TextInput,
     TouchableOpacity,
     ImageBackground,
-    Linking
+    Linking,
+    ActivityIndicator
 } from 'react-native';
 
 import Theme from '../styles/Comum' 
@@ -25,7 +26,8 @@ export default class Login extends React.Component {
 		password: "",
         login: false,
         txtLog: "",
-        color: 'red'
+        color: 'red',
+        isLogging: false
     }
 
     mandarLogin = () => {
@@ -44,7 +46,7 @@ export default class Login extends React.Component {
 
     login = () => {
         //login process
-        this.setState({ txtLog: "" })
+        this.setState({ txtLog: "", isLogging: true })
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -54,13 +56,11 @@ export default class Login extends React.Component {
             .then(response => response.json())
             .then(data => { 
                 if(data.login == true) {
-                    this.setState({ txtLog: "Conta encontrada, bem-vindo!", color: 'green' })
-                    //console.log('user can login')
-                    this.setState({ login: true })
+                    this.setState({ txtLog: "Conta encontrada, bem-vindo!", color: 'green', login: true, isLogging: false })
                     this.mandarLogin()
                 } else {
                     //console.log('user cant login')
-                    this.setState({ txtLog: "Email ou password incorretos!", color: 'red' })
+                    this.setState({ txtLog: "Email ou password incorretos!", color: 'red', isLogging: false })
                 } 
             })
     }
@@ -77,13 +77,16 @@ export default class Login extends React.Component {
                         </View>
                         <View style={{ flex: 2.5, width: '100%', alignItems: 'center' }} >
                             <TextInput
+                                autoCompleteType='email'
                                 placeholder='Email'
                                 placeholderTextColor={"#474d53"} 
                                 style={ LoginStyle.textBox }
                                 value={this.state.searchTxt}
+                                autoCapitalize="none"
 								onChangeText={txt_email => this.user_email(txt_email)}
                             />
                             <TextInput 
+                                autoCompleteType='password'
                                 placeholder='Password'
                                 placeholderTextColor={"#474d53"}
                                 secureTextEntry={true}
@@ -91,7 +94,11 @@ export default class Login extends React.Component {
                                 value={this.state.searchTxt}
 								onChangeText={txt_pass => this.user_pass(txt_pass)}
                                 />
-                                <Text style={{ marginTop: 40, color: this.state.color }} >{ this.state.txtLog }</Text>
+                                { this.state.isLogging ?
+                                    <ActivityIndicator size={30} style={{ marginTop: 40 }} color="#0000ff" />
+                                    :
+                                    <Text style={{ marginTop: 40, color: this.state.color }} >{ this.state.txtLog }</Text>
+                                }
                         </View>
                         <View style={{ flex: 1, width: '100%', alignItems: 'center', marginBottom: 20 }} >
                             <TouchableOpacity style={ LoginStyle.button } activeOpacity={.6} onPress={() => this.login()} >

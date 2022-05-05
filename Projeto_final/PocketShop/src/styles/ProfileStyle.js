@@ -3,7 +3,6 @@ export default{
 		//backgroundColor: 'red',
         width: '100%',
         height: 230,
-		alignItems: 'center'
 	},
     bodyPart: {
 		overflow: 'hidden',
@@ -14,7 +13,7 @@ export default{
         textAlign: 'center'
     },
 	name: {
-		fontSize: 25
+		fontSize: 45
 	},
 	title: {
 		fontSize: 22,

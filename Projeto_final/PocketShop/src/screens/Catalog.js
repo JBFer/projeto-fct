@@ -15,6 +15,7 @@ import Theme from '../styles/Comum'
 import CatalogStyle from '../styles/CatalogStyle' 
 
 import Filter from './Filter' 
+import Buy from './Buy' 
 import EachProd from '../components/EachProd'
 import Products from '../data/prods/Products'
 import NoProd from '../components/NoProd'
@@ -32,6 +33,7 @@ export default class App extends React.PureComponent {
 		//lightMode: store.getState("lightMode").value,
 		lightMode: myGlobals.lightMode,
         showModal: false,
+        showModalBuy: false,
 		pesquisa: {},
 		searchTxt: '',
 		search: false,
@@ -46,7 +48,7 @@ export default class App extends React.PureComponent {
 		loading2: false,
 		isFetching: false,
 		inicial: 1,
-		n_elementos: 40
+		n_elementos: 50
 	}
 
 
@@ -189,7 +191,7 @@ export default class App extends React.PureComponent {
 	
 
 	irCart = () => {
-		console.warn('Ir cart')
+		this.setState({ showModalBuy: true })
 		/* setTimeout(() => {
 			let light = store.getState("lightMode").value
 			console.log(light)
@@ -271,7 +273,8 @@ export default class App extends React.PureComponent {
 						: 
 							<FlatList  
 								ListEmptyComponent={<NoProd />}
-								initialNumToRender={20}
+								initialNumToRender={10}
+								maxToRenderPerBatch={6}
 								style={{ width: '100%', alignItems: 'center' }}
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}
@@ -308,9 +311,14 @@ export default class App extends React.PureComponent {
 							this.setState({ showModal: false, searchTxt: pesquisa.searchTxt, pesquisa: pesquisa  }, this.searchInput)
 						}}
 				/>
-
-
-
+				<Buy 
+					hardwareAccelerated={true}
+					themeMode={this.state.lightMode} 
+					isVisible={this.state.showModalBuy} 
+					onCancel={() => { 
+						this.setState({ showModalBuy: false })
+					}}
+				/>
 				<StatusBar style={this.state.lightMode ? 'dark' : 'light'} />
 
 				<View style={[ CatalogStyle.headerPart, styles.container ]}>
@@ -368,6 +376,7 @@ export default class App extends React.PureComponent {
 									showsVerticalScrollIndicator={false}
 									showsHorizontalScrollIndicator={false}
 									data={this.state.array_pesq}
+									initialNumToRender={10}
 									numColumns={2}
 									refreshing={this.state.isFetching}
 									renderItem={this.renderListItem}

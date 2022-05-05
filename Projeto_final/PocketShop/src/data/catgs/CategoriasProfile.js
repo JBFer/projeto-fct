@@ -1,6 +1,6 @@
 const CATEGORIAS = [
 	{
-		title: 'mInfo',
+		title: 'Info',
 		key: 'inf',
 		data: [
 			{
@@ -12,62 +12,6 @@ const CATEGORIAS = [
 				password: '********',
 				moradaFat: 'Stª Maria da Feira',
 				moradaEnt: 'Souto',
-			}
-		]
-	},
-	{
-		title: 'Categorias de interesse',
-		key: 'catg',
-		data: [
-			{
-				id: 'catg',
-				list: [
-					{
-						id: '1',
-						category: 'Categoria1a',
-						icon: 'atom',
-					},
-					{
-						id: '2',
-						category: 'Categoria2b',
-						icon: 'atom',
-					},
-					{
-						id: '3',
-						category: 'Categoria3c',
-						icon: 'atom',
-					},
-					{
-						id: '4',
-						category: 'Categoria4d',
-						icon: 'atom',
-					},
-					{
-						id: '5',
-						category: 'Categoria5e',
-						icon: 'atom',
-					},
-					{
-						id: '6',
-						category: 'Categoria6f',
-						icon: 'atom',
-					},
-					{
-						id: '7',
-						category: 'Categoria7g',
-						icon: 'atom',
-					},
-					{
-						id: '8',
-						category: 'Categoria8h',
-						icon: 'atom',
-					},
-					{
-						id: '9',
-						category: 'Categoria9i',
-						icon: 'atom',
-					}
-				]
 			}
 		]
 	},

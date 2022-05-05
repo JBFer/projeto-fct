@@ -24,7 +24,7 @@ export default props => {
 		fetch( api_url+'removeFavorite/'+props.un, {
 			method: 'DELETE'
 		})
-		Alert.alert('Produto removido', 'O produto de id ' + props.un + ' foi retirado dos favoritos' )
+		Alert.alert('Produto removido', 'O produto ' + props.name + ' foi retirado dos favoritos' )
 	}
 
 	const adicionar = () => {
@@ -35,7 +35,7 @@ export default props => {
 				 id_prod: props.un 
 			})
 		})
-		Alert.alert('Produto adicionado', 'O produto de id ' + props.un + ' foi adicionado aos favoritos' )
+		Alert.alert('Produto adicionado', 'O produto de id ' + props.name + ' foi adicionado aos favoritos' )
 	}
 	
 	const toBig = (title) => {

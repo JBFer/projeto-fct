@@ -19,13 +19,14 @@ import Icon2 from 'react-native-vector-icons/Ionicons'
 import myGlobals from '../constants/global'
 
 export default function Cart({ navigation }) {
-
-    
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark }}>
             <StatusBar style={myGlobals.lightMode ? 'dark' : 'light'} />
             <View style={ { flex: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark } }>
-                <View>
+                <View style={{ flex: 0.5 }} >
+                    <View>
+
+                    </View>
                 </View>
             </View>
         </ScrollView>

@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar'
 import { 
-    StyleSheet,
     Text,
     View,
-    Button,
-    Switch,
+	Alert,
     ScrollView,
-    TextInput,
-	Modal,
 	Image,
-	SafeAreaView,
-	SectionList,
 	FlatList,
     TouchableOpacity
 } from 'react-native';
@@ -46,7 +40,6 @@ const Details = ({ route, params, navigation }) => {
 	let subcategory = route.params.subcategory ?? data.subcategory;
 	let views = route.params.views ?? data.views;
 
-
 	useEffect(() => {
 		//console.warn(id);
 		fetch( api_url+'products/updateViews/'+id, {
@@ -73,10 +66,21 @@ const Details = ({ route, params, navigation }) => {
 	}, [])
 	 
 	const irCart = () => {
-		if (data.stock > 0){
-			console.warn('ir Cart')
-		} else {
-			console.warn('Sem stock')
+		if ( data.stock > 1 ){
+			const requestOptions = {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ id_prod: id }),
+			}
+			fetch(api_url+'products/carrinho', requestOptions)
+				.then(response => response.json())
+				.then(data => { 
+					Alert.alert('Produto adicionado', 'O produto - ' + name + ' - foi adicionado ao carrinho!' )
+					
+				})
+		}
+		else {
+			Alert.alert('Erro', 'Certifique-se que o produto se encontra em stock, caso se encontre contacte a equipa de desenvolvimento' )		
 		}
 	}
 
