@@ -21,12 +21,10 @@ export default{
 		marginBottom: 10
 	},
 	info: {
+		alignItems: 'center',
 		//backgroundColor: 'red', 
 		width: '100%',
-		height: '90%',
-		marginLeft: 30,
-		flexDirection: 'row',
-	}, 
+		}, 
 	spec: {
 		fontSize: 17, 	
 	}

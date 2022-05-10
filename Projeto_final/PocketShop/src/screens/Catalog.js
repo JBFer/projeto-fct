@@ -20,6 +20,8 @@ import EachProd from '../components/EachProd'
 import Products from '../data/prods/Products'
 import NoProd from '../components/NoProd'
 
+import Fav from './Home';
+
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import Icon3 from 'react-native-vector-icons/FontAwesome'
 import Icon2 from 'react-native-vector-icons/Ionicons'

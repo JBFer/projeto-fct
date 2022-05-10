@@ -10,9 +10,10 @@ export default props => {
 	const mandarEnc = () => {
 		const propEnc = {
 			id: props.id,
+			qntTt: props.qntTt,
 			precoTt: props.precoTt,
-			info: props.info,
-			data: props.data,
+			//info: props.info,
+			order_date: props.order_date,
 			numEnc: props.numEnc,
 			cont: props.cont,
 			moradaFaturacao: props.moradaFaturacao,
@@ -30,8 +31,8 @@ export default props => {
 						<Text style={[ styles.eachPrice, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{props.precoTt}€</Text>
 					</View>
 					<View style={{ flexDirection: 'row', alignItems: 'flex-end' , justifyContent:'space-between', height: '40%' }}>
-						<Text style={[ styles.eachDate, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{ props.info.length } produtos</Text>
-						<Text style={[ styles.eachDate, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{props.data}</Text>
+						<Text style={[ styles.eachDate, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{ props.qntTt } produtos</Text>
+						<Text style={[ styles.eachDate, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{props.order_date}</Text>
 					</View>
 				</View>
 				<TouchableOpacity activeOpacity={0.7} style={{ width: '20%', height: '100%' }} onPress={() => {mandarEnc()}}>
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
 		marginVertical: 5,
 		backgroundColor: '#D3D3D3',
 		width: '100%',
-		height: 100,
+		height: 80,
 		borderBottomWidth: 1,
 		borderColor: '#D3D3D3',
 		//backgroundColor: 'green'

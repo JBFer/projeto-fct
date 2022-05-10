@@ -20,7 +20,7 @@ export default props => {
 				<View style={[ styles.modal, { backgroundColor: props.themeMode ? Theme.branco : Theme.backDark, borderColor: props.themeMode ? '#D3D3D3' : '#000', }]}>
 					<View style={ styles.topPart }>
 						<View style={ styles.topTopPart }>
-							<Text style={{ marginRight: 10, marginTop: 5, fontSize: 15, color: props.themeMode ? Theme.preto : Theme.branco  }}>{props.data}</Text>
+							<Text style={{ marginRight: 10, marginTop: 5, fontSize: 15, color: props.themeMode ? Theme.preto : Theme.branco  }}>{props.order_date}</Text>
 							<TouchableOpacity
 								onPress={() => (
 									setMode(true),
@@ -36,7 +36,7 @@ export default props => {
 					<View style={ styles.middlePart }>
 						<View style={ styles.middleTopPart }>
 							<TouchableOpacity activeOpacity={0.4} onPress={() => setMode(true)} style={{ width: '40%', height: 35, alignItems: 'center', justifyContent: 'center', borderTopLeftRadius: 5 , borderTopRightRadius: 5, borderTopWidth: mode ? 1 : 0, borderLeftWidth: mode ? 1 : 0, borderRightWidth: mode ? 1 : 0, borderBottomWidth: mode ? 2 : 0, borderBottomColor: mode ? 'white' : 'black', marginBottom: -1, borderLeftColor: Theme.backDark, borderTopColor: Theme.backDark, borderRightColor: Theme.backDark }}>
-								<Text style={{ fontSize: 17, color: props.themeMode ? Theme.preto : Theme.branco  }}>{props.info.length} Produtos</Text>
+								<Text style={{ fontSize: 17, color: props.themeMode ? Theme.preto : Theme.branco  }}>{props.qntTt} Produtos</Text>
 							</TouchableOpacity>
 							<TouchableOpacity activeOpacity={0.4} onPress={() => setMode(false)} style={{ width: '40%', height: 35, alignItems: 'center', justifyContent: 'center', borderTopLeftRadius: 5 , borderTopRightRadius: 5 , borderTopRightRadius: 5, borderTopWidth: mode ? 0 : 1, borderLeftWidth: mode ? 0 : 1, borderRightWidth: mode ? 0 : 1, borderBottomWidth: mode ? 0 : 2, borderBottomColor: mode ? 'black' : 'white', marginBottom: -1, borderLeftColor: Theme.backDark, borderTopColor: Theme.backDark, borderRightColor: Theme.backDark }}>
 								<Text style={{ fontSize: 17, color: props.themeMode ? Theme.preto : Theme.branco  }}>Detalhes</Text>
@@ -47,8 +47,8 @@ export default props => {
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}
 								data={props.info}
-								renderItem={({item}) => <ProdEnc name={item.name} price={item.price} qnt={item.qnt} idProd={item.idProd} />}
-								keyExtractor={item => item.idProd}
+								renderItem={({item}) => <ProdEnc name={item.name_prod} price={item.price_prod} qnt={item.qnt_prod} idProd={item.idOrderLines} />}
+								keyExtractor={item => item.idOrderLines.toString()}
 					 		/>
 						:
 							<View style={{ flex: 1, marginTop: 20 }}>
@@ -58,11 +58,11 @@ export default props => {
 								</View>
 								<View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', borderBottomWidth: 1, borderColor: '#D3D3D3', height: 100 }}>
 									<Text style={{ fontSize: 17, color: props.themeMode ? Theme.preto : Theme.branco }}>Morada de faturação:</Text>
-									<Text style={{ fontSize: 16, color: props.themeMode ? Theme.preto : Theme.branco }}>{props.moradaFaturacao}</Text>
+									<Text style={{ fontSize: 16, color: props.themeMode ? Theme.preto : Theme.branco, textAlign:'center' }}>{props.moradaFaturacao}</Text>
 								</View>
 								<View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', height: 100 }}>
 									<Text style={{ fontSize: 17, color: props.themeMode ? Theme.preto : Theme.branco }}>Morada de entrega:</Text>
-									<Text style={{ fontSize: 16, color: props.themeMode ? Theme.preto : Theme.branco }}>{props.moradaEntrega}</Text>
+									<Text style={{ fontSize: 16, color: props.themeMode ? Theme.preto : Theme.branco, textAlign:'center' }}>{props.moradaEntrega}</Text>
 								</View>
 								
 							</View>

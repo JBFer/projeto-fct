@@ -6,7 +6,8 @@ import {
     Button,
 	SectionList,
 	FlatList,
-    TouchableOpacity
+    TouchableOpacity,
+	ActivityIndicator
 } from 'react-native';
 
 import Theme from '../styles/Comum' 
@@ -18,26 +19,56 @@ import Icon2 from 'react-native-vector-icons/Ionicons'
 import CATEGORIAS from '../data/catgs/CategoriasProfile'
 
 import EachEnc from '../components/EachEnc'
+import EachMor from '../components/EachMor'
 
 import EncDetails from './EncDetails'
 
 import myGlobals from '../constants/global'
 import { products_user } from '../services/products';
 import { login } from '../services/user';
+import { api_url } from '../constants/host';
 
 
 export default class App extends React.Component {
 	state = {
+		data:{},
+		orders: [],
+		moradas: [],
+		loading: true,
+		qntTt: 0,
+		weight: true,
 		choose: 'encomendas',
 		visibleModal: false,
 		info: [{}],
 		id: '0',
 		precoTt: 0,
-		data: '',
+		order_date: '',
 		numEnc: 0,
 		cont: '',
 		moradaFaturacao: '',
-		moradaEntrega: ''
+		moradaEntrega: '',
+	}
+
+	componentDidMount() {
+		this.fetchdata()
+	}
+
+	fetchdata = () => {
+		fetch( api_url+'user/info')
+			.then(response => response.json())
+			.then(data => {
+				this.setState({ data: data.list[0] });
+			})
+		fetch( api_url+'user/orders')
+			.then(response => response.json())
+			.then(data => {
+				this.setState({ orders: data.list, loading: false });
+			})
+		fetch( api_url+'user/moradas')
+			.then(response => response.json())
+			.then(data => {
+				this.setState({ moradas: data.list });
+			})
 	}
 
 	renderTitle = ({ section }) => {
@@ -50,14 +81,12 @@ export default class App extends React.Component {
 			return (
 				<>
 					<FlatList
-						maxToRenderPerBatch={5}	
-						initialNumToRender={8}
 						showsVerticalScrollIndicator={false}
 						showsHorizontalScrollIndicator={false}
-						data={item.list}
+						data={this.state.orders}
 						renderItem={this.renderListItemEnc}
 						keyExtractor={this.keyExtractor}
-					 />
+					/>
 				</>
 			)
 		} else if ( item.id == 'encomendas' && this.state.choose != 'encomendas' ) {
@@ -67,27 +96,32 @@ export default class App extends React.Component {
 		} else if ( item.id == 'info' && this.state.choose == 'info' ) {
 			return (
 				<>
-					<View style={{ alignItems: 'center', height: 500, width: '100%' }}>
-						<View style={ ProfileStyle.info } >
-							<View style={ { flex: 1, justifyContent: 'space-around' } }>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Empresa:</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Contribuinte:</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Email:</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Telefone:</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Morada de Entrega:</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Morada de Faturação:</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >Password:</Text>
-							</View>
-							<View style={ { flex: 1, justifyContent: 'space-around' } }>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.company }</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.contribuinte }</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.email }</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.telefone }</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.moradaEnt }</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.moradaFat }</Text>
-								<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ item.password }</Text>
-							</View>
+					<View style={ ProfileStyle.info } >
+						<View style={{ width: '90%', height: 60, flexDirection: 'row', alignItems: 'center' }}>
+							<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco, marginRight: 25 } ]} >Empresa:</Text>
+							<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ this.state.data.name }</Text>
 						</View>
+						<View style={{ width: '90%', height: 60, flexDirection: 'row', alignItems: 'center' }}>
+							<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco, marginRight: 25 } ]} >Email:</Text>
+							<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ this.state.data.email }</Text>
+						</View>
+						<View style={{ width: '90%', height: 60, flexDirection: 'row', alignItems: 'center' }}>
+							<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco, marginRight: 25 } ]} >Telefone:</Text>
+							<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ this.state.data.tel }</Text>
+						</View>
+						<View style={{ width: '90%', height: 60, flexDirection: 'row', alignItems: 'center' }}>
+							<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco, marginRight: 25 } ]} >Contribuinte:</Text>
+							<Text style={[ ProfileStyle.spec, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ this.state.data.contribuinte }</Text>
+						</View>
+						<FlatList
+							style={{ width: '90%', borderRadius: 15, overflow: 'hidden', marginTop: 10 }}
+							showsVerticalScrollIndicator={false}
+							showsHorizontalScrollIndicator={false}
+							data={this.state.moradas}
+							ListHeaderComponent={this.renderHeaderMor}
+							renderItem={this.renderListItemMor}
+							keyExtractor={this.keyExtractorMor}
+						/>
 					</View>
 				</>
 			)
@@ -95,9 +129,18 @@ export default class App extends React.Component {
 		
 	}
 	
-	showModalEnc = (propEnc) => {
-		this.setState({ visibleModal: true })
-		this.setState({ id: propEnc.id, info: propEnc.info, precoTt: propEnc.precoTt, data: propEnc.data, numEnc: propEnc.numEnc, cont: propEnc.cont, moradaFaturacao: propEnc.moradaFaturacao, moradaEntrega: propEnc.moradaEntrega })
+	showModalEnc = (item) => {
+		const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: item.id }),
+        }
+        fetch(api_url+'user/orders/details', requestOptions)
+            .then(response => response.json())
+            .then(data => { 
+				this.setState({ id: item.id, info: data.list, qntTt: item.qntTt, precoTt: item.precoTt, order_date: item.order_date, numEnc: item.id, cont: item.cont, moradaFaturacao: item.moradaFaturacao, moradaEntrega: item.moradaEntrega })
+				this.setState({ visibleModal: true })
+            })
 	}
 
 	renderHeader = () => {
@@ -108,81 +151,108 @@ export default class App extends React.Component {
 	
 	renderListItemEnc = ({ item }) => {
 		return (
-			<EachEnc id={item.id} numEnc={item.numEnc} info={ item.info } precoTt={item.precoTt} data={item.data} cont={item.cont} moradaFaturacao={item.moradaFaturacao} moradaEntrega={item.moradaEntrega} addEnc={(propEnc) => this.showModalEnc(propEnc) } />
+			<EachEnc id={item.idOrders} qntTt={item.qntTt} numEnc={item.idOrders} precoTt={item.priceTt} order_date={item.order_date} cont={item.contribuinte_order} moradaEntrega={item.morada_entrega} moradaFaturacao={item.morada_fatura} item={item} addEnc={(item) => this.showModalEnc(item) } />
 		)
 	}
 	
 	keyExtractor = (item) => {
-    	return item.id
+    	return item.idOrders.toString()
   	}
+
+	renderHeaderMor = () => {
+		return (
+			<View style={{ width: '100%', backgroundColor: '#33333a', height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+				<Text style={[ ProfileStyle.title, { color: myGlobals.lightMode ? Theme.preto : Theme.branco, marginLeft: 10 } ]} >Moradas</Text>
+				<TouchableOpacity style={{ marginRight: 10 }} activeOpacity={0.7} onPress={() => { console.log("Bing Bong") }}>
+					<Icon2 name='add-circle' color={ myGlobals.lightMode ? Theme.preto : Theme.branco } size={25} />
+				</TouchableOpacity>
+			</View>
+		)
+	}
+
+	renderListItemMor = ({ item }) => {
+		return (
+			<EachMor id={item.idAdresses} name={item.name} adress={item.adress} type={item.type}/>
+		)
+	}
 	
+	keyExtractorMor = (item) => {
+    	return item.idAdresses.toString()
+  	}
 	
 	renderHeader = () => {
 		return (
 			<View style={{ height: 40, borderBottomWidth: 1, justifyContent: 'center', alignItems: 'center' , flexDirection: 'row', borderColor: '#D3D3D3' }}>
-				<TouchableOpacity onPress={() => this.setState({ choose: 'encomendas' })} style={{ flex: 1, alignItems: 'center', borderRightWidth: 0.6, borderColor: '#D3D3D3'  }} activeOpacity={0.6}>
-					<Text style={{ fontSize: 17, color: myGlobals.lightMode ? Theme.preto : Theme.branco }}>Encomendas</Text>
+				<TouchableOpacity onPress={() => this.setState({ choose: 'encomendas', weight: true })} style={{ flex: 1, alignItems: 'center', borderRightWidth: 0.6, borderColor: '#D3D3D3'  }} activeOpacity={0.6}>
+					<Text style={{ fontSize: 17, color: myGlobals.lightMode ? Theme.preto : Theme.branco, fontWeight: this.state.weight ? 'bold' : 'normal' }}>Encomendas</Text>
 				</TouchableOpacity>
-				<TouchableOpacity onPress={() => this.setState({ choose: 'info' })} style={{ flex: 1, borderLeftWidth: 0.6, alignItems: 'center', borderColor: '#D3D3D3' }} activeOpacity={0.6}>
-					<Text style={{ fontSize: 17, color: myGlobals.lightMode ? Theme.preto : Theme.branco }}>Conta</Text>
+				<TouchableOpacity onPress={() => this.setState({ choose: 'info', weight: false })} style={{ flex: 1, borderLeftWidth: 0.6, alignItems: 'center', borderColor: '#D3D3D3' }} activeOpacity={0.6}>
+					<Text style={{ fontSize: 17, color: myGlobals.lightMode ? Theme.preto : Theme.branco, fontWeight: this.state.weight ? 'normal' : 'bold' }}>Conta</Text>
 				</TouchableOpacity>
 			</View>
 		)
 	}
 
 	
-	
-	
-	
-    render (){
+    render(){
 		const { navigation } = this.props;
-		return (
-		<View style={ { flex: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.preto } }>
-			<StatusBar style={myGlobals.lightMode ? 'dark' : 'light'} />
-			<View style={[ ProfileStyle.imageBack, { backgroundColor: myGlobals.lightMode ? '#e4e4e4' : '#333333' } ]} >
-				<View style={{ width: '100%', height: '29%', justifyContent: 'flex-end', alignItems: 'flex-end', paddingRight: 15 }}>
-					<TouchableOpacity onPress={() => navigation.navigate('Definicoes')} onThemeChange={() => {}}>
-						<Icon2 name='menu' color={ myGlobals.lightMode ? Theme.preto : Theme.branco } size={38} />
-					</TouchableOpacity>
-				</View>
-				<View style={{ flex: 1, justifyContent: 'center', paddingLeft: 10 }}>
-					<Text style={[ ProfileStyle.name, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >BigLevel</Text>
-					<Text style={{ fontSize: 17 ,color: myGlobals.lightMode ? Theme.preto : Theme.branco }} >biglevel@test.com</Text>
-				</View>
-			</View>
-			<EncDetails 
-				themeMode={myGlobals.lightMode} 
-				isVisible={this.state.visibleModal} 
-				onCancel={() => { 
-					this.setState({ visibleModal: false })
-				}}
-				info={this.state.info}
-				id={this.state.id}
-				precoTt={this.state.precoTt}
-				data={this.state.data}
-				numEnc={this.state.numEnc}
-				cont={this.state.cont}
-				moradaFaturacao={this.state.moradaFaturacao}
-				moradaEntrega={this.state.moradaEntrega}
-			/>
-			<View style={[ ProfileStyle.bodyPart, { backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark, elevation: 10 } ]}>
-					<SectionList
-						contentContainerStyle={{ paddingHorizontal: 10 }}
-						showsVerticalScrollIndicator={false}
-						showsHorizontalScrollIndicator={false}
-						style={{ width: '100%', height: '100%', overflow: 'hidden' }}
-						sections={CATEGORIAS}
-						stickySectionHeadersEnabled={false}
-						renderSectionHeader={this.renderTitle}
-						renderItem={this.renderSection}
-						ListFooterComponent={
-							<View style={{ height: 20 }} />
-						}
-						ListHeaderComponent={this.renderHeader}
+		if (!this.state.loading){
+			return (
+				<View style={ { flex: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.preto } }>
+					<StatusBar style={myGlobals.lightMode ? 'dark' : 'light'} />
+					<View style={[ ProfileStyle.imageBack, { backgroundColor: myGlobals.lightMode ? '#e4e4e4' : '#333333' } ]} >
+						<View style={{ width: '100%', height: '29%', justifyContent: 'flex-end', alignItems: 'flex-end', paddingRight: 15 }}>
+							<TouchableOpacity onPress={() => navigation.navigate('Definicoes')} onThemeChange={() => {}}>
+								<Icon2 name='menu' color={ myGlobals.lightMode ? Theme.preto : Theme.branco } size={38} />
+							</TouchableOpacity>
+						</View>
+						<View style={{ flex: 1, justifyContent: 'center', paddingLeft: 10 }}>
+							<Text style={[ ProfileStyle.name, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]} >{ this.state.data.name }</Text>
+							<Text style={{ fontSize: 17 ,color: myGlobals.lightMode ? Theme.preto : Theme.branco }} >{ this.state.data.email }</Text>
+						</View>
+					</View>
+					<EncDetails 
+						themeMode={myGlobals.lightMode} 
+						isVisible={this.state.visibleModal} 
+						onCancel={() => { 
+							this.setState({ visibleModal: false })
+						}}
+						info={this.state.info}
+						qntTt={this.state.qntTt}
+						id={this.state.id}
+						precoTt={this.state.precoTt}
+						order_date={this.state.order_date}
+						numEnc={this.state.numEnc}
+						cont={this.state.cont}
+						moradaFaturacao={this.state.moradaFaturacao}
+						moradaEntrega={this.state.moradaEntrega}
 					/>
-				
-			</View>
-		</View>
-  );
+					<View style={[ ProfileStyle.bodyPart, { backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark, elevation: 10 } ]}>
+							<SectionList
+								contentContainerStyle={{ paddingHorizontal: 10 }}
+								showsVerticalScrollIndicator={false}
+								showsHorizontalScrollIndicator={false}
+								style={{ width: '100%', height: '100%', overflow: 'hidden' }}
+								sections={CATEGORIAS}
+								stickySectionHeadersEnabled={false}
+								renderSectionHeader={this.renderTitle}
+								renderItem={this.renderSection}
+								ListFooterComponent={
+									<View style={{ height: 20 }} />
+								}
+								ListHeaderComponent={this.renderHeader}
+							/>
+						
+					</View>
+				</View>
+		 	);
+		} else {
+			return(
+				<View style={ { flex: 1, backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark, justifyContent: 'center', alignItems: 'center' } }>
+					<StatusBar style={myGlobals.lightMode ? 'dark' : 'light'} />
+					<ActivityIndicator size={'large'} color={'white'} />
+				</View>
+			)
+		}
 	}
 }
