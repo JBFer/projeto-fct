@@ -26,6 +26,7 @@ import { api_url } from '../constants/host';
 
 const Details = ({ route, params, navigation }) => {
 	const [data, setData] = useState({});
+	const [cart, setCart] = useState(false);
 	const [images, setImages] = useState([]);
 	const [stock, setStock] = useState(false);
 	const [carousel, setCarousel] = useState(null);
@@ -54,12 +55,13 @@ const Details = ({ route, params, navigation }) => {
 		fetch( api_url+'products/specs/'+id)
 			.then(response => response.json())
 			.then(data => {
-				//console.log(data.object);
+				//console.log(data.cartState);
+				setCart(data.cartState)
 				setData(data.object);
-				if(data.object.stock < 10){
-					setStock(true);
+				if(data.object.stock > 10 && data.cartState == false ){
+					setStock(false);
 				} else {
-					setStock(false)
+					setStock(true)
 				}
 			})
 		 
@@ -75,13 +77,25 @@ const Details = ({ route, params, navigation }) => {
 			fetch(api_url+'products/carrinho', requestOptions)
 				.then(response => response.json())
 				.then(data => { 
+					setCart(true)
+					setStock(true)
+					buyCaption()
 					Alert.alert('Produto adicionado', 'O produto - ' + name + ' - foi adicionado ao carrinho!' )
-					
 				})
 		}
 		else {
 			Alert.alert('Erro', 'Certifique-se que o produto se encontra em stock, caso se encontre contacte a equipa de desenvolvimento' )		
 		}
+	}
+
+	const buyCaption = () => {
+		if( cart ) {
+			return 'Já adicionado'
+		}
+		if( !stock ){
+			return 'Em stock'
+		}
+		return 'Sem stock'
 	}
 
 	const goImg = () => {
@@ -127,13 +141,13 @@ const Details = ({ route, params, navigation }) => {
 								<View style={{ height: 70, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
 									<Text style={{ fontSize: 15, color: myGlobals.lightMode ? Theme.preto : Theme.branco }}>{company}</Text>
 									<View>
-									<TouchableOpacity style={{ opacity: !stock ? 1 : 0.5 }} disabled={stock} onPress={() => { irCart() }}>
-										<View style={{ paddingRight: 20, borderWidth: 1, borderRadius: 15, width: 120, height: 40, alignItems: 'center', flexDirection: 'row', borderColor: !stock ? '#03C04A' : 'red', justifyContent: 'center', marginTop: 27 }}>
-											<Text style={{ fontSize: 15, color: !stock ? '#03C04A' : 'red', borderRightWidth: 1, paddingRight: 7, paddingLeft: 15, borderColor: !stock ? '#03C04A' : 'red' }}>Adicionar</Text>
-											<Icon3 name='shopping-cart' size={20} style={{ color: !stock ? '#03C04A' : 'red', paddingLeft: 7 }} />
-										</View>
-									</TouchableOpacity>
-									<Text style={{ textAlign: 'center', color: !stock ? '#03C04A' : 'red' }}>{!stock ? 'Em stock' : 'Sem stock'}</Text>
+										<TouchableOpacity style={{ opacity: !stock ? 1 : 0.5 }} disabled={stock} onPress={() => { irCart() }}>
+											<View style={{ paddingRight: 20, borderWidth: 1, borderRadius: 15, width: 120, height: 40, alignItems: 'center', flexDirection: 'row', borderColor: !stock ? '#03C04A' : 'red', justifyContent: 'center', marginTop: 27 }}>
+												<Text style={{ fontSize: 15, color: !stock ? '#03C04A' : 'red', borderRightWidth: 1, paddingRight: 7, paddingLeft: 15, borderColor: !stock ? '#03C04A' : 'red' }}>Adicionar</Text>
+												<Icon3 name='shopping-cart' size={20} style={{ color: !stock ? '#03C04A' : 'red', paddingLeft: 7 }} />
+											</View>
+										</TouchableOpacity>
+										<Text style={{ textAlign: 'center', color: !stock ? '#03C04A' : 'red' }}>{buyCaption()}</Text>
 									</View>
 								</View>
 							</View>

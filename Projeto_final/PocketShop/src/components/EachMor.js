@@ -9,7 +9,7 @@ export default props => {
 	
  	return (
 		<View style={ styles.eachOne }>
-				<Text style={ styles.eachAdress }>{props.adress}</Text>
+				<Text style={ styles.eachAddress }>{props.address}</Text>
 				<View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }}>
 					<Text style={ styles.eachName }>{props.name}</Text>
 					<Text style={ styles.eachName }>{props.type}</Text>
@@ -20,15 +20,13 @@ export default props => {
 
 const styles = StyleSheet.create({
 	eachOne: {
-		backgroundColor: '#ABABAB',
+		backgroundColor: myGlobals.lightMode ? 'white' : '#ABABAB',
 		width: '100%',
 		minHeight: 50,
-		borderTopWidth: 1,
-		borderTopColor: 'white',
 		paddingHorizontal: 5,
 		//backgroundColor: 'green'
 	},
-	eachAdress: {
+	eachAddress: {
 		fontSize: 17
 	},
 	eachName: {

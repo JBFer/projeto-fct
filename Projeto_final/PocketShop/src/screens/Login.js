@@ -72,15 +72,15 @@ export default class Login extends React.Component {
                 <ImageBackground style={{ flex: 1 }} resizeMode='cover' source={require("../../assets/imageBackground.png")}>
                     <View style={ LoginStyle.topPart } ></View>
                     <View style={ LoginStyle.middlePart } >
-                        <View style={{ flex: 1 }} >
+                        <View style={{ width: '100%', height: '20%' }} >
                             <Text style={ LoginStyle.title }>PocketShop</Text>
                         </View>
-                        <View style={{ flex: 2.5, width: '100%', alignItems: 'center' }} >
+                        <View style={{ width: '100%', height: '35%', alignItems: 'center', justifyContent: 'flex-end' }} >
                             <TextInput
                                 autoCompleteType='email'
                                 placeholder='Email'
                                 placeholderTextColor={"#474d53"} 
-                                style={ LoginStyle.textBox }
+                                style={[ LoginStyle.textBox, { marginBottom: 50 } ]}
                                 value={this.state.searchTxt}
                                 autoCapitalize="none"
 								onChangeText={txt_email => this.user_email(txt_email)}
@@ -93,18 +93,20 @@ export default class Login extends React.Component {
                                 style={ LoginStyle.textBox }
                                 value={this.state.searchTxt}
 								onChangeText={txt_pass => this.user_pass(txt_pass)}
-                                />
-                                { this.state.isLogging ?
-                                    <ActivityIndicator size={30} style={{ marginTop: 40 }} color="#0000ff" />
-                                    :
-                                    <Text style={{ marginTop: 40, color: this.state.color }} >{ this.state.txtLog }</Text>
-                                }
+                            />
                         </View>
-                        <View style={{ flex: 1, width: '100%', alignItems: 'center', marginBottom: 20 }} >
+                        <View style={{ width: '100%', height: '13%', justifyContent: 'flex-end', alignItems: 'center' }} >
+                            { this.state.isLogging ?
+                                <ActivityIndicator size={30} color="#0000ff" />
+                                :
+                                <Text style={{ color: this.state.color }} >{ this.state.txtLog }</Text>
+                            }
+                        </View>
+                        <View style={{ width: '100%', height: '30%', alignItems: 'center', justifyContent: 'space-evenly' }} >
                             <TouchableOpacity style={ LoginStyle.button } activeOpacity={.6} onPress={() => this.login()} >
                                 <Text style={{ fontSize: 19 }} >Entrar</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={{ marginBottom: 10 }} activeOpacity={.4} onPress={() => Linking.openURL("http://jf-api.epizy.com/")} >
+                            <TouchableOpacity activeOpacity={.4} onPress={() => Linking.openURL("http://jf-api.epizy.com/")} >
                                 <Text style={{ color: '#1520A6' }} >Esqueci-me da password</Text>
                             </TouchableOpacity>
                             <TouchableOpacity activeOpacity={.4} onPress={() => Linking.openURL("http://jf-api.epizy.com/")} >

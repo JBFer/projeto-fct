@@ -37,12 +37,18 @@ class Utils {
     public function order_function($query, $field){
         $allow_fields = [
             "price",
-            "views"
+            "views",
+            "rand"
         ];
         if (!in_array($field, $allow_fields)){
             return $query;
         }
-        $query = $query . " ORDER BY products." . $field . " DESC";
+
+        if($field == "rand"){
+            $query = $query . " ORDER BY RAND()";
+        } else {
+            $query = $query . " ORDER BY products." . $field . " DESC";
+        }
 
         return $query;
     }

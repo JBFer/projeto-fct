@@ -10,14 +10,15 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
+/*
 //display all products
 
 $app->get('/products/all[/{order}]', function(Request $request, Response $response){
 
-/*     $ret = get_app()->utils->check_user();
+    $ret = get_app()->utils->check_user();
     if(!$ret->status){
         return get_app()->utils->return_json($ret, $response);
-    } */
+    } 
    
     $query = "SELECT * FROM products";
 
@@ -52,102 +53,7 @@ $app->get('/products/all[/{order}]', function(Request $request, Response $respon
 
     return get_app()->utils->return_json($ret, $response);
 });
-
-/* //filtrar com user
-
-$app->get('/products/user[/{order}]', function (Request $request, Response $response) {
-  
-    $ret = get_app()->utils->check_user();
-    if(!$ret->status){
-        return get_app()->utils->return_json($ret, $response);
-    }
-
-    $query = "
-        SELECT DISTINCT
-            products.*,
-            CASE
-                WHEN favorites.idFavorites IS NULL THEN 0
-                ELSE 1
-            END AS favorite
-        FROM products
-        LEFT JOIN pc ON pc.id_prod = products.idProducts
-        LEFT JOIN collections ON collections.idCollections = pc.id_col
-        LEFT JOIN favorites ON favorites.id_prod = products.idProducts AND favorites.id_user = ?
-        WHERE
-            products.active = 1
-            AND
-            (
-                collections.idCollections IS NULL
-                OR
-                collections.status = 1
-            )
-            AND(
-                pc.id_col IS NULL
-                OR
-                pc.id_col NOT IN (
-                    SELECT
-                        uc.id_col
-                    FROM uc
-                    WHERE
-                        uc.id_user = ?
-                )
-            )
-    ";
-
-    $order = $request->getAttribute('order');
-
-    $field = $order ?? null;
-
-    $sql = get_app()->utils->order_function($query, $field);
-
-    $stmt = get_app()->db->prepare($sql);
-
-    $stmt->bind_param('ii', $_SESSION["id"], $_SESSION["id"]);
-    
-    $ok = $stmt->execute();
-
-    if(!$ok){
-        $ret = (object) [
-            'status' => false,
-            'error' => 500,
-            'msg' => 'Error 500, a database pifou (งº_º)ง',
-            'list' => []
-        ];
-
-        return get_app()->utils->return_json($ret, $response);
-    }
-
-    $result = $stmt->get_result();
-    $data = $result->fetch_all(MYSQLI_ASSOC);
-
-    //$result = get_app()->db->query($query);
-
-    //while($row = $result->fetch_assoc()) {
-    //    $data[] = $row;
-    //}
-    //echo '<pre>';var_dump($data); die();
-
-    
-    if (count($data)) {
-        $ret = (object) [
-            'status' => true,
-            'error' => 200,
-            'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
-            'idUser' => $_SESSION["id"],
-            'list' => $data
-        ];
-    } else {
-        $ret = (object) [
-            'status' => false,
-            'error' => 404,
-            'msg' => 'Error 404, no products found ',
-            'list' => []
-        ];
-    }
-
-    return get_app()->utils->return_json($ret, $response);
-
-}); */
+*/
 
 //filtrar user mais visitados
 
@@ -242,7 +148,8 @@ $app->get('/products/user[/{inicio:[0-9]+}/{final:[0-9]+}[/{order}]]', function 
         $ret = (object) [
             'status' => false,
             'error' => 404,
-            'msg' => 'Error 404, no products found '
+            'msg' => 'Error 404, no products found',
+            'list' => []
         ];
     }
 
@@ -410,11 +317,21 @@ $app->get('/products/specs/{id:[0-9]+}', function (Request $request, Response $r
     $result = $stmt->get_result();
     $data = $result->fetch_object();
 
+    $cartLocal = $_SESSION["cart"] ?? array();
+
+    $array = get_object_vars($data);
+
+    if(in_array($array["idProducts"], $cartLocal)){
+        $cartState = true;
+    } else {
+        $cartState = false;
+    }
+
     if(!$data){
         $ret = (object) [
             'status' => false,
             'error' => 404,
-            'msg' => 'Error 404, no products found '
+            'msg' => 'Error 404, product not found '
         ];
         return get_app()->utils->return_json($ret, $response);
     }
@@ -423,7 +340,7 @@ $app->get('/products/specs/{id:[0-9]+}', function (Request $request, Response $r
         'status' => true,
         'error' => 200,
         'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
-        'idUser' => $_SESSION["id"],
+        'cartState' => $cartState,
         'object' => $data
     ];
 
@@ -431,7 +348,7 @@ $app->get('/products/specs/{id:[0-9]+}', function (Request $request, Response $r
 
 });
 
-//get get images
+//get images
 
 $app->get('/products/images/{id:[0-9]+}', function (Request $request, Response $response) {
   
@@ -1263,6 +1180,58 @@ $app->get('/products/subcatgs', function (Request $request, Response $response) 
             'msg' => 'Error 404, no categories found '
         ];
     }
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//adicionar ao carrinho
+
+$app->post('/products/carrinho', function (Request $request, Response $response) {
+
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $post = $request->getParsedBody();
+    $idProd = $post['id_prod'];
+
+    $cartLocal = $_SESSION["cart"] ?? array($idProd);
+    
+    if(count($cartLocal) > 1 || $_SESSION["cart"]){
+        array_push($cartLocal, $idProd);
+    }
+
+    $_SESSION["cart"] = $cartLocal;
+    
+    $ret = (object) [
+        'status' => true,
+        'error' => 200,
+        'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+    ];
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//buscar ao carrinho
+
+$app->get('/products/getcart', function (Request $request, Response $response) {
+
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $cartLocal = $_SESSION["cart"] ?? array();
+    
+    $ret = (object) [
+        'status' => true,
+        'error' => 200,
+        'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+        'list' => $cartLocal
+    ];
 
     return get_app()->utils->return_json($ret, $response);
 

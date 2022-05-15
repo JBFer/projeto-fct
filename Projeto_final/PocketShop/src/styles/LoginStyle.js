@@ -1,6 +1,7 @@
 export default{
     topPart: {
-        flex: 2,
+        width: '100%',
+        height: '20%',
         alignItems: 'center',
         justifyContent: 'flex-end'
     },
@@ -19,25 +20,26 @@ export default{
     },
     middlePart: {
         backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        flexGrow: 6,
+        alignSelf: 'center',
+        width: '90%',
+        height: '60%',
         alignItems: 'center',
-        marginHorizontal: 20, 
         borderRadius: 15
     },
     textBox: {
-        marginTop: 70,
         borderRadius: 5,
         borderBottomWidth: 2,
         fontSize: 17,
         width: "80%"
     },
     bottomPart: {
-        flex: 2,
+        width: '100%', 
+        height: '20%',
         alignItems: 'center',
         justifyContent: 'center'
     },
     button: {
-        width: '45%',
+        width: '40%',
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
@@ -46,7 +48,6 @@ export default{
         borderBottomWidth: 1.5,
         borderLeftWidth: .8,
         borderRightWidth: .8,
-        borderRadius: 20,
-        marginBottom: 20
+        borderRadius: 20
     }
 }

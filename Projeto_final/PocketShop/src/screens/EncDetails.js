@@ -47,7 +47,7 @@ export default props => {
 								showsVerticalScrollIndicator={false}
 								showsHorizontalScrollIndicator={false}
 								data={props.info}
-								renderItem={({item}) => <ProdEnc name={item.name_prod} price={item.price_prod} qnt={item.qnt_prod} idProd={item.idOrderLines} />}
+								renderItem={({item}) => <ProdEnc goBack={() => {setMode(true), props.onCancel()}} name={item.name_prod} price={item.price_prod} qnt={item.qnt_prod} idProd={item.idOrderLines} nav={props.nav} />}
 								keyExtractor={item => item.idOrderLines.toString()}
 					 		/>
 						:

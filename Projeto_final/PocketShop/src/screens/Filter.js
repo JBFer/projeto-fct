@@ -5,7 +5,8 @@ import {Text,
 		FlatList,
         TouchableOpacity,
         TextInput,
-		Alert
+		Alert,
+		Dimensions
 } from 'react-native'
 
 import Slider from '@react-native-community/slider';
@@ -102,14 +103,14 @@ export default class Filter extends React.Component {
     render() {
         return(
 			<Modal visible={this.props.isVisible} animationType='slide'  onRequestClose={() => this.props.onCancel()}>
-				<View style={ { flex: 1, backgroundColor: this.props.themeMode ? Theme.branco : Theme.backDark } }>
-					<View style={{ width: '100%', height:180, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+				<View style={ { height: Dimensions.get('screen').height, width: Dimensions.get('screen').width, backgroundColor: this.props.themeMode ? Theme.branco : Theme.backDark } }>
+					<View style={{ width: '100%', height: '20%', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
 						<View style={{ backgroundColor: '#555555', width: 100, height: 100, alignItems: 'center', justifyContent: 'center', borderRadius: 50 }}>
 							<Icon2 name='filter' size={70} style={{ color: this.props.themeMode ? Theme.branco : Theme.backDark, paddingTop: 4, paddingLeft: 6 }} />
 						</View>
 						<Text style={{ fontSize: 27, textAlign: 'center', color: this.props.themeMode ? Theme.preto : Theme.branco, marginLeft: 35 }}>Pesquisa{"\n"}Avançada</Text>
 					</View>
-					<View style={{ width: '100%', height: 430, alignItems: 'center', justifyContent: 'space-around' }}>
+					<View style={{ width: '100%', height: '60%', alignItems: 'center', justifyContent: 'space-around' }}>
 						<View style={{ flexDirection: 'row', width: '74%' }}>
 							<TextInput 
 								style={{ borderBottomColor: this.props.themeMode ? Theme.preto : 'white', borderBottomWidth: 1, width: '95%', fontSize: 17, color: this.props.themeMode ? Theme.preto : Theme.branco }} 
@@ -120,7 +121,7 @@ export default class Filter extends React.Component {
 							/>
 							<Icon2 name='search' size={24} style={{ color: this.props.themeMode ? Theme.preto : Theme.branco,  paddingLeft: 4 }} />
 						</View>
-						<View style={{ height: '65%', width: '80%', backgroundColor: '#C4C4C4', borderRadius: 20, overflow: 'hidden'}} >
+						<View style={{ height: '75%', width: '80%', backgroundColor: '#C4C4C4', borderRadius: 20, overflow: 'hidden'}} >
 							<View style={{ width: '100%', height: '20%', paddingBottom: 10, overflow: 'hidden' }}>
 								<View style={{ flexDirection: 'row', alignItems: 'center', elevation: 8, width: '100%', height: '100%', backgroundColor: '#D1D1D1' }}>
 									{ !this.state.idCatg ?
@@ -161,7 +162,7 @@ export default class Filter extends React.Component {
 							<Text style={{ fontSize: 18, color: this.props.themeMode ? Theme.preto : Theme.branco, width: 56, textAlign: 'center', marginTop: 3 }} >{this.state.value}€</Text>
 						</View>
 					</View>
-					<View style={{ flex: 0.7, alignItems: 'center' }}>
+					<View style={{ height: '20%', width: '100%', alignItems: 'center', paddingTop: 20 }}>
 						<TouchableOpacity style={{ width: 174, height: 40, borderRadius: 20, backgroundColor: '#C4C4C4', alignItems: 'center', justifyContent: 'center', marginBottom: 15}} onPress={() => this.pesquisar()} activeOpacity={0.7} >
 							<Text style={{ fontSize: 18, color: this.props.themeMode ? Theme.branco : Theme.backDark }} >Pesquisar</Text>
 						</TouchableOpacity>

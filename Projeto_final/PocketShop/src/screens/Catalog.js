@@ -238,6 +238,8 @@ export default class App extends React.PureComponent {
 									<Icon2 name='search' size={25} style={{ color: this.state.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
 								</TouchableOpacity>
 								<TextInput 
+									returnKeyType="search"
+									onSubmitEditing={() => { this.searchInput() }}
 									style={ [CatalogStyle.input, { color: this.state.lightMode ? Theme.preto : Theme.branco , borderBottomColor: this.state.lightMode ? Theme.preto : Theme.branco } ]}
 									placeholder='Procurar'
 									placeholderTextColor={this.state.lightMode ? '#7d868f' : '#babfc4'}
@@ -298,6 +300,7 @@ export default class App extends React.PureComponent {
     
 
     render() {
+		const { navigation } = this.props;
         return (
 			<View style={ { flex: 1, backgroundColor: this.state.lightMode ? Theme.branco : Theme.backDark } }>
 				<Filter 
@@ -320,8 +323,9 @@ export default class App extends React.PureComponent {
 					onCancel={() => { 
 						this.setState({ showModalBuy: false })
 					}}
+					nav={navigation}
 				/>
-				<StatusBar style={this.state.lightMode ? 'dark' : 'light'} />
+				<StatusBar translucent backgroundColor="transparent" style={this.state.lightMode ? 'dark' : 'light'} />
 
 				<View style={[ CatalogStyle.headerPart, styles.container ]}>
 					<TouchableOpacity onPress={() => { this.setState({ showModal: true }) }}>

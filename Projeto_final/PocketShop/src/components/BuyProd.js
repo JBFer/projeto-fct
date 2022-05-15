@@ -17,9 +17,10 @@ export default props => {
 			fetch( api_url+'products/id/'+props.id)
 				.then(response => response.json())
 				.then(data => {
-					//console.log(data.object);
 					setProdList(data.list[0])
 					toBig(data.list[0].name, data.list[0].company)
+					let a = data.list[0].price
+					props.setTotal(a, 0, 1)
 				})
 	}, [])
 
@@ -35,8 +36,8 @@ export default props => {
 			let shortName = name1
 			setName(shortName)
 		}
-		if (comp1.length > 32){
-			let shortComp = comp1.slice(0, 32)+'...';
+		if (comp1.length > 25){
+			let shortComp = comp1.slice(0, 25)+'...';
 			setComp(shortComp)
 		} else {
 			let shortComp = comp1
@@ -47,7 +48,12 @@ export default props => {
 	
  	return (
 		<View>
-			<TouchableOpacity activeOpacity={0.7} style={ styles.each } onPress={() => {return/* props.onClick() */}}>
+			<TouchableOpacity activeOpacity={0.7} style={ styles.each } onPress={() => {props.goBack(), props.nav.navigate('ProductDetails', { 
+					id: props.id,
+					name: name,
+					company: company
+				})}
+			}>
 				<View style={{ flex: 1 }}>	
 					<Text style={{ fontSize: 16, color: myGlobals.lightMode ? Theme.preto : Theme.branco }} >{nameFil}</Text>
 					<View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -55,7 +61,17 @@ export default props => {
 						<Text style={{ fontSize: 14, color: myGlobals.lightMode ? Theme.preto : Theme.branco, marginRight: 10 }} >{price}€</Text>
 					</View>
 				</View>
-				<TextInput keyboardType='numeric' defaultValue={count.toString()} style={{ maxWidth: 50 , backgroundColor: '#6f6f7e', height: 40, marginRight: 5, borderRadius: 4, paddingHorizontal: 3, fontSize: 16, textAlign: 'center', color: myGlobals.lightMode ? Theme.preto : Theme.branco }} onChangeText={qnt => setCount(qnt)}/>
+				<TextInput
+					keyboardType='numeric'
+					maxLength={3}
+					defaultValue={count.toString()}
+					style={{ maxWidth: 50 , backgroundColor: '#6f6f7e', height: 40, marginRight: 5, borderRadius: 4, paddingHorizontal: 3, fontSize: 16, textAlign: 'center', color: myGlobals.lightMode ? Theme.preto : Theme.branco }}
+					onChangeText={qnt => { 
+						props.setTotal(price, count, qnt)
+						setCount(qnt)
+					}}
+					value={count.toString()}
+				/>
 				<Text style={{ fontSize: 14, color: myGlobals.lightMode ? Theme.preto : Theme.branco, marginRight: 3 }} >uni</Text>
 			</TouchableOpacity>
 		</View>

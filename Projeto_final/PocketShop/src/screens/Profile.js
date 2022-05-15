@@ -7,7 +7,8 @@ import {
 	SectionList,
 	FlatList,
     TouchableOpacity,
-	ActivityIndicator
+	ActivityIndicator,
+	Alert
 } from 'react-native';
 
 import Theme from '../styles/Comum' 
@@ -27,6 +28,8 @@ import myGlobals from '../constants/global'
 import { products_user } from '../services/products';
 import { login } from '../services/user';
 import { api_url } from '../constants/host';
+import AddAddress from './AddAddress';
+import { Swipeable } from 'react-native-gesture-handler';
 
 
 export default class App extends React.Component {
@@ -39,6 +42,7 @@ export default class App extends React.Component {
 		weight: true,
 		choose: 'encomendas',
 		visibleModal: false,
+		visibleModalAdd: false,
 		info: [{}],
 		id: '0',
 		precoTt: 0,
@@ -47,6 +51,29 @@ export default class App extends React.Component {
 		cont: '',
 		moradaFaturacao: '',
 		moradaEntrega: '',
+		isFetching: false
+	}
+
+	onRefresh() {
+		this.setState({
+			data:{},
+			orders: [],
+			moradas: [],
+			loading: true,
+			qntTt: 0,
+			visibleModal: false,
+			info: [{}],
+			id: '0',
+			precoTt: 0,
+			order_date: '',
+			numEnc: 0,
+			cont: '',
+			moradaFaturacao: '',
+			moradaEntrega: '',
+			isFetching: true
+		},() => {
+			this.fetchdata()
+		});
 	}
 
 	componentDidMount() {
@@ -62,7 +89,7 @@ export default class App extends React.Component {
 		fetch( api_url+'user/orders')
 			.then(response => response.json())
 			.then(data => {
-				this.setState({ orders: data.list, loading: false });
+				this.setState({ orders: data.list, loading: false, isFetching: false });
 			})
 		fetch( api_url+'user/moradas')
 			.then(response => response.json())
@@ -84,6 +111,7 @@ export default class App extends React.Component {
 						showsVerticalScrollIndicator={false}
 						showsHorizontalScrollIndicator={false}
 						data={this.state.orders}
+    					refreshing={this.state.isFetching}
 						renderItem={this.renderListItemEnc}
 						keyExtractor={this.keyExtractor}
 					/>
@@ -118,15 +146,46 @@ export default class App extends React.Component {
 							showsVerticalScrollIndicator={false}
 							showsHorizontalScrollIndicator={false}
 							data={this.state.moradas}
+							refreshing={this.state.isFetching}
 							ListHeaderComponent={this.renderHeaderMor}
-							renderItem={this.renderListItemMor}
+							renderItem={(v) => 
+								this.renderListItemMor(v, () => {
+									this.deleteItem(v)
+								})
+							}
 							keyExtractor={this.keyExtractorMor}
+							ItemSeparatorComponent={this.Separator}
 						/>
 					</View>
 				</>
 			)
 		}
 		
+	}
+
+	deleteItem = ({ item, index }) => {
+		if ( item.type == 'faturação' ){
+			Alert.alert('Eliminar morada', 'Não é possivel eliminar a morada de faturação');
+			return
+		}
+		Alert.alert('Eliminar morada', 'Pretende confirmar a eliminação da morada "' + item.name + '"', [
+			{
+				text: 'Cancelar',
+				onPress: () => console.log('Cancel Pressed'),
+			},
+			{ 
+				text: 'Eliminar',
+				onPress: () => this.deleteMor(item.idAddresses)
+			},
+		]);
+	};
+
+	deleteMor = (id) => {
+        fetch( api_url+'del_morada/'+id, {
+			method: 'DELETE'
+		}).then(
+			this.fetchdata()
+		)
 	}
 	
 	showModalEnc = (item) => {
@@ -161,23 +220,44 @@ export default class App extends React.Component {
 
 	renderHeaderMor = () => {
 		return (
-			<View style={{ width: '100%', backgroundColor: '#33333a', height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+			<View style={{ width: '100%', backgroundColor: myGlobals.lightMode ? '#C4C4C4' : '#33333a', height: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
 				<Text style={[ ProfileStyle.title, { color: myGlobals.lightMode ? Theme.preto : Theme.branco, marginLeft: 10 } ]} >Moradas</Text>
-				<TouchableOpacity style={{ marginRight: 10 }} activeOpacity={0.7} onPress={() => { console.log("Bing Bong") }}>
+				<TouchableOpacity style={{ marginRight: 10 }} activeOpacity={0.7} onPress={() => { this.setState({ visibleModalAdd: true }) }}>
 					<Icon2 name='add-circle' color={ myGlobals.lightMode ? Theme.preto : Theme.branco } size={25} />
 				</TouchableOpacity>
 			</View>
 		)
 	}
 
-	renderListItemMor = ({ item }) => {
+	Separator = () => {
+		return <View style={{ width: '100%', height: 1, backgroundColor: myGlobals.lightMode ? Theme.preto : Theme.branco }}/>
+	}
+
+	renderListItemMor = ({ item, index }, onClick) => {
+	
+		const renderRightActions = (progress, dragX, onClick) => {
+			return (
+				<View style={{ width: '20%', backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark, justifyContent: 'center', alignItems: 'center' }}>
+					<TouchableOpacity 
+						style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center', backgroundColor: 'red' }} 
+						activeOpacity={0.7} 
+						onPress={onClick}
+					>
+						<Icon2 name='trash' color={ Theme.branco } size={25} />
+					</TouchableOpacity>
+				</View>
+			);
+		};
+
 		return (
-			<EachMor id={item.idAdresses} name={item.name} adress={item.adress} type={item.type}/>
+			<Swipeable renderRightActions={( progress, dragX ) => renderRightActions(progress, dragX, onClick)} >
+				<EachMor id={item.idAddresses} name={item.name} address={item.address} type={item.type}/>
+			</Swipeable>
 		)
 	}
 	
 	keyExtractorMor = (item) => {
-    	return item.idAdresses.toString()
+    	return item.idAddresses.toString()
   	}
 	
 	renderHeader = () => {
@@ -226,6 +306,18 @@ export default class App extends React.Component {
 						cont={this.state.cont}
 						moradaFaturacao={this.state.moradaFaturacao}
 						moradaEntrega={this.state.moradaEntrega}
+						nav={navigation}
+					/>
+					<AddAddress
+						themeMode={myGlobals.lightMode} 
+						isVisible={this.state.visibleModalAdd} 
+						onCancel={() => { 
+							this.setState({ visibleModalAdd: false })
+						}}
+						onSubmit={() => { 
+							this.fetchdata()
+							this.setState({ visibleModalAdd: false })
+						}}
 					/>
 					<View style={[ ProfileStyle.bodyPart, { backgroundColor: myGlobals.lightMode ? Theme.branco : Theme.backDark, elevation: 10 } ]}>
 							<SectionList
@@ -234,6 +326,8 @@ export default class App extends React.Component {
 								showsHorizontalScrollIndicator={false}
 								style={{ width: '100%', height: '100%', overflow: 'hidden' }}
 								sections={CATEGORIAS}
+								onRefresh={() => this.onRefresh()}
+    							refreshing={this.state.isFetching}
 								stickySectionHeadersEnabled={false}
 								renderSectionHeader={this.renderTitle}
 								renderItem={this.renderSection}

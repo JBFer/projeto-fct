@@ -106,7 +106,7 @@ return get_app()->utils->return_json($ret, $response);
 
 //adicionar moradas
 
-$app->post('/addAdress', function(Request $request, Response $response){
+$app->post('/user/addmorada', function(Request $request, Response $response){
 
     $ret = get_app()->utils->check_user();
     if(!$ret->status){
@@ -115,13 +115,13 @@ $app->post('/addAdress', function(Request $request, Response $response){
 
     $post = $request->getParsedBody();
     $name = $post['name'];
-    $adress = $post['adress'];
+    $address = $post['address'];
     $type = $post['type'];
 
-    $query = "INSERT INTO adresses (id_user, name, adress, type) VALUES (?, ?, ?, ?)";
+    $query = "INSERT INTO addresses (id_user, name, address, type) VALUES (?, ?, ?, ?)";
 
     $stmt = get_app()->db->prepare($query);
-    $stmt->bind_param('isss', $_SESSION["id"], $name, $adress, $type);
+    $stmt->bind_param('isss', $_SESSION["id"], $name, $address, $type);
 
     $ok = $stmt->execute();
 
@@ -139,18 +139,283 @@ $app->post('/addAdress', function(Request $request, Response $response){
     $ret = (object) [
         'status' => true,
         'error' => 200,
-        'msg' => 'Ok 200, new adress added',
+        'msg' => 'Ok 200, new address added',
     ];
     
 return get_app()->utils->return_json($ret, $response);
 });
 
-//dar update name
+//ver moradas do user
 
-//dar update pass
+$app->get('/user/moradas', function (Request $request, Response $response) {
+  
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
 
-//dar update contribuinte
+    $query = "
+        SELECT
+            *
+        FROM
+        addresses 
+        WHERE
+        id_user = ?
+    ";
 
-//dar update email
+    $stmt = get_app()->db->prepare($query);
 
-//dar update tel
+    $stmt->bind_param('i', $_SESSION["id"]);
+    
+    $ok = $stmt->execute();
+
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifou (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    
+    if (count($data)) {
+        $ret = (object) [
+            'status' => true,
+            'error' => 200,
+            'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+            'idUser' => $_SESSION["id"],
+            'list' => $data
+        ];
+    } else {
+        $ret = (object) [
+            'status' => false,
+            'error' => 404,
+            'msg' => 'Error 404, no addresses found',
+            'list' => []
+        ];
+    }
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//remover morada
+
+$app->delete('/del_morada/{id_add:[0-9]+}', function(Request $request, Response $response){
+
+    $id_add = $request->getAttribute('id_add');
+
+    $a = intval($id_add);
+
+    $query = "DELETE FROM addresses WHERE id_user = ? AND idAddresses = ?";
+
+    $stmt = get_app()->db->prepare($query);
+    $stmt->bind_param('ii', $_SESSION["id"], $a);
+
+    $ok = $stmt->execute();
+
+    
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifou (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $ret = (object) [
+        'status' => true,
+        'error' => 200,
+        'msg' => 'Ok 200, address removed',
+    ];
+    
+return get_app()->utils->return_json($ret, $response);
+});
+
+//ver informações do user
+
+$app->get('/user/info', function (Request $request, Response $response) {
+  
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $query = "
+        SELECT
+            name,
+            contribuinte,
+            email,
+            tel,
+            start_date
+        FROM
+        users 
+        WHERE
+        idUsers = ?
+    ";
+
+    $stmt = get_app()->db->prepare($query);
+
+    $stmt->bind_param('i', $_SESSION["id"]);
+    
+    $ok = $stmt->execute();
+
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifo    u (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    
+    if (count($data)) {
+        $ret = (object) [
+            'status' => true,
+            'error' => 200,
+            'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+            'idUser' => $_SESSION["id"],
+            'list' => $data
+        ];
+    } else {
+        $ret = (object) [
+            'status' => false,
+            'error' => 404,
+            'msg' => 'Error 404, no products found '
+        ];
+    }
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//ver encomendas do user
+
+$app->get('/user/orders', function (Request $request, Response $response) {
+  
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $query = "
+        SELECT
+            *
+        FROM
+        orders 
+        WHERE
+        id_user = ?
+    ";
+
+    $stmt = get_app()->db->prepare($query);
+
+    $stmt->bind_param('i', $_SESSION["id"]);
+    
+    $ok = $stmt->execute();
+
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifou (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    
+    if (count($data)) {
+        $ret = (object) [
+            'status' => true,
+            'error' => 200,
+            'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+            'idUser' => $_SESSION["id"],
+            'list' => $data
+        ];
+    } else {
+        $ret = (object) [
+            'status' => false,
+            'error' => 404,
+            'msg' => 'Error 404, no products found '
+        ];
+    }
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//ver detalhes encomendas
+
+$app->post('/user/orders/details', function (Request $request, Response $response) {
+  
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $post = $request->getParsedBody();
+    $idOrder = $post['id'];
+
+    $query = "
+        SELECT
+            *
+        FROM
+        orderLines
+        WHERE
+        id_order = ?
+    ";
+
+    $stmt = get_app()->db->prepare($query);
+
+    $stmt->bind_param('i', $idOrder);
+    
+    $ok = $stmt->execute();
+
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifou (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $result = $stmt->get_result();
+    $data = $result->fetch_all(MYSQLI_ASSOC);
+
+    
+    if (count($data)) {
+        $ret = (object) [
+            'status' => true,
+            'error' => 200,
+            'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+            'idUser' => $_SESSION["id"],
+            'list' => $data
+        ];
+    } else {
+        $ret = (object) [
+            'status' => false,
+            'error' => 404,
+            'msg' => 'Error 404, no products found '
+        ];
+    }
+
+    return get_app()->utils->return_json($ret, $response);
+
+});

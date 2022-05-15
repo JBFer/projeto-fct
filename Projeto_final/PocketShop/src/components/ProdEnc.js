@@ -9,7 +9,7 @@ export default props => {
 	
  	return (
 		<View style={ styles.eachOne }>
-			<TouchableOpacity onPress={() => console.warn(props.idProd)} activeOpacity={0.4}>
+			<TouchableOpacity onPress={() => {props.goBack(), props.nav.navigate('ProductDetails', { id: props.idProd })}} activeOpacity={0.4}>
       		<View style={ styles.eachOneT }>
 				<View style={{ width: '90%', height: '100%', justifyContent: 'center'  }}>
 					<View style={{ flexDirection: 'row', alignItems: 'flex-end' , justifyContent:'space-between', height: '60%' }}>
