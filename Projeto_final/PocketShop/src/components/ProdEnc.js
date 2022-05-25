@@ -6,6 +6,16 @@ import Theme from '../styles/Comum'
 import myGlobals from '../constants/global'
 
 export default props => {
+
+	const toBig = (title) => {
+		if (title.length > 25){
+			const shortTitle = title.slice(0, 25)+'...';
+			return (shortTitle)
+		} else {
+			const shortTitle = title
+			return (shortTitle)
+		}
+    }
 	
  	return (
 		<View style={ styles.eachOne }>
@@ -13,7 +23,7 @@ export default props => {
       		<View style={ styles.eachOneT }>
 				<View style={{ width: '90%', height: '100%', justifyContent: 'center'  }}>
 					<View style={{ flexDirection: 'row', alignItems: 'flex-end' , justifyContent:'space-between', height: '60%' }}>
-						<Text style={[ styles.eachTxt, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{props.name}</Text>
+						<Text style={[ styles.eachTxt, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{toBig(props.name)}</Text>
 						<Text style={[ styles.eachDate, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{props.qnt}x</Text>
 					</View>
 					<View style={{ flexDirection: 'row', alignItems: 'center' , justifyContent:'space-between', height: '40%' }}>

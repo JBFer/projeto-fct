@@ -134,8 +134,9 @@ const Details = ({ route, params, navigation }) => {
 									<View style={{ width: '75%' }}>
 										<Text style={[ DetailsStyle.title, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{name}</Text>
 									</View>
-									<View>
+									<View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
 										<Text style={[ DetailsStyle.title, { color: myGlobals.lightMode ? Theme.preto : Theme.branco } ]}>{price}€</Text>
+										<Text style={ { color: myGlobals.lightMode ? Theme.preto : Theme.branco, fontSize: 12, marginLeft: 2 } }>c/Iva</Text>
 									</View>
 								</View>
 								<View style={{ height: 70, alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row' }}>
@@ -171,7 +172,7 @@ const Details = ({ route, params, navigation }) => {
 										itemWidth={300}
 									/>
 								) : (
-									<Text style={{ fontSize: 20, color: myGlobals.lightMode ? Theme.preto : Theme.branco }}>No images available</Text>
+									<Text style={{ fontSize: 20, color: myGlobals.lightMode ? Theme.preto : Theme.branco }}>Sem imagens disponíveis</Text>
 								)
 							}
 						</View>

@@ -32,6 +32,7 @@ export default class AddAddress extends React.Component {
 			fetch(api_url+'user/addmorada', requestOptions)
 				.then(response => response.json())
 				.then(data => { 
+					this.setState({ nome: '', morada: '' })
 					Alert.alert('Morada Adicionada', 'A morada ' + this.state.morada + ' com o nome ' + this.state.nome + ' foi adicionada com sucesso.' )
 					this.props.onSubmit()
 				})

@@ -99,11 +99,29 @@ export default class Filter extends React.Component {
 		})
 		this.props.onCancel()
 	}
+
+	refresh = () => {
+		this.setState({
+			searchTxt: '',
+			catgArray: this.props.categories,
+			iconTop: 'suitcase',
+			textTop: 'Produtos',
+			idCatg: null,
+			idSub: null,
+			min: 0,
+			value: 1000,
+			max: 1000,
+			selected: false
+		})
+	}
     
     render() {
         return(
 			<Modal visible={this.props.isVisible} animationType='slide'  onRequestClose={() => this.props.onCancel()}>
 				<View style={ { height: Dimensions.get('screen').height, width: Dimensions.get('screen').width, backgroundColor: this.props.themeMode ? Theme.branco : Theme.backDark } }>
+					<TouchableOpacity style={{ position: 'absolute', alignSelf: 'flex-end', marginTop: 10, paddingRight: 10 }} onPress={() => this.refresh()} >
+						<Icon2 name='refresh-circle' size={30} style={{ color: this.props.themeMode ? Theme.backDark : Theme.branco }} />
+					</TouchableOpacity>
 					<View style={{ width: '100%', height: '20%', justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
 						<View style={{ backgroundColor: '#555555', width: 100, height: 100, alignItems: 'center', justifyContent: 'center', borderRadius: 50 }}>
 							<Icon2 name='filter' size={70} style={{ color: this.props.themeMode ? Theme.branco : Theme.backDark, paddingTop: 4, paddingLeft: 6 }} />
@@ -142,7 +160,7 @@ export default class Filter extends React.Component {
 								data={this.state.catgArray}
 								numColumns={3}
 								keyExtractor={item => `${item.id}`} 
-								renderItem={({item}) => <EachCatg id={item.id} category={item.name} icon='react' onAdicionarStack={() => this.changeArray(item.id, item.name)}/>} 
+								renderItem={({item}) => <EachCatg selected={this.state.idSub} id={item.id} category={item.name} icon='react' onAdicionarStack={() => this.changeArray(item.id, item.name)}/>} 
 							/>
 						</View>
 						<View style={{ flexDirection: 'row', width: '100%', alignItems: 'center', justifyContent: 'center' }}>

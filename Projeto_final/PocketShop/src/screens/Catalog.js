@@ -56,15 +56,15 @@ export default class App extends React.PureComponent {
 
 	componentDidMount() {
 		fetch(api_url+'products/catgs')
-			.then(response => response.json())
-			.then(data => {
-				this.setState({ categories: data.list });
-			})
+		.then(response => response.json())
+		.then(data => {
+			this.setState({ categories: data.list });
+		})
 		fetch(api_url+'products/subcatgs')
-			.then(response => response.json())
-			.then(data => {
-				this.setState({ subcategories: data.list });
-			})
+		.then(response => response.json())
+		.then(data => {
+			this.setState({ subcategories: data.list });
+		})
 		this.fetchdata()
 	}
 

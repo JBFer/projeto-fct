@@ -124,8 +124,8 @@ const styles = StyleSheet.create({
 	}, each: {
 		elevation: 5,
         marginTop: 15,
-		marginLeft: 5,
-        width: 190,
+		marginHorizontal: 2.5,
+        maxWidth: 190,
         borderLeftWidth: 1,
         borderRightWidth: 1,
         alignItems: 'flex-end',

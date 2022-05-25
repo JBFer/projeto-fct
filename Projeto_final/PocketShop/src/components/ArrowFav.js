@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
 		height: '50%'
 	},
 	image: {
-		width: '100%',
+		width: '110%',
 		height: '101%',
 	},
 	labelTxt: {
