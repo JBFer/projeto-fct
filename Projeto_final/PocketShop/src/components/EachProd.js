@@ -65,8 +65,8 @@ export default class EachProd extends React.PureComponent {
     }
 	
 	toBigComp = (comp) => {
-		if (comp.length > 12){
-			const shortTitle = comp.slice(0, 12)+'...';
+		if (comp.length > 10){
+			const shortTitle = comp.slice(0, 10)+'...';
 			return (shortTitle)
 		} else {
 			const shortTitle = comp

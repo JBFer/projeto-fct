@@ -66,7 +66,7 @@ export default class Fav extends React.Component {
 	//quando é clicado um dos buttons do favorito
     
 	changeFavoriteState = () => {
-		console.log("change")
+		//console.log("change")
 		this.fetchdata()
 	}
 

@@ -784,7 +784,7 @@ $app->get('/products/filter/{subcategory:[0-9]+}/{id:[0-9]+}[/{order}]', functio
 
 //dar update ao stock de acordo com a quantidade comprada (qnt) de um certo produto (idProducts)
 
-$app->put('/products/updateStock/{idProducts:[0-9]+}/{qnt:[0-9]+}', function (Request $request, Response $response) {
+$app->put('/products/update_stock/{idProducts:[0-9]+}/{qnt:[0-9]+}', function (Request $request, Response $response) {
 
     $ret = get_app()->utils->check_user();
     if(!$ret->status){
@@ -1197,9 +1197,15 @@ $app->post('/products/carrinho', function (Request $request, Response $response)
     $post = $request->getParsedBody();
     $idProd = $post['id_prod'];
 
-    $cartLocal = $_SESSION["cart"] ?? array($idProd);
+    if(isset($_SESSION["cart"]) && !empty($_SESSION['cart'])){
+        $cartLocal = $_SESSION["cart"];
+    } else {
+        $cartLocal = array($idProd);
+    }
+
+    //var_dump($cartLocal); die();
     
-    if(count($cartLocal) > 1 || $_SESSION["cart"]){
+    if(count($cartLocal) > 1 || (isset($_SESSION["cart"]) && !empty($_SESSION['cart']))){
         array_push($cartLocal, $idProd);
     }
 
@@ -1208,6 +1214,7 @@ $app->post('/products/carrinho', function (Request $request, Response $response)
     $ret = (object) [
         'status' => true,
         'error' => 200,
+        'cart' => $cartLocal,
         'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
     ];
 
@@ -1224,7 +1231,11 @@ $app->get('/products/getcart', function (Request $request, Response $response) {
         return get_app()->utils->return_json($ret, $response);
     }
 
-    $cartLocal = $_SESSION["cart"] ?? array();
+    if(isset($_SESSION["cart"]) && !empty($_SESSION['cart'])){
+        $cartLocal = $_SESSION["cart"];
+    } else {
+        $cartLocal = array();
+    }
     
     $ret = (object) [
         'status' => true,
@@ -1235,4 +1246,170 @@ $app->get('/products/getcart', function (Request $request, Response $response) {
 
     return get_app()->utils->return_json($ret, $response);
 
+});
+
+//remover ao carrinho
+
+$app->post('/products/del_carrinho', function (Request $request, Response $response) {
+
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $post = $request->getParsedBody();
+    $value = $post['id'];
+
+    //var_dump($value); die();
+
+    $cart = $_SESSION["cart"];
+
+    $novoCart = array();
+    
+    for ($i = 0; $i < count($cart); $i++) {
+        if( $cart[$i] != $value ){
+            array_push($novoCart, $cart[$i]);
+        }
+    }
+    
+    //var_dump($novoCart); die();
+    
+    $_SESSION["cart"] = $novoCart;
+    
+    
+    $ret = (object) [
+        'status' => true,
+        'error' => 200,
+        'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+    ];
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//remover carrinho completo
+
+$app->get('/products/eli_carrinho', function (Request $request, Response $response) {
+
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    //var_dump($value); die();
+
+    $_SESSION["cart"] = array();
+    
+    //var_dump($novoCart); die();    
+    
+    $ret = (object) [
+        'status' => true,
+        'error' => 200,
+        'msg' => 'Ok 200, you made it ヽ(･∀･)ﾉ',
+    ];
+
+    return get_app()->utils->return_json($ret, $response);
+
+});
+
+//make order
+
+$app->post('/make_order', function(Request $request, Response $response){
+
+    $ret = get_app()->utils->check_user();
+    if(!$ret->status){
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    $post = $request->getParsedBody();
+    $priceTt = floatval($post['priceTt']);
+    $qntTt = intval($post['qntTt']);
+    $contribuinte_order = $post['contribuinte_order'];
+    $morada_fatura = $post['morada_fatura'];
+    $morada_entrega = $post['morada_entrega'];
+
+    $id_prod = $post['id_prod'];
+    $name_prod = $post['name_prod'];
+    $price_prod = $post['price_prod'];
+    $qnt_prod = $post['qnt_prod'];
+
+    $query = "
+        BEGIN;
+        INSERT INTO orders (id_user, order_date, priceTt, qntTt, contribuinte_order, morada_fatura, morada_entrega, status)
+            VALUES (". $_SESSION["id"] .", '". date('Y-m-d') ."', ". $priceTt .", ". $qntTt .", '". $contribuinte_order ."', '". $morada_fatura ."', '". $morada_entrega ."', 1);
+        INSERT INTO orderLines (id_order, id_prod, name_prod, price_prod, qnt_prod)
+            VALUES ";
+
+    
+    $query_parts = array();
+
+    /* var_dump($_SESSION["id"]);
+    var_dump(date("Y-m-d"));
+    var_dump($priceTt);
+    var_dump($qntTt);
+    var_dump($contribuinte_order);
+    var_dump($morada_fatura);
+    var_dump($morada_entrega);
+    var_dump("_________________________________");
+    var_dump($id_prod);
+    var_dump($name_prod);
+    var_dump($price_prod);
+    var_dump($qnt_prod);
+    die();   */
+
+    for($x=0; $x<count($id_prod); $x++){
+        $query_parts[] = "(LAST_INSERT_ID(), " . $id_prod[$x] . ", '" . $name_prod[$x] . "', " . $price_prod[$x] . ", " . $qnt_prod[$x] . ")";
+    }
+    $query .= implode(',', $query_parts);
+
+    $query = $query . "; COMMIT;";
+    
+    //var_dump($query);die();
+
+    $mysqli = get_app()->db->multi_query($query);
+
+    if ( !$mysqli ){
+        $ret = (object) [
+            'status' => true,
+            'error' => 500,
+            'msg' => 'Error 500, try later',
+        ];
+        
+        return get_app()->utils->return_json($ret, $response);
+    }
+
+    /* if ($result = $mysqli->store_result()) {
+        var_dump($result->fetch_all(MYSQLI_ASSOC));
+        $result->free();
+    } */
+
+    /*
+
+    
+    $stmt = get_app()->db->prepare($query);
+
+    //var_dump($stmt);die();
+
+    $stmt->bind_param('isdisss', $_SESSION["id"], date("Y-m-d"), $priceTt, $qntTt, $contribuinte_order, $morada_fatura, $morada_entrega);
+
+    $ok = $stmt->execute();
+
+    
+    if(!$ok){
+        $ret = (object) [
+            'status' => false,
+            'error' => 500,
+            'msg' => 'Error 500, a database pifou (งº_º)ง'
+        ];
+
+        return get_app()->utils->return_json($ret, $response);
+    }*/
+
+    $ret = (object) [
+        'status' => true,
+        'error' => 200,
+        'msg' => 'Ok 200, new order added',
+    ];
+    
+return get_app()->utils->return_json($ret, $response);
 });

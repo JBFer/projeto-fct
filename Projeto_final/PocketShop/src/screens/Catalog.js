@@ -8,7 +8,8 @@ import {
     TextInput,
 	FlatList,
 	SectionList,
-    TouchableOpacity
+    TouchableOpacity,
+	BackHandler
 } from 'react-native';
 
 import Theme from '../styles/Comum' 
@@ -66,7 +67,20 @@ export default class App extends React.PureComponent {
 			this.setState({ subcategories: data.list });
 		})
 		this.fetchdata()
+
+		BackHandler.addEventListener('hardwareBackPress', this.backAction);
+
+		return () => BackHandler.removeEventListener('hardwareBackPress', this.backAction);
 	}
+
+	backAction = () => {
+		if ( this.state.search ){
+			this.setState({ search: false, searchTxt: '' })
+		} else {
+			BackHandler.exitApp()
+		}
+		return true;
+	  };
 
 
 	fetchdata = () => {
@@ -103,60 +117,61 @@ export default class App extends React.PureComponent {
 	
 
 	searchInput = () => {
-		this.setState({ loading2: true, search: true })
+		if ( this.state.searchTxt ||  this.state.pesquisa.subcatg || this.state.pesquisa.catg || this.state.pesquisa.max_price != 1000){
+			this.setState({ loading2: true, search: true })
 
-		let url = api_url + 'products/search';
-
-		if (this.state.searchTxt) {
-			url += '/' + this.state.searchTxt;
-		}
-
-		let params = '';
-
-		if (this.state.pesquisa.subcatg) {
-			params = '?subcat=' + this.state.pesquisa.subcatg;
-		}
-
-		
-		if (this.state.pesquisa.catg) {
-			if (params.length) {
-				params += '&';
-			} else {
-				params += '?';
+			let url = api_url + 'products/search';
+	
+			if (this.state.searchTxt) {
+				url += '/' + this.state.searchTxt;
 			}
-
-			params += 'cat=' + this.state.pesquisa.catg;
-		}
-		if (this.state.pesquisa.price_min) {
-			if (params.length) {
-				params += '&';
-			} else {
-				params += '?';
+	
+			let params = '';
+	
+			if (this.state.pesquisa.subcatg) {
+				params = '?subcat=' + this.state.pesquisa.subcatg;
 			}
-
-			params += 'price_min=' + this.state.pesquisa.min_price;
-		}
-		if (this.state.pesquisa.max_price) {
-			if (params.length) {
-				params += '&';
-			} else {
-				params += '?';
+	
+			
+			if (this.state.pesquisa.catg) {
+				if (params.length) {
+					params += '&';
+				} else {
+					params += '?';
+				}
+	
+				params += 'cat=' + this.state.pesquisa.catg;
 			}
-
-			params += 'price_max=' + this.state.pesquisa.max_price;
+			if (this.state.pesquisa.price_min) {
+				if (params.length) {
+					params += '&';
+				} else {
+					params += '?';
+				}
+	
+				params += 'price_min=' + this.state.pesquisa.min_price;
+			}
+			if (this.state.pesquisa.max_price) {
+				if (params.length) {
+					params += '&';
+				} else {
+					params += '?';
+				}
+	
+				params += 'price_max=' + this.state.pesquisa.max_price;
+			}
+			
+	
+			url += params;
+	
+			setTimeout(() => {
+				fetch(url)
+					.then(response => response.json())
+					.then(data => {
+						this.setState({ array_pesq: data.list, loading2: false });
+					})
+			}, 1500);
 		}
-		
-
-		url += params;
-
-		setTimeout(() => {
-			fetch(url)
-				.then(response => response.json())
-				.then(data => {
-					this.setState({ array_pesq: data.list, loading2: false });
-				})
-		}, 1500);
-
     }
 
 
@@ -363,6 +378,8 @@ export default class App extends React.PureComponent {
 												<Icon2 name='arrow-back' size={25} style={{ color: this.state.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
 											</TouchableOpacity>
 											<TextInput 
+												returnKeyType="search"
+												onSubmitEditing={() => { this.searchInput() }}
 												style={ [CatalogStyle.input, { color: this.state.lightMode ? Theme.preto : Theme.branco , borderBottomColor: this.state.lightMode ? Theme.preto : Theme.branco } ]}
 												placeholder='Procurar'
 												placeholderTextColor={this.state.lightMode ? '#7d868f' : '#babfc4'}
@@ -395,6 +412,8 @@ export default class App extends React.PureComponent {
 														<Icon2 name='arrow-back' size={25} style={{ color: this.state.lightMode ? Theme.preto : Theme.branco,  paddingLeft: 5 }} />
 													</TouchableOpacity>
 													<TextInput 
+														returnKeyType="search"
+														onSubmitEditing={() => { this.searchInput() }}
 														style={ [CatalogStyle.input, { color: this.state.lightMode ? Theme.preto : Theme.branco , borderBottomColor: this.state.lightMode ? Theme.preto : Theme.branco } ]}
 														placeholder='Procurar'
 														placeholderTextColor={this.state.lightMode ? '#7d868f' : '#babfc4'}

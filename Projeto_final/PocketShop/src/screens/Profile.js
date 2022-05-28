@@ -30,6 +30,7 @@ import { login } from '../services/user';
 import { api_url } from '../constants/host';
 import AddAddress from './AddAddress';
 import { Swipeable } from 'react-native-gesture-handler';
+import NoEnc from '../components/NoEnc';
 
 
 export default class App extends React.Component {
@@ -108,6 +109,7 @@ export default class App extends React.Component {
 			return (
 				<>
 					<FlatList
+						ListEmptyComponent={<NoEnc />}
 						showsVerticalScrollIndicator={false}
 						showsHorizontalScrollIndicator={false}
 						data={this.state.orders}

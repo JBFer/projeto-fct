@@ -5,17 +5,20 @@ class Utils {
     }
 
     /**
-     * Método responsável pelas respostas da API
-     */
-    public function return_json(stdClass $ret, $response){
+    * Método responsável pelas respostas da API
+    */
 
+    public function return_json(stdClass $ret, $response){
+        
         $payload = json_encode($ret);
         
         $response->getBody()->write($payload);
         return $response
-              ->withHeader('Content-Type', 'application/json');
+        ->withHeader('Content-Type', 'application/json');
     }
+    
 
+    //verificação do utilizador
     public function check_user(){
         $ret = (object) [
             'status' => false,
@@ -34,6 +37,7 @@ class Utils {
         return $ret;
     }
 
+    //ordenação de produtos
     public function order_function($query, $field){
         $allow_fields = [
             "price",
@@ -44,6 +48,7 @@ class Utils {
             return $query;
         }
 
+        //verifica se a ordem é randomizada
         if($field == "rand"){
             $query = $query . " ORDER BY RAND()";
         } else {
@@ -53,6 +58,7 @@ class Utils {
         return $query;
     }
 
+    //limite de itens
     public function limit_function($query, $inicio, $final){
         $query = $query . " LIMIT " . $inicio . ", " . $final ." ";
 

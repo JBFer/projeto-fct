@@ -1,6 +1,6 @@
 const PRODUTOS = [
 	{
-		title: 'MAIS VISITADOS',
+		title: 'TOP 10 MAIS VISITADOS',
 		key: 'visitados',
 		data: [
 			{

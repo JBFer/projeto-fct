@@ -21,6 +21,9 @@ import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler'
 export default class Buy extends React.Component {    
     state = {
         each:[],
+        qnt: [],
+        price: [],
+        name: [],
         total: 0,
         refresh: true,
         loading: true
@@ -32,12 +35,34 @@ export default class Buy extends React.Component {
     }
 
     getTotal = (a, b, c) => {
+        //preço total
         let preco = this.state.total 
-        //console.log('subtrai '+ (a * b) +' a ' + preco)
-        //console.log('adiciona '+ (a * c) +' a ' + preco)
         preco -= a * b
         preco += a * c
         this.setState({ total: preco })
+        //console.log('subtrai '+ (a * b) +' a ' + preco)
+        //console.log('adiciona '+ (a * c) +' a ' + preco)
+    }
+
+    getQnt = (id, qnt) => {
+        //guardar as quantidades para as encomendas
+        let arrayQnt = this.state.each 
+        let a = arrayQnt.indexOf(id)
+        let newArray = this.state.qnt
+        newArray[a] = qnt
+        //console.log('a ' + a)
+        //console.log('Novo array ' + newArray)
+        //this.setState({ qnt: newArray })
+    }
+
+    getRest = (id, nameProd, priceProd) => {
+        let arrayQnt = this.state.each 
+        let index = arrayQnt.indexOf(id)
+        let n = this.state.name
+        let p = this.state.price
+        n[index] = nameProd
+        p[index] = priceProd
+        this.setState({ name: n, price: p })
     }
 
     getProds = () => {
@@ -88,7 +113,7 @@ export default class Buy extends React.Component {
 		return (
             <GestureHandlerRootView>
                 <Swipeable renderLeftActions={( progress, dragX ) => renderLeftActions(progress, dragX, onClick)} >
-                    <BuyProd goBack={() => this.cancel()} nav={this.props.nav} id={item.item} setTotal={(a, b, c) => this.getTotal(a, b, c)}/>
+                    <BuyProd goBack={() => this.cancel()} nav={this.props.nav} id={item.item} setTotal={(a, b, c) => this.getTotal(a, b, c)} setQnt={(id, qnt) => this.getQnt(id, qnt) } setRest={(id, nameProd, priceProd) => this.getRest(id, nameProd, priceProd)}/>
                 </Swipeable>
             </GestureHandlerRootView>
         )
@@ -100,7 +125,7 @@ export default class Buy extends React.Component {
 
     deleteItem = ({ item, index }) => {
         this.setState({ refresh: true, loading: true })
-        this.setState({ total: 0 })
+        this.setState({ total: 0, name: [], qnt: [], price: [] })
 		const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -110,7 +135,7 @@ export default class Buy extends React.Component {
             .then(() => {
                 this.getProds()
             })
-	};
+	}
 
     onRefresh = () => {
         this.setState({ refresh: false, loading: false })
@@ -145,7 +170,21 @@ export default class Buy extends React.Component {
                         }
                         <View style={{ height: 55, width: '95%', borderTopWidth: 1, borderTopColor: this.props.themeMode ? Theme.preto : Theme.branco, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}} >
                             <Text style={{ fontSize: 18, color: this.props.themeMode ? Theme.preto : Theme.branco }} >Total: {this.state.total.toFixed(2)}€</Text>
-                            <TouchableOpacity disabled={this.state.total ? false : true} style={{ height: 40, borderWidth: 1, borderRadius: 15, justifyContent: 'center', alignItems: 'center', borderColor: '#03C04A', paddingHorizontal: 5 }} activeOpacity={0.7}>
+                            <TouchableOpacity 
+                                disabled={this.state.total ? false : true} 
+                                style={{ opacity: this.state.total ? 1 : 0.5, height: 40, borderWidth: 1, borderRadius: 15, justifyContent: 'center', alignItems: 'center', borderColor: '#03C04A', paddingHorizontal: 5 }} 
+                                activeOpacity={0.7} 
+                                onPress={() => {
+                                    this.cancel(), this.props.nav.navigate('Cart', {
+                                        priceTt: this.state.total,
+                                        id: this.state.each,
+                                        price: this.state.price,
+                                        name: this.state.name,
+                                        qnt: this.state.qnt
+                                    })
+                                    }
+                                }
+                            >
                                 <Text style={{ fontSize: 16, color: '#03C04A' }} >Encomendar</Text>
                             </TouchableOpacity>
                         </View>

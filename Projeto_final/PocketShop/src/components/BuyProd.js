@@ -21,6 +21,8 @@ export default props => {
 					toBig(data.list[0].name, data.list[0].company)
 					let a = data.list[0].price
 					props.setTotal(a, 0, 1)
+					props.setQnt(props.id, 1)
+					props.setRest(props.id, data.list[0].name, data.list[0].price)
 				})
 	}, [])
 
@@ -30,7 +32,7 @@ export default props => {
 	
 	const toBig = (name1, comp1) => {
 		if (name1.length > 32){
-			let shortName = name1.slice(0, 32)+'...';
+			let shortName = name1.slice(0, 27)+'...';
 			setName(shortName)
 		} else {
 			let shortName = name1
@@ -68,6 +70,7 @@ export default props => {
 					style={{ maxWidth: 50 , backgroundColor: '#6f6f7e', height: 40, marginRight: 5, borderRadius: 4, paddingHorizontal: 3, fontSize: 16, textAlign: 'center', color: myGlobals.lightMode ? Theme.preto : Theme.branco }}
 					onChangeText={qnt => { 
 						props.setTotal(price, count, qnt)
+						props.setQnt(props.id, qnt)
 						setCount(qnt)
 					}}
 					value={count.toString()}

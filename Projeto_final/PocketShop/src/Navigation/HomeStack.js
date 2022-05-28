@@ -46,7 +46,7 @@ export default HomeStack = props => {
                 />
                 <Stack.Screen name='Cart' component={Cart} 
                     options={{ 
-                        title: 'Cart',
+                        title: 'Encomendar',
                         headerTransparent: true,
                         headerStyle: {
                             backgroundColor: 'rgba(255, 255, 255, 0.4)',

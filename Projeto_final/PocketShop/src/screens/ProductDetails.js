@@ -42,7 +42,7 @@ const Details = ({ route, params, navigation }) => {
 	let views = route.params.views ?? data.views;
 
 	useEffect(() => {
-		//console.warn(id);
+		//console.log(id);
 		fetch( api_url+'products/updateViews/'+id, {
 			method: 'PUT'
 		}),
