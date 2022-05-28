@@ -15,9 +15,7 @@ import Theme from '../styles/Comum'
 import Icon3 from 'react-native-vector-icons/FontAwesome5'
 import Icon2 from 'react-native-vector-icons/Ionicons'
 
-
 import EachCatg from '../components/EachCatg'
-
 
 export default class Filter extends React.Component {
 	constructor(props){

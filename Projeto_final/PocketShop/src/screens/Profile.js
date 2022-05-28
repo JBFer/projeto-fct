@@ -25,8 +25,6 @@ import EachMor from '../components/EachMor'
 import EncDetails from './EncDetails'
 
 import myGlobals from '../constants/global'
-import { products_user } from '../services/products';
-import { login } from '../services/user';
 import { api_url } from '../constants/host';
 import AddAddress from './AddAddress';
 import { Swipeable } from 'react-native-gesture-handler';
