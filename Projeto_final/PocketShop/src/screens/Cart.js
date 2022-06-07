@@ -94,7 +94,11 @@ const Details = ({ route, params, navigation }) => {
 					.then(data => {
 						//console.log(data)
 					}) 
-				Alert.alert('Encomenda completa!', 'Pode encontrar a sua encomenda no histórico de encomendas presente no perfil. Caso a encomenda não apareça no histórico basta recarregar o perfil.' )
+				Alert.alert(
+					'Encomenda completa!',
+					'Pode encontrar a sua encomenda no histórico de encomendas presente no perfil. Caso a encomenda não apareça no histórico basta recarregar o perfil.',
+					[{text: 'Ok', onPress: () => navigation.goBack()}]
+				)
 			}) 
 		for (let i = 0; i < id.length; i++){
 			fetch(api_url+'products/update_stock/' + id[i] + '/' + qnt[i] )
