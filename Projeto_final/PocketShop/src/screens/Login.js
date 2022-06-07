@@ -37,7 +37,7 @@ export default class Login extends React.Component {
 	}
 
     user_email = txt_email => {
-		this.setState({ email: txt_email })
+		this.setState({ email: txt_email.toLowerCase().trim() })
 	}
 
     user_pass = txt_pass => {

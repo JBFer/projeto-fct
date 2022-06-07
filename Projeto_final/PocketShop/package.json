@@ -33,7 +33,8 @@
     "redux": "^4.1.2",
     "redux-thunk": "^2.4.1",
     "state-pool": "^0.7.1",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.3",
+    "expo-updates": "~0.8.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
